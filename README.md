@@ -8,7 +8,7 @@
 Cetacean Acoustician  
 
 Pacific Islands Fisheries Science Center,  
-National Marine Fisheries Service, 
+National Marine Fisheries Service,  
 National Oceanic and Atmospheric Administration
 
 The idea for these live maps and this repository was inspired by the Alaska Fisheries Science Center's live survey maps. The code and otuptus presented here are modified from the AFSC team's [survey-live-temperature-map](https://github.com/afsc-gap-products/survey-live-temperature-map) repository. 
