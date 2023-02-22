@@ -5,6 +5,8 @@
 ## Developers
 
 **Selene Fregosi** (selene.fregosi AT noaa.gov)  
+**Yvonne Barkley** (yvonne.barkley AT noaa.gov)  
+**Kym Yano** (kym.yano AT noaa.gov)  
  
 Cetacean Resarch Program | Protected Species Division  
 Pacific Islands Fisheries Science Center  
