@@ -1,3 +1,6 @@
+# input .das files
+/inputs/
+
 # History files
 .Rhistory
 .Rapp.history

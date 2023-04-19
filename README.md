@@ -4,11 +4,13 @@
 
 ## Developers
 
-**Selene Fregosi** (selene.fregosi AT noaa.gov)  
 **Yvonne Barkley** (yvonne.barkley AT noaa.gov)  
+**Janelle Badger** (janelle.badger AT noaa.gov)
+**Selene Fregosi** (selene.fregosi AT noaa.gov)  
 **Kym Yano** (kym.yano AT noaa.gov)  
+
  
-Cetacean Resarch Program | Protected Species Division  
+Cetacean Research Program | Protected Species Division  
 Pacific Islands Fisheries Science Center  
 National Marine Fisheries Service  
 National Oceanic and Atmospheric Administration
@@ -17,20 +19,20 @@ The idea for these live maps and this repository was inspired by the Alaska Fish
 
 ## Purpose
 
-These scripts create daily survey maps as the ships work their way through along the Hawaiian Islands. These ships are conducting NOAA Fisheries' Pacific Islands Fisheries Science Center's Hawaiian Islands Cetacean and Ecosystem Assesment Survey (HICEAS). Scripts pull collected data streams from google drive, entered by researchers at sea, create daily maps and composite gifs, and then push the maps to google drive for the communications team. These plots will be displayed on the HICEAS website
+These scripts create daily survey maps as the ships work their way through along the Hawaiian Islands. These ships are conducting NOAA Fisheries' Pacific Islands Fisheries Science Center's Hawaiian Islands Cetacean and Ecosystem Assessment Survey (HICEAS). Scripts pull collected data streams from Google Drive, entered by researchers at sea, create daily maps and composite gifs, and then push the maps to our HICEAS Story Map website.
 
- - [Web link will be here](https://)
+ - [HICEAS Web link will be here](https://)
 
 
 ## Notes
 
 How to set up the task scheduler: https://docs.google.com/document/d/1pwBmR6AqgnvUx_AiWYQxtYxIRjWMfdd5EPWwFvpI3Ug/edit
 
-Where the files will be saved to: https://drive.google.com/drive/folders/1okUHW9LRxXJ8T8Djxu_VUKV3LPmEMp6c
+Where the input and output files will be saved: [Google Drive - Restricted access](https://drive.google.com/drive/u/0/folders/1okUHW9LRxXJ8T8Djxu_VUKV3LPmEMp6c)
 
 Troubleshooting: if the task scheduler fails to run the code, but you can run the script in R or Rstudio, you may need to update Pandoc. The latest version is here: https://github.com/jgm/pandoc/releases/tag/2.18. If you are on a NOAA machine, ask IT to install the .msi file for you. Close and reopen everything and try again. 
 
-## Plot Examples
+## Plot Examples (FROM AFSC)
 
 ### Final combined gifs
 
