@@ -5,11 +5,10 @@
 ## Developers
 
 **Yvonne Barkley** (yvonne.barkley AT noaa.gov)  
-**Janelle Badger** (janelle.badger AT noaa.gov)
-**Selene Fregosi** (selene.fregosi AT noaa.gov)  
+**Janelle Badger** (janelle.badger AT noaa.gov)  
+**Selene Fregosi** (selene.fregosi AT noaa.gov)   
 **Kym Yano** (kym.yano AT noaa.gov)  
 
- 
 Cetacean Research Program | Protected Species Division  
 Pacific Islands Fisheries Science Center  
 National Marine Fisheries Service  
@@ -52,7 +51,7 @@ Troubleshooting: if the task scheduler fails to run the code, but you can run th
 
 ### Anomaly Plot
 
-![Anomaly Temperatrues](./test/2021-06-04_anom.png)
+![Anomaly Temperatures](./test/2021-06-04_anom.png)
 
 ## NOAA README
 
