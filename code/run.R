@@ -14,21 +14,33 @@ library(here)
 library(swfscDAS) #https://github.com/smwoodman/swfscDAS
 
 # ------ Download latest survey data from Google Drive --------------------
-load(here('outputs', 'dasList.Rda'))
-dasListOld = dasList
 
-dasList = googledrive::drive_ls(path = 'cruise-maps-live', pattern = '*.das')
+# open up list of previously checked das files
+load(here('outputs', 'dasList.Rda'))
+dasNames_old = dasList$name
+
+# look for current list of .das files on Google Drive
+dasList = googledrive::drive_ls(path = 'cruise-maps-live', pattern = '*.das$')
+dasNames_new = dasList$name
 save(dasList, file = here('outputs', 'dasList.Rda'))
+
+# identify which files are new/need to be processed
+idxNew = !(dasNames_new %in% dasNames_old)
 
 # compare dasListOld vs dasList and find any new files
 # TO DO
-dasNew = dasList[1,] # for now just pull first one for testing
+d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
 
-# download them
-for (d in nrow(dasList)){
-  googledrive::drive_download(file = googledrive::as_id(dasNew$id),  
-                              overwrite = TRUE, path = here('inputs', dasNew$name))
-}
+# eventually loop through all idxNew
+# for (i in 1:length(idxNew)){
+#     d = dasList[idxNew(i),]
+
+  # download new das and save to git repo
+    googledrive::drive_download(file = googledrive::as_id(d$id),  
+                                overwrite = TRUE, path = here('inputs', d$name))
+  
+  
+
 
 
 # ------ Parse track data from das ----------------------------------------
@@ -44,7 +56,7 @@ source(here('code', 'functions', 'parseTrack.R'))
 # do some stuff here to extract visual sighting data for the day from das
 source(here('code', 'functions', 'extractVisualSightings.R'))
 
-# vs = extractVisualSightings()
+# vs = extractVisualSightings(here('inputs', d$name))
 
 # ------ Extract acoustic detections --------------------------------------
 
@@ -52,6 +64,7 @@ source(here('code', 'functions', 'extractVisualSightings.R'))
 # source(here('code', 'functions', 'extractAcousticDetections.R'))
 # ad = extractAcousticDetections()
 
+# } # for looping through all idxNew
 
 # ------ Plot map ---------------------------------------------------------
 source(here('code', 'functions', 'plotMap.R'))
