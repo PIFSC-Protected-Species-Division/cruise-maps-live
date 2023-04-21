@@ -19,7 +19,7 @@ parseTrack <- function(dasFile){
   #' et = parseTrack(here('inputs', d$name))
   
   # for testing
-  dasFile = here('inputs', d$name)
+  dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
   df = dasFile
   head(readLines(df, warn = FALSE))
   
@@ -29,7 +29,7 @@ parseTrack <- function(dasFile){
   df_read <- das_read(df, skip = 0)
   df_proc <- das_process(df)
   
-  View(df_proc)
+  # View(df_proc)
   
   
   #Get summary of effort segments using "section" method, where each segment is a full continuous 
@@ -37,5 +37,9 @@ parseTrack <- function(dasFile){
   et_all <- das_effort(df_proc, method = "section", dist.method = "greatcircle", num.cores = 1)
   et_seg <- et_all$segdata
   et_seg_sub <- subset(et_seg, select = c(Cruise, segnum, stlin:mtime, Mode, EffType, avgSpdKt, avgBft))
+  # View(et_seg_sub)
+  
+  et <- et_seg_sub
+  return(et)
   
 }

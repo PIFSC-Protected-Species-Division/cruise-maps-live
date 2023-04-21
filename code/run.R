@@ -10,56 +10,105 @@
 # ------ Libraries --------------------------------------------------------
 
 library(googledrive)
-library(here)
+# library(here)
 library(swfscDAS) #https://github.com/smwoodman/swfscDAS
 
-# ------ Download latest survey data from Google Drive --------------------
+
+# ------ USER SPECIFIED INPUTS --------------------------------------------
+
+yr <- 2017
+data_source <- 'gd' # google drive
+dates0 <- 'latest' # "all" # 'latest' #"2021-06-05",
+# Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
+ship = 'OES' # 'LSK'
+
+# dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
+# specifying path this way searches through all of google drive and is kind of slow
+# alternative hard code to url. 
+if (yr == 2017){
+  dir_gd_raw <- 'https://drive.google.com/drive/u/0/folders/1x4GzvtLQDGT1nA7nuAPHs5CPXxsX6Umt'
+} else if (yr == 2023){
+  dir_gd_raw <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
+}
+
+
+# May not be able to use here package??
+# note from EM - it actually causes issues with 
+## the tasks scheduler, which has no concept of a project root folder. 
+locations <- c(
+  'C:/users/selene.fregosi/documents/github/cruise-maps-live/'
+  # '//picqueenfish/psd/crp/' # want to set up a server location? for virtual machines?
+) # others add path on thier local machine
+
+for (i in 1:length(locations)){
+  if (file.exists(locations[i])) {
+    dir_wd  <- locations[i]
+  }
+}
+# dir_wd <- "C:/Users/liz.dawson/Work/R/GAPSurveyTemperatureMap/"
+
+
+# ------ Make a log file --------------------------------------------------
+
+# sink(file = paste0(dir_wd, "/outputs/", Sys.Date(), ".txt"), append=TRUE)
+
+# ------ Sign in to google drive ------------------------------------------
+
+googledrive_dl <- TRUE
+googledrive::drive_deauth()
+googledrive::drive_auth()
+1
+
+
+
+# ------ Download latest survey data --------------------------------------
 
 # open up list of previously checked das files
-load(here('outputs', 'dasList.Rda'))
+load(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 dasNames_old = dasList$name
 
 # look for current list of .das files on Google Drive
-dasList = googledrive::drive_ls(path = 'cruise-maps-live', pattern = '*.das$')
-# this prompts me to 'select a pre-authorised token' every time - is there a way around that?
+dasList = googledrive::drive_ls(path = dir_gd_raw, pattern = 'DAS')
 dasNames_new = dasList$name
-# save(dasList, file = here('outputs', 'dasList.Rda'))
+# save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 
 # identify which files are new/need to be processed
 idxNew = !(dasNames_new %in% dasNames_old)
-d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
-
 # eventually loop through all idxNew
 # for (i in 1:length(idxNew)){
 #     d = dasList[idxNew(i),]
 
-  # download new das and save to git repo
-    googledrive::drive_download(file = googledrive::as_id(d$id),  
-                                overwrite = TRUE, path = here('inputs', d$name))
-  
-  
+d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
 
-
+# download new das and save to git repo
+googledrive::drive_download(file = googledrive::as_id(d$id),  
+                            overwrite = TRUE, 
+                            path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 # ------ Parse track data from das ----------------------------------------
 
 # do some stuff here to parse track data from das
-source(here('code', 'functions', 'parseTrack.R'))
+source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
 
-# et = parseTrack(here('inputs', d$name))
+etNew = parseTrack(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
+# combine the old vs dataframe with the new one
+load(paste0(dir_wd, 'outputs/compiledEffortTracks.Rda'))
+et = rbind(et, etNew)
+save(et, file = paste0(dir_wd, 'outputs/compiledEffortTracks.Rda'))
 
 # ------ Extract visual sighting data -------------------------------------
 
 # do some stuff here to extract visual sighting data for the day from das
-source(here('code', 'functions', 'extractVisualSightings.R'))
-vsNew = extractVisualSightings(here('inputs', d$name))
+source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
+
+vsNew = extractVisualSightings(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 
 # combine the old vs dataframe with the new one
-load(here('outputs', 'compiledVisualSightings.Rda'))
+load(paste0('outputs/compiledVisualSightings.Rda'))
 vs = rbind(vs, vsNew)
-save(vs, file = here('outputs', 'compiledVisualSightings.Rda'))
+save(vs, file = paste0(dir_wd, 'outputs/compiledVisualSightings.Rda'))
 
 # ------ Extract acoustic detections --------------------------------------
 
@@ -70,7 +119,7 @@ save(vs, file = here('outputs', 'compiledVisualSightings.Rda'))
 # } # for looping through all idxNew
 
 # ------ Plot map ---------------------------------------------------------
-source(here('code', 'functions', 'plotMap.R'))
+source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 # plotMap()
 
 
@@ -78,7 +127,7 @@ source(here('code', 'functions', 'plotMap.R'))
 
 # ------ PNG --------------------------------------------------------------
 # save the latest
-ggsave(filename = here('outputs', 'dailyMap.png'), 
+ggsave(filename = paste0(dir_wd, 'outputs/', 'dailyMap_', yr, '.png'), 
        height = height, 
        width = width,
        plot = gg, 
@@ -86,8 +135,8 @@ ggsave(filename = here('outputs', 'dailyMap.png'),
        bg = "white", 
        device = "png") 
 
-# save a copy of today
-dateName = paste0('daily_', Sys.Date(), '.png')
+# save a copy of today's run
+dateName = paste0(dir_wd, 'outputs/daily_', yr, '_', Sys.Date(), '.png')
 ggsave(filename = here('outputs', dateName), 
        height = height, 
        width = width,
@@ -99,7 +148,7 @@ ggsave(filename = here('outputs', dateName),
 
 # ------ PDF --------------------------------------------------------------
 # save the latest
-ggsave(filename = here('outputs', 'dailyMap.pdf'), 
+ggsave(filename = paste0(dir_wd, 'outputs/', 'dailyMap_', yr, '.pdf'), 
        height = height, 
        width = width,
        plot = gg, 
@@ -108,8 +157,8 @@ ggsave(filename = here('outputs', 'dailyMap.pdf'),
        device = "png") 
 
 # save a copy of today
-dateName = paste0('daily_', Sys.Date(), '.pdf')
-ggsave(filename = here('outputs', dateName), 
+dateName = paste0(dir_wd, 'outputs/daily_', yr, '_', Sys.Date(), '.pdf')
+ggsave(filename = paste0('outputs', dateName), 
        height = height, 
        width = width,
        plot = gg, 
@@ -120,3 +169,5 @@ ggsave(filename = here('outputs', dateName),
 
 # then save daily udpate plot as .png, .pdf, whatever else we want
 # will all be generated on the posit connect 
+
+# sink()
