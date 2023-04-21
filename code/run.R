@@ -21,14 +21,12 @@ dasNames_old = dasList$name
 
 # look for current list of .das files on Google Drive
 dasList = googledrive::drive_ls(path = 'cruise-maps-live', pattern = '*.das$')
+# this prompts me to 'select a pre-authorised token' every time - is there a way around that?
 dasNames_new = dasList$name
-save(dasList, file = here('outputs', 'dasList.Rda'))
+# save(dasList, file = here('outputs', 'dasList.Rda'))
 
 # identify which files are new/need to be processed
 idxNew = !(dasNames_new %in% dasNames_old)
-
-# compare dasListOld vs dasList and find any new files
-# TO DO
 d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
 
 # eventually loop through all idxNew
@@ -48,15 +46,20 @@ d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
 # do some stuff here to parse track data from das
 source(here('code', 'functions', 'parseTrack.R'))
 
-# trk = parseTrack()
+# et = parseTrack(here('inputs', d$name))
 
 
 # ------ Extract visual sighting data -------------------------------------
 
 # do some stuff here to extract visual sighting data for the day from das
 source(here('code', 'functions', 'extractVisualSightings.R'))
+vsNew = extractVisualSightings(here('inputs', d$name))
 
-# vs = extractVisualSightings(here('inputs', d$name))
+
+# combine the old vs dataframe with the new one
+load(here('outputs', 'compiledVisualSightings.Rda'))
+vs = rbind(vs, vsNew)
+save(vs, file = here('outputs', 'compiledVisualSightings.Rda'))
 
 # ------ Extract acoustic detections --------------------------------------
 
