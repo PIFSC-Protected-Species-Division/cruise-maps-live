@@ -12,6 +12,7 @@
 library(googledrive)
 # library(here)
 library(swfscDAS) #https://github.com/smwoodman/swfscDAS
+library(flextable)
 
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
@@ -47,6 +48,12 @@ for (i in 1:length(locations)){
 }
 # dir_wd <- "C:/Users/liz.dawson/Work/R/GAPSurveyTemperatureMap/"
 
+# as of now, all functions sourced individually, but could source all together
+# functionNames <- list.files(pattern = '[.]R$', path = paste0(dir_wd, 'code', 
+#                                                              functions), 
+#                             full.names = TRUE);
+# invisible(sapply(functionNames, FUN = source))
+#
 
 # ------ Make a log file --------------------------------------------------
 
@@ -57,7 +64,7 @@ for (i in 1:length(locations)){
 googledrive_dl <- TRUE
 googledrive::drive_deauth()
 googledrive::drive_auth()
-1
+1 # push through autorization approval
 
 
 
@@ -122,6 +129,11 @@ save(vs, file = paste0(dir_wd, 'outputs/compiledVisualSightings.Rda'))
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 # plotMap()
 
+
+
+# ------ Make summary stats table -----------------------------------------
+
+# flextable::save_as_image
 
 # ------ Save stuff -------------------------------------------------------
 
