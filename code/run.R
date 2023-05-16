@@ -22,6 +22,7 @@ data_source <- 'gd' # google drive
 dates0 <- 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
 ship = 'OES' # 'LSK'
+leg = 'xx'
 
 # dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
 # specifying path this way searches through all of google drive and is kind of slow
@@ -95,14 +96,25 @@ googledrive::drive_download(file = googledrive::as_id(d$id),
 # ------ Parse track data from das ----------------------------------------
 
 # do some stuff here to parse track data from das
+
 source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
 
 etNew = parseTrack(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 # combine the old vs dataframe with the new one
-load(paste0(dir_wd, 'outputs/compiledEffortTracks.Rda'))
-et = rbind(et, etNew)
-save(et, file = paste0(dir_wd, 'outputs/compiledEffortTracks.Rda'))
+outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine, check and remove duplicates
+  et = rbind(et, etNew)
+  et = unique(et)
+} else {
+  et = etNew
+}
+
+save(et, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract visual sighting data -------------------------------------
 
@@ -113,9 +125,19 @@ vsNew = extractVisualSightings(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 
 # combine the old vs dataframe with the new one
-load(paste0('outputs/compiledVisualSightings.Rda'))
-vs = rbind(vs, vsNew)
-save(vs, file = paste0(dir_wd, 'outputs/compiledVisualSightings.Rda'))
+outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine, check and remove duplicates
+  vs = rbind(vs, vsNew)
+  vs = unique(vs)
+} else { # if no previous sightings file exists
+  vs = vsNew
+}
+
+save(vs, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract acoustic detections --------------------------------------
 
