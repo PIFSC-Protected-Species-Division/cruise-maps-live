@@ -95,10 +95,8 @@ googledrive::drive_download(file = googledrive::as_id(d$id),
 
 # ------ Parse track data from das ----------------------------------------
 
-# do some stuff here to parse track data from das
-
+# parse on-effort segments as straight lines from Begin/Resume to End 
 source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
-
 etNew = parseTrack(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 # combine the old vs dataframe with the new one
@@ -115,6 +113,24 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(et, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
+
+# alternatively, can parse individual lines to get the segments out as points 
+# source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
+# epNew = parseTrack_asPoints(paste0(dir_wd, 'inputs/', yr, '/', d$name))
+#
+# # combine the old vs dataframe with the new one
+# outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
+# if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+#   # load old if it exists
+#   load(paste0(dir_wd, outStr, '.Rda'))
+#   # combine, check and remove duplicates
+#   ep = rbind(ep, etNew)
+#   ep = unique(ep)
+# } else {
+#   ep = epNew
+# }
+# save(ep, file = paste0(dir_wd, outStr, '.Rda'))
+# write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract visual sighting data -------------------------------------
 
