@@ -20,15 +20,14 @@ parseTrack_asPoints <- function(dasFile){
   
   # ### for testing ###
   # dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
-  # df = dasFile
-  # head(readLines(df, warn = FALSE))
+  # head(readLines(dasFile, warn = FALSE))
   # ###################
   
-  #Do basic checks on data
-  df_check = das_check(df, skip = 0, print.cruise.nums = TRUE)
-  #Read and process data
-  df_read = das_read(df, skip = 0)
-  df_proc = das_process(df)
+  # basic data checks
+  df_check = das_check(dasFile, skip = 0, print.cruise.nums = TRUE)
+  # read and process data
+  df_read = das_read(dasFile, skip = 0)
+  df_proc = das_process(dasFile)
   
   # trim the read in data to just the cols we care about
   df_proc_sub = subset(df_proc, select = c(line_num, Cruise, Event, DateTime, 

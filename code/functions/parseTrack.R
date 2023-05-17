@@ -20,19 +20,18 @@ parseTrack <- function(dasFile){
   
   # ### for testing ###
   # dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
-  # df = dasFile
-  # head(readLines(df, warn = FALSE))
+  # head(readLines(dasFile, warn = FALSE))
   # ###################
   
-  #Do basic checks on data
-  df_check = das_check(df, skip = 0, print.cruise.nums = TRUE)
-  #Read and process data
-  df_read = das_read(df, skip = 0)
-  df_proc = das_process(df)
+  # basic data checks
+  df_check = das_check(dasFile, skip = 0, print.cruise.nums = TRUE)
+  # read and process data
+  df_read = das_read(dasFile, skip = 0)
+  df_proc = das_process(dasFile)
   
   # View(df_proc)
   
-  # Summarize effort segments. 'section' method pulls lat/lon for all 'R' (resume
+  # summarize effort segments. 'section' method pulls lat/lon for all 'R' (resume
   # effort) and all 'E' (end effort) entries, then calcs dist btwn
   et_all = das_effort(df_proc, method = 'section', dist.method = 'greatcircle', 
                        num.cores = 1)
@@ -44,7 +43,7 @@ parseTrack <- function(dasFile){
   # could further trim by this. 
   # View(et_seg_sub)
   
-  et <- et_seg_sub
+  et = et_seg_sub
   return(et)
   
 }
