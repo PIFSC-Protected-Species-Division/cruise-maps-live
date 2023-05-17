@@ -171,7 +171,7 @@ write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
 # ------ Extract acoustic detections --------------------------------------
 
 # FUTURE GOALS
-# source(here('code', 'functions', 'extractAcousticDetections.R'))
+# source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
 # ad = extractAcousticDetections()
 
 # } # for looping through all idxNew
@@ -182,55 +182,57 @@ source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 
 
 
-# ------ Make summary stats table -----------------------------------------
+# ------ Make summary table -----------------------------------------------
 
+source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 # flextable::save_as_image
 
 # ------ Save stuff -------------------------------------------------------
 
 # ------ PNG --------------------------------------------------------------
-# save the latest
-ggsave(filename = paste0(dir_wd, 'outputs/', 'dailyMap_', yr, '.png'), 
-       height = height, 
-       width = width,
-       plot = gg, 
-       dpi = 320,
-       bg = "white", 
-       device = "png") 
-
-# save a copy of today's run
-dateName = paste0(dir_wd, 'outputs/daily_', yr, '_', Sys.Date(), '.png')
-ggsave(filename = here('outputs', dateName), 
-       height = height, 
-       width = width,
-       plot = gg, 
-       dpi = 320,
-       bg = "white", 
-       device = "png") 
+# # save the latest
+# outStr = paste0('outputs/dailyMap_', yr, '_leg', leg, '_', ship)
+# ggsave(filename = paste0(dir_wd, outStr, '.png'), 
+#        height = height, 
+#        width = width,
+#        plot = gg, 
+#        dpi = 320,
+#        bg = 'white', 
+#        device = 'png') 
+# 
+# # save a copy of today's run
+# dateName = paste0(outStr, '_', Sys.Date(), '.png')
+# ggsave(filename = paste0(dir_wd, dateName), 
+#        height = height, 
+#        width = width,
+#        plot = gg, 
+#        dpi = 320,
+#        bg = 'white', 
+#        device = 'png') 
 
 
 # ------ PDF --------------------------------------------------------------
-# save the latest
-ggsave(filename = paste0(dir_wd, 'outputs/', 'dailyMap_', yr, '.pdf'), 
-       height = height, 
-       width = width,
-       plot = gg, 
-       dpi = 320,
-       bg = "white", 
-       device = "png") 
+# # save the latest
+# ggsave(filename = paste0(dir_wd, outStr, '.pdf'), 
+#        height = height, 
+#        width = width,
+#        plot = gg, 
+#        dpi = 320,
+#        bg = 'white', 
+#        device = 'png') 
+# 
+# # save a copy of today
+# dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
+# ggsave(filename = paste0(dir_wd, dateName), 
+#        height = height, 
+#        width = width,
+#        plot = gg, 
+#        dpi = 320,
+#        bg = 'white', 
+#        device = 'pdf') 
 
-# save a copy of today
-dateName = paste0(dir_wd, 'outputs/daily_', yr, '_', Sys.Date(), '.pdf')
-ggsave(filename = paste0('outputs', dateName), 
-       height = height, 
-       width = width,
-       plot = gg, 
-       dpi = 320,
-       bg = "white", 
-       device = "png") 
 
-
-# then save daily udpate plot as .png, .pdf, whatever else we want
+# then save daily update plot as .png, .pdf, whatever else we want
 # will all be generated on the posit connect 
 
 # sink()
