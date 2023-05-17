@@ -22,7 +22,7 @@ data_source <- 'gd' # google drive
 dates0 <- 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
 ship = 'OES' # 'LSK'
-leg = 'xx'
+leg = '00'
 
 # dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
 # specifying path this way searches through all of google drive and is kind of slow
@@ -72,21 +72,28 @@ googledrive::drive_auth()
 # ------ Download latest survey data --------------------------------------
 
 # open up list of previously checked das files
-load(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
-dasNames_old = dasList$name
+if (file.exists(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))){
+  load(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
+  dasNames_old = dasList$name
+} else {
+  dasNames_old = character()
+}
 
 # look for current list of .das files on Google Drive
 dasList = googledrive::drive_ls(path = dir_gd_raw, pattern = 'DAS')
 dasNames_new = dasList$name
-# save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
+save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 
 # identify which files are new/need to be processed
-idxNew = !(dasNames_new %in% dasNames_old)
+idxNew = which(!(dasNames_new %in% dasNames_old))
 # eventually loop through all idxNew
 # for (i in 1:length(idxNew)){
-#     d = dasList[idxNew(i),]
+#     d = dasList[idxNew[i],]
 
-d = dasList[2,] # for now just pull the example daily one from HICEAS 2017
+# ### for testing ###
+i = 3
+d = dasList[idxNew[i],]
+# ###################
 
 # download new das and save to git repo
 googledrive::drive_download(file = googledrive::as_id(d$id),  
@@ -104,9 +111,10 @@ outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
 if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   # load old if it exists
   load(paste0(dir_wd, outStr, '.Rda'))
-  # combine, check and remove duplicates
+  # combine
   et = rbind(et, etNew)
-  et = unique(et)
+  et = unique(et)                 # remove duplicates (in case ran already)
+  et = et[order(et$DateTime1),]   # sort in case out of order
 } else {
   et = etNew
 }
@@ -114,29 +122,33 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 save(et, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
 
-# alternatively, can parse individual lines to get the segments out as points 
-# source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
-# epNew = parseTrack_asPoints(paste0(dir_wd, 'inputs/', yr, '/', d$name))
-#
-# # combine the old vs dataframe with the new one
-# outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
-# if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
-#   # load old if it exists
-#   load(paste0(dir_wd, outStr, '.Rda'))
-#   # combine, check and remove duplicates
-#   ep = rbind(ep, etNew)
-#   ep = unique(ep)
-# } else {
-#   ep = epNew
-# }
-# save(ep, file = paste0(dir_wd, outStr, '.Rda'))
-# write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
+
+# ------ Parse track data as points ---------------------------------------
+# alternatively, can parse individual lines to get the segments out as points
+
+source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
+epNew = parseTrack_asPoints(paste0(dir_wd, 'inputs/', yr, '/', d$name))
+
+# combine the old vs dataframe with the new one
+outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine, remove dupes, sort by date
+  ep = rbind(ep, epNew)
+  ep = unique(ep) 
+  ep = ep[order(ep$DateTime),] 
+} else {
+  ep = epNew
+}
+
+save(ep, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract visual sighting data -------------------------------------
 
 # do some stuff here to extract visual sighting data for the day from das
 source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
-
 vsNew = extractVisualSightings(paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 
@@ -145,9 +157,10 @@ outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
 if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   # load old if it exists
   load(paste0(dir_wd, outStr, '.Rda'))
-  # combine, check and remove duplicates
+  # combine, remove dupes, sort by date
   vs = rbind(vs, vsNew)
   vs = unique(vs)
+  vs = vs[order(vs$DateTime),] 
 } else { # if no previous sightings file exists
   vs = vsNew
 }
