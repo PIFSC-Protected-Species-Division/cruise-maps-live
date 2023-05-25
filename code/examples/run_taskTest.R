@@ -11,7 +11,8 @@
 
 library(googledrive)
 library(swfscDAS) #https://github.com/smwoodman/swfscDAS
-library(flextable)
+library(ggplot2)
+# library(flextable)
 
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
@@ -33,16 +34,18 @@ if (yr == 2017){
 }
 
 locations <- c(
-  'C:/users/selene.fregosi/documents/github/cruise-maps-live/'
+  'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
+  'C:/users/yvonne.barkley/cruise-maps-live/'
   # '//picqueenfish/psd/crp/' # want to set up a server location? for virtual machines?
 ) # others add path on their local machine
 
 for (i in 1:length(locations)){
   if (file.exists(locations[i])) {
     dir_wd  <- locations[i]
-    # dir_wd = 'C:/users/selene.fregosi/documents/github/cruise-maps-live/'
   }
 }
+# or specify manually
+# dir_wd <- "C:/Users/selene.fregosi/documents/github/cruise-maps-live/"
 
 # as of now, all functions sourced individually, but could source all together
 # functionNames <- list.files(pattern = '[.]R$', path = paste0(dir_wd, 'code',
@@ -53,15 +56,10 @@ for (i in 1:length(locations)){
 
 # ------ Make a log file --------------------------------------------------
 
-# for messages
-# logFile = file(paste0(dir_wd, 'outputs/run_', Sys.Date(), '.log'), 'at')
-# sink(logFile, append = TRUE, type = 'output')
-# cat('\nrun started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
-# sink(logFile, append = TRUE, type = 'message')
-
 # simple
-sink(paste0(dir_wd, 'outputs/run_', Sys.Date(), '.log'), append = TRUE)
-cat('\n...\nrun started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
+sink(paste0(dir_wd, 'outputs/run_test', Sys.Date(), '.log'), append = TRUE)
+cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
+cat(' dir_wd =', dir_wd, '\n')
 
 # ------ Sign in to google drive ------------------------------------------
 
@@ -69,8 +67,6 @@ googledrive_dl <- TRUE
 googledrive::drive_deauth()
 googledrive::drive_auth()
 1 # push through autorization approval
-
-# sink(logFile, append = TRUE) # go back to printing console outputs
 
 # ------ Download latest survey data --------------------------------------
 
@@ -89,6 +85,7 @@ save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 
 # identify which files are new/need to be processed
 idxNew = which(!(dasNames_new %in% dasNames_old))
+cat(' Processing', length(idxNew), 'new das files:\n')
 # eventually loop through all idxNew
 # for (i in 1:length(idxNew)){
 #     d = dasList[idxNew[i],]
@@ -104,16 +101,14 @@ googledrive::drive_download(file = googledrive::as_id(d$id),
                             path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
 
 
-# ------ Read and process new das -----------------------------------------
+# ------ Read and process das file ----------------------------------------
 
-### for testing ###
 dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
-# head(readLines(dasFile, warn = FALSE))
-###################
+cat(' ', d$name, '\n')
 
 # basic data checks
-df_check = das_check(dasFile, skip = 0, print.cruise.nums = TRUE)
-# read and process data
+df_check = das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+# read and process
 df_read = das_read(dasFile, skip = 0)
 df_proc = das_process(dasFile)
 # View(df_proc)
@@ -139,7 +134,7 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(et, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
-cat('saved', outStr, '\n')
+cat('   saved', outStr, '\n')
 
 # ------ Parse track data as points ---------------------------------------
 # alternatively, can parse individual lines to get the segments out as points
@@ -162,7 +157,7 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(ep, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
-cat('saved', outStr, '\n')
+cat('   saved', outStr, '\n')
 
 # ------ Extract visual sighting data -------------------------------------
 
@@ -185,36 +180,33 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(vs, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
-cat('saved', outStr, '\n')
+cat('   saved', outStr, '\n')
 
 
 
 
-# ------ Run simple test----------------------------------------
+# ------ Simple test outputs ----------------------------------------------
 
-# dir_wd = 'C:/users/selene.fregosi/documents/github/cruise-maps-live/'
+# make a dummy csv and dummy plot just to confirm we can make it this far!
 s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
+# write.csv(s, file = paste0(dir_wd, 'outputs/taskTest1_',
+                           # format(Sys.time(), '%Y-%m-%dT%H%M%S'), '.csv'))
 
-write.csv(s, file = paste0(dir_wd, 'outputs/taskTest1_',
-                           format(Sys.time(), '%Y-%m-%dT%H%M%S'), '.csv'))
+gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
+# gg
+outStr = paste0('outputs/taskTest1_', yr, '_leg', leg, '_', ship)
+ggsave(filename = paste0(dir_wd, outStr, '.png'),
+       height = 2,
+       width = 2,
+       plot = gg,
+       dpi = 120,
+       bg = 'white',
+       device = 'png')
+cat('   saved', outStr, '\n')
 
 
-# # ------ Save plot --------------------------------------------------------
-# 
-# 
-# # # save the latest
-# # outStr = paste0('outputs/dailyMap_', yr, '_leg', leg, '_', ship)
-# # ggsave(filename = paste0(dir_wd, outStr, '.png'), 
-# #        height = height, 
-# #        width = width,
-# #        plot = gg, 
-# #        dpi = 320,
-# #        bg = 'white', 
-# #        device = 'png') 
-# 
+# ------ Close up log -----------------------------------------------------
 
-cat('run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '\n')
+cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()
-# 
-# 
-# 
+
