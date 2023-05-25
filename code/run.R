@@ -90,10 +90,11 @@ idxNew = which(!(dasNames_new %in% dasNames_old))
 # for (i in 1:length(idxNew)){
 #     d = dasList[idxNew[i],]
 
+#####################
 # ### for testing ###
 i = 3
 d = dasList[idxNew[i],]
-# ###################
+#####################
 
 # download new das and save to git repo
 googledrive::drive_download(file = googledrive::as_id(d$id),  
@@ -119,7 +120,7 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   et = etNew
 }
 
-save(et, file = paste0(dir_wd, outStr, '.Rda'))
+save(et, etNew, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
 
 
@@ -142,7 +143,7 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   ep = epNew
 }
 
-save(ep, file = paste0(dir_wd, outStr, '.Rda'))
+save(ep, epNew, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract visual sighting data -------------------------------------
@@ -165,7 +166,7 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   vs = vsNew
 }
 
-save(vs, file = paste0(dir_wd, outStr, '.Rda'))
+save(vs, vsNew, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
 
 # ------ Extract acoustic detections --------------------------------------
