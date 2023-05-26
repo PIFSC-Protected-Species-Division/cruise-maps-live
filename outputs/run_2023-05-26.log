@@ -1,0 +1,35 @@
+
+...run started 2023-05-26 12:56:01 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+package ‘promises’ successfully unpacked and MD5 sums checked
+package ‘later’ successfully unpacked and MD5 sums checked
+package ‘httpuv’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\PICCRPAcoustician\AppData\Local\Temp\RtmpGw7lY9\downloaded_packages
+ Processing 0 new das files:
+[1] 0
+ Processing 0 new das files:
+[1] "DASALL.730" "DASALL.729" "DASALL.731"
+ Processing 3 new das files:
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/outputs/dasList_2017.Rda"
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/"
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/"
+[1] "DASALL.730" "DASALL.729" "DASALL.731"
+
+...run started 2023-05-26 13:03:52 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/outputs/dasList_2017.Rda"
+[1] TRUE
+ Processing 0 new das files:
+  DASALL.731 
+
+...run started 2023-05-26 13:06:41 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES 
+   saved outputs/compiledEffortPoints_2017_leg00_OES 
+   saved outputs/compiledSightings_2017_leg00_OES 
+   saved outputs/plot_2017_leg00_OES 
+...run complete 2023-05-26 13:06:52 HST ...
