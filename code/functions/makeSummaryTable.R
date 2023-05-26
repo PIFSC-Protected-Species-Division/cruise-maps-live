@@ -6,6 +6,10 @@ makeSummaryTable <- function(et, vs){
   #' in a flex table which can be saved and uploaded to the website. Relies on 
   #' previously parsed track and visual sighting data
   #' 
+  #' Sightings
+  #' of unidentified small, medium, and large dolphins and unidentified dolphins were combined into a single category, “unidentified dolphins,” for detection function and abundance estimation. Likewise, sightings of unidentified small and large whales and unidentified
+  #' whales and cetaceans were combined into the category “unidentified cetaceans.”
+  #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
   #' date: 16 May 2023
   #'
