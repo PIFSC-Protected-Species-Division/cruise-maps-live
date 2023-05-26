@@ -1,4 +1,4 @@
-parseTrack <- function(dasFile){
+parseTrack <- function(df_proc){
   
   #' parseTrack
   #' 
@@ -9,7 +9,7 @@ parseTrack <- function(dasFile){
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
   #' date: 16 May 2023
   #'
-  #' @param dasFile fullfile path to das file to be processed
+  #' @param df_proc processed das file (with swfscDAS::das_process)
   #' 
   #' @return a dataframe of effort tracks with date and lat/lon
   #' @export
@@ -18,18 +18,7 @@ parseTrack <- function(dasFile){
   #' # extract all new tracks from a given das file, d$name
   #' et = parseTrack(here('inputs', d$name))
   
-  # ### for testing ###
-  # dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
-  # head(readLines(dasFile, warn = FALSE))
-  # ###################
-  
-  # basic data checks
-  df_check = das_check(dasFile, skip = 0, print.cruise.nums = TRUE)
-  # read and process data
-  df_read = das_read(dasFile, skip = 0)
-  df_proc = das_process(dasFile)
-  
-  # View(df_proc)
+
   
   # summarize effort segments. 'section' method pulls lat/lon for all 'R' (resume
   # effort) and all 'E' (end effort) entries, then calcs dist btwn

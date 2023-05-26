@@ -57,7 +57,7 @@ for (i in 1:length(locations)){
 # ------ Make a log file --------------------------------------------------
 
 # simple
-sink(paste0(dir_wd, 'outputs/run_', Sys.Date(), '.log'), append = TRUE)
+sink(paste0(dir_wd, 'outputs/run_test', Sys.Date(), '.log'), append = TRUE)
 cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
 
@@ -183,83 +183,18 @@ write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
 cat('   saved', outStr, '\n')
 
 
-# ------ Extract acoustic detections --------------------------------------
 
-# FUTURE GOALS
-# source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
-# ad = extractAcousticDetections()
-
-# } # for looping through all idxNew
-
-# ------ Plot map ---------------------------------------------------------
-source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
-# plotMap()
-
-
-
-# ------ Make summary table -----------------------------------------------
-
-source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
-# flextable::save_as_image
-
-# ------ Save stuff -------------------------------------------------------
-
-# ------ PNG --------------------------------------------------------------
-# # save the latest
-# outStr = paste0('outputs/dailyMap_', yr, '_leg', leg, '_', ship)
-# ggsave(filename = paste0(dir_wd, outStr, '.png'), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-# 
-# # save a copy of today's run
-# dateName = paste0(outStr, '_', Sys.Date(), '.png')
-# ggsave(filename = paste0(dir_wd, dateName), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-
-
-# ------ PDF --------------------------------------------------------------
-# # save the latest
-# ggsave(filename = paste0(dir_wd, outStr, '.pdf'), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-# 
-# # save a copy of today
-# dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
-# ggsave(filename = paste0(dir_wd, dateName), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'pdf') 
-
-
-# then save daily update plot as .png, .pdf, whatever else we want
-# will all be generated on the posit connect 
 
 # ------ Simple test outputs ----------------------------------------------
 
 # make a dummy csv and dummy plot just to confirm we can make it this far!
 s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
 # write.csv(s, file = paste0(dir_wd, 'outputs/taskTest1_',
-# format(Sys.time(), '%Y-%m-%dT%H%M%S'), '.csv'))
+                           # format(Sys.time(), '%Y-%m-%dT%H%M%S'), '.csv'))
 
 gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
 # gg
-outStr = paste0('outputs/plot_', yr, '_leg', leg, '_', ship)
+outStr = paste0('outputs/taskTest1_', yr, '_leg', leg, '_', ship)
 ggsave(filename = paste0(dir_wd, outStr, '.png'),
        height = 2,
        width = 2,
@@ -269,7 +204,9 @@ ggsave(filename = paste0(dir_wd, outStr, '.png'),
        device = 'png')
 cat('   saved', outStr, '\n')
 
+
 # ------ Close up log -----------------------------------------------------
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()
+
