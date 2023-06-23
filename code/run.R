@@ -28,15 +28,17 @@ leg = '00'
 # specifying path this way searches through all of google drive and is kind of slow
 # alternative hard code to url.
 if (yr == 2017){
-  dir_gd_raw <- 'https://drive.google.com/drive/u/0/folders/1x4GzvtLQDGT1nA7nuAPHs5CPXxsX6Umt'
+  dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1x4GzvtLQDGT1nA7nuAPHs5CPXxsX6Umt'
+  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1uONES1aEE9SGxAIgI7g1EY-qb1pkwH16'
 } else if (yr == 2023){
-  dir_gd_raw <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
+  dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
+  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
 }
 
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
-  'C:/users/yvonne.barkley/cruise-maps-live/',
-  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
+  'C:/users/yvonne.barkley/cruise-maps-live/'#,
+  # '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
 ) # others add path on their local machine
 
 for (i in 1:length(locations)){
@@ -66,12 +68,10 @@ cat(' dir_wd =', dir_wd, '\n')
 googledrive_dl <- TRUE
 googledrive::drive_deauth()
 googledrive::drive_auth()
-# if on local computer
-# 1 # push through autorization approval
-# if on PICV015
-2
+# push through authorization approval
+2 # this may need to change??
 
-# ------ Download latest survey data --------------------------------------
+# ------ Identify new das file --------------------------------------------
 
 # open up list of previously checked das files
 if (file.exists(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))){
@@ -82,7 +82,7 @@ if (file.exists(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))){
 }
 
 # look for current list of .das files on Google Drive
-dasList = googledrive::drive_ls(path = dir_gd_raw, pattern = 'DAS')
+dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
 dasNames_new = dasList$name
 save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 
@@ -102,6 +102,8 @@ cat(' Processing', length(idxNew), 'new das files:\n')
   googledrive::drive_download(file = googledrive::as_id(d$id),
                               overwrite = TRUE,
                               path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
+  
+
   
   
   # ------ Read and process das file ----------------------------------------
@@ -181,19 +183,31 @@ cat(' Processing', length(idxNew), 'new das files:\n')
     vs = vsNew
   }
   
+  
   save(vs, file = paste0(dir_wd, outStr, '.Rda'))
   write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
   cat('   saved', outStr, '\n')
   
 
+
+  
+# } # for looping through all idxNew
+
   # ------ Extract acoustic detections --------------------------------------
+  
+  
+  # acoustics file will just be a single file that is updated/appended to each day
+  pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
+  googledrive::drive_download(file = googledrive::as_id(d$id),
+                              overwrite = TRUE,
+                              path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
+  
+  
   
   # FUTURE GOALS
   # source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
   # ad = extractAcousticDetections()
   
-# } # for looping through all idxNew
-
 # ------ Plot map ---------------------------------------------------------
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 # plotMap()
