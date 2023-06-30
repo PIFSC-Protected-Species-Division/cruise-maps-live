@@ -16,3 +16,71 @@ Error in View : object 'Vs' not found
 
 ...run started 2023-06-30 12:51:17 HST ...
  dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+
+...run started 2023-06-30 12:57:46 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES 
+   saved outputs/compiledEffortPoints_2017_leg00_OES 
+   saved outputs/compiledSightings_2017_leg00_OES 
+   saved summary tables:
+   saved outputs/plot_2017_leg00_OES 
+...run complete 2023-06-30 12:59:06 HST ...
+
+...run started 2023-06-30 13:06:34 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledSightings_2017_leg00_OES as .Rda and .csv
+   saved outputs/summaryTable_2017.Rda 
+   saved outputs/summaryTable_2017_leg00_OES.png 
+   saved outputs/table_archive/summaryTable_2017_leg00_OES_2023-06-30.png 
+...run complete 2023-06-30 13:07:42 HST ...
+
+...run started 2023-06-30 13:11:53 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortTracks_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortPoints_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledSightings_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledSightings_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/summaryTable_2017.Rda 
+   saved outputs/summaryTable_2017_leg00_OES.png 
+   saved outputs/table_archive/summaryTable_2017_leg00_OES_2023-06-30.png 
+...run complete 2023-06-30 13:12:57 HST ...
+
+...run started 2023-06-30 13:13:45 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortTracks_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortPoints_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledSightings_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledSightings_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/summaryTable_2017.Rda 
+   saved outputs/summaryTable_2017_leg00_OES.png 
+   saved outputs/table_archive/summaryTable_2017_leg00_OES_2023-06-30.png 
+...run complete 2023-06-30 13:14:57 HST ...
+
+...run started 2023-06-30 13:19:14 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/newEffortTracks_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/newEffortPoints_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/newSightings_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledSightings_2017_leg00_OES as .Rda and .csv
+   saved outputs/summaryTable_2017.Rda 
+   saved outputs/summaryTable_2017_leg00_OES.png 
+   saved outputs/table_archive/summaryTable_2017_leg00_OES_2023-06-30.png 
+...run complete 2023-06-30 13:20:23 HST ...
