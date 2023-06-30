@@ -35,15 +35,18 @@ if (yr == 2017){
   dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
 }
 
+locationCodes <- c('sf', 'yb', 'vm'
+)
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
-  'C:/users/yvonne.barkley/github/cruise-maps-live/'#,
-  # '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
+  'C:/users/yvonne.barkley/github/cruise-maps-live/',
+  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
 ) # others add path on their local machine
 
 for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
+    locCode <- locationCodes[i]
   }
 }
 # or specify manually
@@ -57,7 +60,14 @@ for (i in 1:length(locations)){
 #
 
 # ------ Make a log file --------------------------------------------------
-logFile = paste0(dir_wd, 'outputs/run_', Sys.Date(), '.log')
+# define directory to save log file
+logDir = paste0(dir_wd, 'outputs/run_logs/', yr, '_leg', leg, '_', ship, '/')
+# check that the directory exists
+if (!dir.exists(logDir)) {
+  dir.create(logDir)}
+# define log file name
+logFile = paste0(logDir, 'run_', Sys.Date(), '_', locCode, '.log')
+
 sink(logFile, append = TRUE)
 
 cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
@@ -89,125 +99,125 @@ save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
 # identify which files are new/need to be processed
 idxNew = which(!(dasNames_new %in% dasNames_old))
 cat(' Processing', length(idxNew), 'new das files:\n')
+
+### UNCOMMENT BELOW WHEN DONE TESTING ###
 # eventually loop through all idxNew
 # for (i in 1:length(idxNew)){
-  # d = dasList[idxNew[i],]
-  
-  ### for testing ###
-  i = 3
-  d = dasList[i,]
-  ###################
-  
-  # download new das and save to git repo
-  googledrive::drive_download(file = googledrive::as_id(d$id),
-                              overwrite = TRUE,
-                              path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
-  
+# d = dasList[idxNew[i],]
 
-  
-  
-  # ------ Read and process das file ----------------------------------------
-  
-  dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
-  cat(' ', d$name, '\n')
-  
-  # basic data checks
-  df_check = das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
-  # read and process
-  df_read = das_read(dasFile, skip = 0)
-  df_proc = das_process(dasFile)
-  # View(df_proc)
-  
-  # ------ Parse track data from das ----------------------------------------
-  
-  # parse on-effort segments as straight lines from Begin/Resume to End 
-  source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
-  etNew = parseTrack(df_proc)
-  
-  # combine the old vs dataframe with the new one
-  outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
-  if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
-    # load old if it exists
-    load(paste0(dir_wd, outStr, '.Rda'))
-    # combine
-    et = rbind(et, etNew)
-    et = unique(et)                 # remove duplicates (in case ran already)
-    et = et[order(et$DateTime1),]   # sort in case out of order
-  } else {
-    et = etNew
-  }
-  
-  save(et, file = paste0(dir_wd, outStr, '.Rda'))
-  write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
-  cat('   saved', outStr, '\n')
-  
-  # ------ Parse track data as points ---------------------------------------
-  # alternatively, can parse individual lines to get the segments out as points
-  
-  source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
-  epNew = parseTrack_asPoints(df_proc)
-  
-  # combine the old vs dataframe with the new one
-  outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
-  if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
-    # load old if it exists
-    load(paste0(dir_wd, outStr, '.Rda'))
-    # combine, remove dupes, sort by date
-    ep = rbind(ep, epNew)
-    ep = unique(ep)
-    ep = ep[order(ep$DateTime),]
-  } else {
-    ep = epNew
-  }
-  
-  save(ep, file = paste0(dir_wd, outStr, '.Rda'))
-  write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
-  cat('   saved', outStr, '\n')
-  
-  # ------ Extract visual sighting data -------------------------------------
-  
-  # do some stuff here to extract visual sighting data for the day from das
-  source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
-  vsNew = extractVisualSightings(df_proc)
-  
-  # combine the old vs dataframe with the new one
-  outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
-  if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
-    # load old if it exists
-    load(paste0(dir_wd, outStr, '.Rda'))
-    # combine, remove dupes, sort by date
-    vs = rbind(vs, vsNew)
-    vs = unique(vs)
-    vs = vs[order(vs$DateTime),]
-  } else { # if no previous sightings file exists
-    vs = vsNew
-  }
-  
-  
-  save(vs, file = paste0(dir_wd, outStr, '.Rda'))
-  write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
-  cat('   saved', outStr, '\n')
-  
+### for testing ###
+# COMMENT OUT WHEN DONE TESTING
+i = 3
+d = dasList[i,]
+###################
+
+# download new das and save to git repo
+googledrive::drive_download(file = googledrive::as_id(d$id),
+                            overwrite = TRUE,
+                            path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
+
+# ------ Read and process das file ----------------------------------------
+
+dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
+cat(' ', d$name, '\n')
+
+# basic data checks
+df_check = das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+# read and process
+df_read = das_read(dasFile, skip = 0)
+df_proc = das_process(dasFile)
+# View(df_proc)
+
+# ------ Parse track data from das ----------------------------------------
+
+# parse on-effort segments as straight lines from Begin/Resume to End 
+source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
+etNew = parseTrack(df_proc)
+
+# combine the old vs dataframe with the new one
+outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine
+  et = rbind(et, etNew)
+  et = unique(et)                 # remove duplicates (in case ran already)
+  et = et[order(et$DateTime1),]   # sort in case out of order
+} else {
+  et = etNew
+}
+
+save(et, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
+cat('   saved', outStr, '\n')
+
+# ------ Parse track data as points ---------------------------------------
+# alternatively, can parse individual lines to get the segments out as points
+
+source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
+epNew = parseTrack_asPoints(df_proc)
+
+# combine the old vs dataframe with the new one
+outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine, remove dupes, sort by date
+  ep = rbind(ep, epNew)
+  ep = unique(ep)
+  ep = ep[order(ep$DateTime),]
+} else {
+  ep = epNew
+}
+
+save(ep, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
+cat('   saved', outStr, '\n')
+
+# ------ Extract visual sighting data -------------------------------------
+
+# do some stuff here to extract visual sighting data for the day from das
+source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
+vsNew = extractVisualSightings(df_proc)
+
+# combine the old vs dataframe with the new one
+outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
+if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+  # load old if it exists
+  load(paste0(dir_wd, outStr, '.Rda'))
+  # combine, remove dupes, sort by date
+  vs = rbind(vs, vsNew)
+  vs = unique(vs)
+  vs = vs[order(vs$DateTime),]
+} else { # if no previous sightings file exists
+  vs = vsNew
+}
 
 
-  
+save(vs, file = paste0(dir_wd, outStr, '.Rda'))
+write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
+cat('   saved', outStr, '\n')
+
+
+
+
 # } # for looping through all idxNew
 
-  # ------ Extract acoustic detections --------------------------------------
-  
-  
-  # acoustics file will just be a single file that is updated/appended to each day
-  pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
-  googledrive::drive_download(file = googledrive::as_id(d$id),
-                              overwrite = TRUE,
-                              path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
-  
-  
-  
-  # FUTURE GOALS
-  # source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
-  # ad = extractAcousticDetections()
-  
+# ------ Extract acoustic detections --------------------------------------
+
+
+# acoustics file will just be a single file that is updated/appended to each day
+pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
+googledrive::drive_download(file = googledrive::as_id(d$id),
+                            overwrite = TRUE,
+                            path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
+
+
+
+# FUTURE GOALS
+# source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
+# ad = extractAcousticDetections()
+
 # ------ Plot map ---------------------------------------------------------
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 # plotMap()

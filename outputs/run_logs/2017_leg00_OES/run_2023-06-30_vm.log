@@ -1,0 +1,14 @@
+
+...run started 2023-06-30 10:02:07 HST ...
+ dir_wd = //piccrpnas/crp4/HICEAS_2023/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/compiledEffortTracks_2017_leg00_OES 
+   saved outputs/compiledEffortPoints_2017_leg00_OES 
+[1] TRUE
+Error in View : object 'Vs' not found
+[1] 77 36 NA 46 46
+   saved outputs/compiledSightings_2017_leg00_OES 
+[1] "outputs/dailyMap_2017_leg00_OES"
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/outputs/dailyMap_2017_leg00_OES.png"
+[1] "//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/outputs/map_archive/dailyMap_2017_leg00_OES_2023-06-30.png"
