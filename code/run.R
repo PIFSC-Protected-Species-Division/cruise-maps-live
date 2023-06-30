@@ -37,12 +37,12 @@ if (yr == 2017){
 
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
-  'C:/users/yvonne.barkley/cruise-maps-live/'#,
+  'C:/users/yvonne.barkley/github/cruise-maps-live/'#,
   # '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
 ) # others add path on their local machine
 
 for (i in 1:length(locations)){
-  if (file.exists(locations[i])) {
+  if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
   }
 }
