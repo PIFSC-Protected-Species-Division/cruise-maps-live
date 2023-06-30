@@ -12,7 +12,7 @@
 library(googledrive)
 library(swfscDAS) #https://github.com/smwoodman/swfscDAS
 library(ggplot2)
-# library(flextable)
+library(flextable)
 
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
@@ -105,11 +105,11 @@ cat(' Processing', length(idxNew), 'new das files:\n')
 # for (i in 1:length(idxNew)){
 # d = dasList[idxNew[i],]
 
-### for testing ###
+### for testing #########################
 # COMMENT OUT WHEN DONE TESTING
 i = 3
 d = dasList[i,]
-###################
+#########################################
 
 # download new das and save to git repo
 googledrive::drive_download(file = googledrive::as_id(d$id),
@@ -193,6 +193,9 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   vs = vsNew
 }
 
+# confirm all species codes are numeric and delete rows that aren't
+vs_clean <- vs[!is.na(as.numeric(vs$SpCode)), ] 
+vs = vs_clean 
 
 save(vs, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
@@ -200,23 +203,25 @@ cat('   saved', outStr, '\n')
 
 
 
-
+#### UNCOMMENT THIS WHEN DONE TESTING ####
 # } # for looping through all idxNew
+##########################################
 
 # ------ Extract acoustic detections --------------------------------------
 
 
-# acoustics file will just be a single file that is updated/appended to each day
+# acoustics file will just be a single sql file that is updated/appended to each day
+# it can be large so may be a bit slow to download
 pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
-googledrive::drive_download(file = googledrive::as_id(d$id),
+googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                             overwrite = TRUE,
-                            path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
-
+                            path = paste0(dir_wd, 'inputs/', yr, '/', pamList$name[1]))
 
 
 # FUTURE GOALS
 # source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
 # ad = extractAcousticDetections()
+ad = data.frame()
 
 # ------ Plot map ---------------------------------------------------------
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
@@ -226,15 +231,41 @@ source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 
 # ------ Make summary table -----------------------------------------------
 
+
+# load previously created summary table if it exists
+if (file.exists(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))){
+  load(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))
+  dasNames_old = dasList$name
+} else {
+  st = data.frame()
+}
 source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
-# flextable::save_as_image
+lt = makeSummaryTable(st, et, vs, ad, leg, ship)
+
+# breakup the list that is returned by the function and save
+# summary table .rda
+st = lt$st
+# save .rda as combined for the whole year (bc loaded on later legs)
+save(st, file = paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))
+
+# formatted flextable as image
+ft = lt$ft
+# save with leg/ship info and copy with run date
+outStr = paste0('summaryTable_', yr, '_leg', leg, '_', ship)
+cat('   saved summary tables:\n')
+save_as_image(ft, path = paste0(dir_wd, 'outputs/', outStr, '.png'), res = 300)
+save_as_image(ft, paste0(dir_wd, 'outputs/table_archive/', outStr, 
+                         '_', Sys.Date(), '.png'), res = 300)
 
 # ------ Save stuff -------------------------------------------------------
+# then save daily update plot as .png and .pdf
+# the latest will be in the 'outputs' folder and a snapshot of each day will
+# saved in the 'map_archive' folder
 
 # ------ PNG --------------------------------------------------------------
 # # save the latest
-# outStr = paste0('outputs/dailyMap_', yr, '_leg', leg, '_', ship)
-# ggsave(filename = paste0(dir_wd, outStr, '.png'), 
+outStr = paste0('dailyMap_', yr, '_leg', leg, '_', ship)
+# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'), 
 #        height = height, 
 #        width = width,
 #        plot = gg, 
@@ -243,8 +274,8 @@ source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 #        device = 'png') 
 # 
 # # save a copy of today's run
-# dateName = paste0(outStr, '_', Sys.Date(), '.png')
-# ggsave(filename = paste0(dir_wd, dateName), 
+dateName = paste0(outStr, '_', Sys.Date(), '.png')
+# ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName), 
 #        height = height, 
 #        width = width,
 #        plot = gg, 
@@ -255,7 +286,7 @@ source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 
 # ------ PDF --------------------------------------------------------------
 # # save the latest
-# ggsave(filename = paste0(dir_wd, outStr, '.pdf'), 
+# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'),
 #        height = height, 
 #        width = width,
 #        plot = gg, 
@@ -265,7 +296,7 @@ source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 # 
 # # save a copy of today
 # dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
-# ggsave(filename = paste0(dir_wd, dateName), 
+# ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName), 
 #        height = height, 
 #        width = width,
 #        plot = gg, 
@@ -274,15 +305,12 @@ source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 #        device = 'pdf') 
 
 
-# then save daily update plot as .png, .pdf, whatever else we want
-# will all be generated on the posit connect 
+
 
 # ------ Simple test outputs ----------------------------------------------
 
 # make a dummy csv and dummy plot just to confirm we can make it this far!
 s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
-# write.csv(s, file = paste0(dir_wd, 'outputs/taskTest1_',
-# format(Sys.time(), '%Y-%m-%dT%H%M%S'), '.csv'))
 
 gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
 # gg
