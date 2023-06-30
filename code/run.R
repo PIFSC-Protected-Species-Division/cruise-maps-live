@@ -134,6 +134,12 @@ df_proc = das_process(dasFile)
 source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
 etNew = parseTrack(df_proc)
 
+# save a 'snapshot' of the data for this run
+outStr = paste0('outputs/newEffortTracks_', yr, '_leg', leg, '_', ship, 
+                '_', Sys.Date(), '.Rda')
+save(etNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+cat('   saved', outStr, '\n')
+
 # combine the old vs dataframe with the new one
 outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
 if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
@@ -149,13 +155,19 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(et, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, '\n')
+cat('   saved', outStr, 'as .Rda and .csv\n')
 
 # ------ Parse track data as points ---------------------------------------
 # alternatively, can parse individual lines to get the segments out as points
 
 source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
 epNew = parseTrack_asPoints(df_proc)
+
+# save a 'snapshot' of the data for this run
+outStr = paste0('outputs/newEffortPoints_', yr, '_leg', leg, '_', ship, 
+                '_', Sys.Date(), '.Rda')
+save(epNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+cat('   saved', outStr, '\n')
 
 # combine the old vs dataframe with the new one
 outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
@@ -172,13 +184,23 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
 
 save(ep, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, '\n')
+cat('   saved', outStr, 'as .Rda and .csv\n')
 
 # ------ Extract visual sighting data -------------------------------------
 
 # do some stuff here to extract visual sighting data for the day from das
 source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
 vsNew = extractVisualSightings(df_proc)
+
+# confirm all species codes are numeric and delete rows that aren't
+vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
+vsNew = vsNew_clean
+
+# save a 'snapshot' of the data for this run
+outStr = paste0('outputs/newSightings_', yr, '_leg', leg, '_', ship, 
+                '_', Sys.Date(), '.Rda')
+save(vsNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+cat('   saved', outStr, '\n')
 
 # combine the old vs dataframe with the new one
 outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
@@ -193,14 +215,9 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   vs = vsNew
 }
 
-# confirm all species codes are numeric and delete rows that aren't
-vs_clean <- vs[!is.na(as.numeric(vs$SpCode)), ] 
-vs = vs_clean 
-
 save(vs, file = paste0(dir_wd, outStr, '.Rda'))
 write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, '\n')
-
+cat('   saved', outStr, 'as .Rda and .csv\n')
 
 
 #### UNCOMMENT THIS WHEN DONE TESTING ####
@@ -220,17 +237,33 @@ googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
 
 # FUTURE GOALS
 # source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
-# ad = extractAcousticDetections()
-ad = data.frame()
+# adNew = extractAcousticDetections()
+adNew = data.frame()
 
-# ------ Plot map ---------------------------------------------------------
-source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
-# plotMap()
-
-
+# # save a 'snapshot' of the data for this run
+# outStr = paste0('outputs/newDetections_', yr, '_leg', leg, '_', ship, 
+#                 '_', Sys.Date(), '.Rda')
+# save(adNew, file = paste0(dir_wd, outStr))
+# cat('   saved', outStr, '\n')
+# 
+# # combine the old vs dataframe with the new one
+# outStr = paste0('outputs/compiledDetections_', yr, '_leg', leg, '_', ship)
+# if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+#   # load old if it exists
+#   load(paste0(dir_wd, outStr, '.Rda'))
+#   # combine, remove dupes, sort by date
+#   ad = rbind(ad, adNew)
+#   ad = unique(ad)
+#   ad = ad[order(ad$DateTime),]
+# } else { # if no previous detections file exists
+#   ad = adNew
+# }
+# 
+# save(ad, file = paste0(dir_wd, outStr, '.Rda'))
+# write.csv(ad, file = paste0(dir_wd, outStr, '.csv'))
+# cat('   saved', outStr, 'as .Rda and .csv\n')
 
 # ------ Make summary table -----------------------------------------------
-
 
 # load previously created summary table if it exists
 if (file.exists(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))){
@@ -247,15 +280,25 @@ lt = makeSummaryTable(st, et, vs, ad, leg, ship)
 st = lt$st
 # save .rda as combined for the whole year (bc loaded on later legs)
 save(st, file = paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))
+cat('   saved', paste0('outputs/summaryTable_', yr, '.Rda'), '\n')
 
 # formatted flextable as image
 ft = lt$ft
 # save with leg/ship info and copy with run date
 outStr = paste0('summaryTable_', yr, '_leg', leg, '_', ship)
-cat('   saved summary tables:\n')
 save_as_image(ft, path = paste0(dir_wd, 'outputs/', outStr, '.png'), res = 300)
 save_as_image(ft, paste0(dir_wd, 'outputs/table_archive/', outStr, 
                          '_', Sys.Date(), '.png'), res = 300)
+cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
+cat('   saved', paste0('outputs/table_archive/', outStr, 
+                       '_', Sys.Date(), '.png'), '\n')
+
+
+# ------ Plot map ---------------------------------------------------------
+source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
+# plotMap()
+
+
 
 # ------ Save stuff -------------------------------------------------------
 # then save daily update plot as .png and .pdf
@@ -272,6 +315,7 @@ outStr = paste0('dailyMap_', yr, '_leg', leg, '_', ship)
 #        dpi = 320,
 #        bg = 'white', 
 #        device = 'png') 
+# cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
 # 
 # # save a copy of today's run
 dateName = paste0(outStr, '_', Sys.Date(), '.png')
@@ -282,11 +326,11 @@ dateName = paste0(outStr, '_', Sys.Date(), '.png')
 #        dpi = 320,
 #        bg = 'white', 
 #        device = 'png') 
-
+# cat('   saved', paste0('outputs/map_arcive/', dateName), '\n')
 
 # ------ PDF --------------------------------------------------------------
 # # save the latest
-# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'),
+# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.pdf'),
 #        height = height, 
 #        width = width,
 #        plot = gg, 
@@ -307,22 +351,22 @@ dateName = paste0(outStr, '_', Sys.Date(), '.png')
 
 
 
-# ------ Simple test outputs ----------------------------------------------
-
-# make a dummy csv and dummy plot just to confirm we can make it this far!
-s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
-
-gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
-# gg
-outStr = paste0('outputs/plot_', yr, '_leg', leg, '_', ship)
-ggsave(filename = paste0(dir_wd, outStr, '.png'),
-       height = 2,
-       width = 2,
-       plot = gg,
-       dpi = 120,
-       bg = 'white',
-       device = 'png')
-cat('   saved', outStr, '\n')
+# # ------ Simple test outputs ----------------------------------------------
+# 
+# # make a dummy csv and dummy plot just to confirm we can make it this far!
+# s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
+# 
+# gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
+# # gg
+# outStr = paste0('outputs/plot_', yr, '_leg', leg, '_', ship)
+# ggsave(filename = paste0(dir_wd, outStr, '.png'),
+#        height = 2,
+#        width = 2,
+#        plot = gg,
+#        dpi = 120,
+#        bg = 'white',
+#        device = 'png')
+# cat('   saved', outStr, '\n')
 
 # ------ Close up log -----------------------------------------------------
 

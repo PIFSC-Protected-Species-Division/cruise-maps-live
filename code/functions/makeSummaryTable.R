@@ -34,9 +34,12 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   if (nrow(st) == 0){
   legList = c('Leg 01 OES', 'Leg 02 OES', 'Leg 03 OES', 'Leg 04 OES', 'Leg 05 OES', 
               'Leg 01 LSK', 'Leg 02 LSK', 'Total')
-  st = data.frame(leg_ship = legList, days = integer(length(legList)), segments = integer(length(legList)), 
+  st = data.frame(leg_ship = legList, 
+                  days = integer(length(legList)), 
+                  #segments = integer(length(legList)), 
                   dist = integer(length(legList)), 
-                  spVis = integer(length(legList)), spPam = integer(length(legList)))
+                  spVis = integer(length(legList)), 
+                  spPam = integer(length(legList)))
   st[st == 0] <- NA
   }
   
@@ -63,14 +66,14 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   # calculate summary stats
   monthdays = format(et$mDateTime, format = '%m%d')
   st$days[idx] = length(unique(monthdays))
-  st$segments[idx] = length(et$segnum)
+  # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist)
-  st$spVis[idx] = length(unique(vs$SpCode))
+  st$spVis[idx] = length(vs$SpCode)
   st$spPam[idx] = NA
   
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
-  st$segments[8] = sum(as.integer(st$segments[1:7]), na.rm = TRUE)
+  # st$segments[8] = sum(as.integer(st$segments[1:7]), na.rm = TRUE)
   st$dist[8] = round(sum(as.double(st$dist[1:7]), na.rm = TRUE))
   st$spVis[8] = sum(as.integer(st$spVis[1:7]), na.rm = TRUE)
   st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
@@ -82,17 +85,17 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   ft = theme_vanilla(ft)
   ft = set_header_labels(ft, leg_ship = 'Leg and Ship', days = 'Days at Sea',
                          segments = 'Segments', dist = 'Distance [km]', 
-                         spVis = 'Species Visually Sighted', 
-                         spPam = 'Species Acoustically Detected')
+                         spVis = 'Visual Sightings', 
+                         spPam = 'Acoustic Detections')
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
 
   ft = width(ft, 1, width = 1.1)
-  ft = width(ft, 2, width = 0.6)
-  ft = width(ft, c(3,4), width = 0.8)
-  ft = width(ft, c(5,6), width = 1.2)
-  ft = align(ft, j = c(2,3,4,5,6), align = 'center')
+  # ft = width(ft, 2, width = 0.6)
+  ft = width(ft, c(2,3), width = 0.8)
+  ft = width(ft, c(4,5), width = 1.2)
+  ft = align(ft, j = c(2,3,4,5), align = 'center')
   ft = align(ft, align = 'center', part = 'header')
-  ft = colformat_double(ft, j = 4, digits = 1)
+  ft = colformat_double(ft, j = 3, digits = 1)
   # align_text_col(ft, align = "center", header = TRUE, footer = TRUE)
   # ft = set_table_properties(ft,align = 'center')
   # ft = ft |>
