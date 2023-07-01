@@ -57,10 +57,10 @@ for (i in 1:length(locations)){
 # search/install/load needed packages
 source(paste0(dir_wd, 'code/functions/', 'using.R'))
 
-using('googledrive', 
-      'swfscDAS', #https://github.com/smwoodman/swfscDAS
+using("googledrive", 
+      "swfscDAS", #https://github.com/smwoodman/swfscDAS
       # 'ggplot2', within tidyverse?
-      'flextable',
+      "flextable",
       "raster",
       "viridis",
       "plotKML",
@@ -74,7 +74,8 @@ using('googledrive',
       "cowplot",
       "ggnewscale",
       "RColorBrewer")
-# 
+# if it seems frozen...look for a pop up!
+
 # library(googledrive)
 # library(swfscDAS) 
 # library(ggplot2)
@@ -156,9 +157,9 @@ source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
 etNew = parseTrack(df_proc)
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/newEffortTracks_', yr, '_leg', leg, '_', ship, 
-                '_', Sys.Date(), '.Rda')
-save(etNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+outStr = paste0('outputs/data_snapshots/newEffortTracks_', yr, '_leg', leg, '_', 
+                ship, '_', Sys.Date(), '.Rda')
+save(etNew, file = paste0(dir_wd, outStr))
 cat('   saved', outStr, '\n')
 
 # combine the old vs dataframe with the new one
@@ -185,9 +186,9 @@ source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
 epNew = parseTrack_asPoints(df_proc)
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/newEffortPoints_', yr, '_leg', leg, '_', ship, 
+outStr = paste0('outputs/data_snapshots/newEffortPoints_', yr, '_leg', leg, '_', ship, 
                 '_', Sys.Date(), '.Rda')
-save(epNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+save(epNew, file = paste0(dir_wd, outStr))
 cat('   saved', outStr, '\n')
 
 # combine the old vs dataframe with the new one
@@ -218,9 +219,9 @@ vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ]
 vsNew = vsNew_clean
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/newSightings_', yr, '_leg', leg, '_', ship, 
+outStr = paste0('outputs/data_snapshots/newSightings_', yr, '_leg', leg, '_', ship, 
                 '_', Sys.Date(), '.Rda')
-save(vsNew, file = paste0(dir_wd, 'data_snapshots/', outStr))
+save(vsNew, file = paste0(dir_wd, outStr))
 cat('   saved', outStr, '\n')
 
 # combine the old vs dataframe with the new one
@@ -317,7 +318,8 @@ cat('   saved', paste0('outputs/table_archive/', outStr,
 
 # ------ Plot map ---------------------------------------------------------
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
-# plotMap()
+
+plotMap(dir, leg, ship)
 
 
 

@@ -1,0 +1,14 @@
+
+...run started 2023-06-30 17:43:34 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live/ 
+
+...run started 2023-06-30 17:43:54 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/data_snapshots/newEffortTracks_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/data_snapshots/newEffortPoints_2017_leg00_OES_2023-06-30.Rda 
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/data_snapshots/newSightings_2017_leg00_OES_2023-06-30.Rda 
