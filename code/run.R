@@ -294,6 +294,7 @@ if (file.exists(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))){
 } else {
   st = data.frame()
 }
+
 source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
 lt = makeSummaryTable(st, et, vs, ad, leg, ship)
 
