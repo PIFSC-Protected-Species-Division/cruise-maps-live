@@ -42,6 +42,8 @@ for (i in 1:length(locations)){
     break # take first available valid location
   }
 }
+
+
 # or specify manually
 # dir_wd <- "C:/Users/selene.fregosi/documents/github/cruise-maps-live/"
 
@@ -52,12 +54,26 @@ for (i in 1:length(locations)){
 # invisible(sapply(functionNames, FUN = source))
 #
 
+# ------ Make a log file --------------------------------------------------
+# define directory to save log file
+logDir = paste0(dir_wd, 'outputs/run_logs/', yr, '_leg', leg, '_', ship, '/')
+# check that the directory exists
+if (!dir.exists(logDir)) {
+  dir.create(logDir)}
+# define log file name
+logFile = paste0(logDir, 'run_', Sys.Date(), '_', locCode, '.log')
+
+sink(logFile, append = TRUE)
+
+cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
+cat(' dir_wd =', dir_wd, '\n')
+
 # ------ Libraries --------------------------------------------------------
 
 # search/install/load needed packages
 source(paste0(dir_wd, 'code/functions/', 'using.R'))
 
-using("googledrive", 
+using("googledrive",
       "swfscDAS", #https://github.com/smwoodman/swfscDAS
       # 'ggplot2', within tidyverse?
       "flextable",
@@ -73,7 +89,7 @@ using("googledrive",
       "ggrepel",
       "cowplot",
       "ggnewscale",
-      "RColorBrewer", 
+      "RColorBrewer",
       "ggspatial")
 # if it seems frozen...look for a pop up!
 
@@ -81,20 +97,6 @@ using("googledrive",
 # library(swfscDAS) 
 # library(ggplot2)
 # library(flextable)
-
-# ------ Make a log file --------------------------------------------------
-# define directory to save log file
-logDir = paste0(dir_wd, 'outputs/run_logs/', yr, '_leg', leg, '_', ship, '/')
-# check that the directory exists
-if (!dir.exists(logDir)) {
-  dir.create(logDir)}
-# define log file name
-logFile = paste0(logDir, 'run_', Sys.Date(), '_', locCode, '.log')
-
-sink(logFile, append = TRUE)
-
-cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
-cat(' dir_wd =', dir_wd, '\n')
 
 # ------ Sign in to google drive ------------------------------------------
 
