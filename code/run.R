@@ -7,14 +7,6 @@
 #' ---------------------------
 
 
-# ------ Libraries --------------------------------------------------------
-
-library(googledrive)
-library(swfscDAS) #https://github.com/smwoodman/swfscDAS
-library(ggplot2)
-library(flextable)
-
-
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
 yr = 2017
@@ -59,6 +51,34 @@ for (i in 1:length(locations)){
 #                             full.names = TRUE);
 # invisible(sapply(functionNames, FUN = source))
 #
+
+# ------ Libraries --------------------------------------------------------
+
+# search/install/load needed packages
+source(paste0(dir_wd, 'code/functions/', 'using.R'))
+
+using('googledrive', 
+      'swfscDAS', #https://github.com/smwoodman/swfscDAS
+      # 'ggplot2', within tidyverse?
+      'flextable',
+      "raster",
+      "viridis",
+      "plotKML",
+      "rgdal",
+      "tidyverse",
+      "sf",
+      "sp",
+      "rgeos",
+      "ggsn",
+      "ggrepel",
+      "cowplot",
+      "ggnewscale",
+      "RColorBrewer")
+# 
+# library(googledrive)
+# library(swfscDAS) 
+# library(ggplot2)
+# library(flextable)
 
 # ------ Make a log file --------------------------------------------------
 # define directory to save log file
