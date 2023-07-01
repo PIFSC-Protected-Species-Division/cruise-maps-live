@@ -1,5 +1,6 @@
 # input .das files - bc repo may end up being public
-/inputs/
+# and some too big
+/gd_downloads/
 
 # History files
 .Rhistory

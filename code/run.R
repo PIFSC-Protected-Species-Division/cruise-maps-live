@@ -47,6 +47,7 @@ for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
     locCode <- locationCodes[i]
+    break # take first available valid location
   }
 }
 # or specify manually
@@ -114,11 +115,11 @@ d = dasList[i,]
 # download new das and save to git repo
 googledrive::drive_download(file = googledrive::as_id(d$id),
                             overwrite = TRUE,
-                            path = paste0(dir_wd, 'inputs/', yr, '/', d$name))
+                            path = paste0(dir_wd, 'gd_downloads/', yr, '/', d$name))
 
 # ------ Read and process das file ----------------------------------------
 
-dasFile = paste0(dir_wd, 'inputs/', yr, '/', d$name)
+dasFile = paste0(dir_wd, 'gd_downloads/', yr, '/', d$name)
 cat(' ', d$name, '\n')
 
 # basic data checks
@@ -232,7 +233,7 @@ cat('   saved', outStr, 'as .Rda and .csv\n')
 pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
 googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                             overwrite = TRUE,
-                            path = paste0(dir_wd, 'inputs/', yr, '/', pamList$name[1]))
+                            path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
 
 
 # FUTURE GOALS

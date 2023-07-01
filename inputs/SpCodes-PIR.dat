@@ -1,0 +1,59 @@
+ 002 OFFSH_SPOT  Stenella  attenuata (offshore)          Offshore pantropical spotted dolphin, offshore spotter                                                    
+ 003 UNID_SPINR  Stenella longirostris (unid. subsp.)    Unidentified spinner dolphin, spinner porpoise                                                    
+ 005 UNID_COMM   Delphinus sp.                           Unidentified common dolphin, saddleback dolphin, whitebelly porpoise                                                    
+ 013 STRIPED     Stenella coeruleoalba                   Striped dolphin, streaker porpoise, euphrosyne dolphin                                                    
+ 015 STENO       Steno bredanensis                       Rough-toothed dolphin, Steno                                                    
+ 017 SHRTB_COMM  Delphinus delphis                       Short-beaked common dolphin, offshore common dolphin                                                    
+ 018 TURSIOPS    Tursiops truncatus                      Bottlenose dolphin, black porpoise, common porpoise                                                    
+ 021 GRAMPUS     Grampus griseus                         Risso's dolphin, gray grampus                                                    
+ 026 FRASERS     Lagenodelphis hosei                     Fraser's dolphin, Sarawak dolphin                                                    
+ 031 MELON_HEAD  Peponocephala electra                   Melon-headed whale, Hawaiian/many-toothed blackfish, electra dolphin                                                    
+ 032 PYGMY_KLLR  Feresa attenuata                        Pygmy killer whale, slender blackfish                                                    
+ 033 FALSE_KLLR  Pseudorca crassidens                    False killer whale                                                    
+ 036 SHRT_PILOT  Globicephala macrorhynchus              Short-finned pilot whale, blackfish, pothead                                                    
+ 037 KILLER_WHA  Orcinus orca                            Killer whale                                                    
+ 046 SPERM_WHAL  Physeter macrocephalus                  Sperm whale                                                    
+ 047 PYGMYSPERM  Kogia breviceps                         Pygmy sperm whale                                                    
+ 048 DWARFSPERM  Kogia sima                              Dwarf sperm whale                                                    
+ 049 ZIPHIID_WH  Ziphiid whale                           Unidentified beaked whale                                                    
+ 051 MESOP_SPP   Mesoplodon sp.                          Unidentified Mesoplodon                                                    
+ 057 MESOP_GNKO  Mesoplodon ginkgodens                   Ginkgo-toothed beaked whale                                                    
+ 059 MESOP_DENS  Mesoplodon densirostris                 Blaineville's beaked whale, dense-beaked, tropical beaked whale                                                    
+ 061 ZIPHI_CAVI  Ziphius cavirostris                     Cuvier's beaked whale, goose-beaked whale                                                    
+ 063 BERARD_BAI  Berardius bairdii                       Baird's beaked whale, northern giant bottlenose whale                                                    
+ 065 INDOPAC_PAC Indopacetus pacificus                   Longman's beaked whale                                                    
+ 066 NPAC_RT_WH  Eubalaena japonica                      North Pacific right whale                                                    
+ 070 UNID_RORQL  Balaenoptera sp.                        Unidentified rorqual                                                    
+ 071 MINKE_WHAL  Balaenoptera acutorostrata              Common minke whale                                                    
+ 072 BRYDES_WHL  Balaenoptera edeni                      Bryde's whale                                                    
+ 073 SEI_WHALE   Balaenoptera borealis                   Sei whale                                                    
+ 074 FIN_WHALE   Balaenoptera physalus                   Fin whale                                                    
+ 075 BLUE_WHALE  Balaenoptera musculus                   Blue whale                                                    
+ 076 HUMPBACK_W  Megaptera novaeangliae                  Humpback whale                                                    
+ 077 UNID_DOLPH                                          Unidentified dolphin or porpoise                                                    
+ 078 UNID_SM_WH                                          Unidentified small whale                                                    
+ 079 UNID_LG_WH                                          Unidentified large whale                                                    
+ 080 KOGIA_SPP   Kogia sp.                               Unidentified Kogia - dwarf or pygmy sperm whale                                                    
+ 096 UNID_CETAC                                          Unidentified cetacean                                                    
+ 097 UNID_OBJCT                                          Unidentified object, possible marine mammal                                                    
+ 098 UNID_WHALE                                          Unidentified whale                                                    
+ 099 SEI/BRYDES  Balaenoptera borealis/edeni             Rorqual identified as a Sei or Bryde's whale                                                    
+ 102 GRAYS_SPIN  Stenella longirostris (Gray's)          Gray's spinner dolphin, pantropical spinner dolphin                                                    
+ 105 IO_BTLNOSE  Tursiops aduncas                        Indian Ocean bottlenose dolphin                                                    
+ 118             Balaenoptera omurai                     Omura's whale                                                    
+ 149                                                     Unidentified small beaked whale (includes Mesoplodon and Ziphius; excludes Berardius; since 4/2007)                                                    
+ 177 UNID_S_DEL  unid. small delphinid                   Unidentified small delphinid (Delphinus, Lagenorhynchus, Lissodelphis or Stenella)                                                    
+ 197                                                     Unidentified marine mammal (since 4/2007)
+ 199             Balaenoptera physalus/borealis/edeni    Rorqual identified as Fin, Sei, or Bryde's 
+ 277 UNID_M_DEL  unid. medium delphinid                  Unidentified medium delphinid (Feresa, Grampus, Steno or Tursiops)                                                    
+ 377 UNID_L_DEL  unid. large delphinid                   nidentified large delphinid (Pseudorca, Orca or Globicephala)                           U                        
+  MS             Monachus schauinslandi                  Hawaiian monk seal                                                    
+  PU UNID_PINNI  unid. pinniped                          Unidentified Pinniped                                                    
+  CC             Caretta Caretta                         Loggerhead sea turtle                                                    
+  CM             Chelonia mydas/agassizi                 Green/Black sea turtle                                                    
+  DC             Dermochelys coriacea                    Leatherback sea turtle                                                    
+  EI             Eretmochelys imbricata                  Hawksbill sea turtle                                                    
+  LV             Lepidochelys olivacea                   Olive Ridley sea turtle                                                    
+  UH             Other than D. coriacea                  Unidentified hardshell sea turtle                                                    
+  UT             Chelonidae                              Unidentified sea turtle                                                    
+  RT             Rhincodon typus                         Whale shark                                                    
