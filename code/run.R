@@ -73,7 +73,8 @@ using("googledrive",
       "ggrepel",
       "cowplot",
       "ggnewscale",
-      "RColorBrewer")
+      "RColorBrewer", 
+      "ggspatial")
 # if it seems frozen...look for a pop up!
 
 # library(googledrive)
@@ -320,58 +321,64 @@ cat('   saved', paste0('outputs/table_archive/', outStr,
 # ------ Plot map ---------------------------------------------------------
 source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
 
-plotMap(dir, leg, ship)
-
-
+test_code = FALSE
+mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code)
+base_map = mapOut$base_map
+vsMap = mapOut$vsMap
 
 # ------ Save stuff -------------------------------------------------------
 # then save daily update plot as .png and .pdf
 # the latest will be in the 'outputs' folder and a snapshot of each day will
 # saved in the 'map_archive' folder
+height = 5
+width = 10
+res = 400
 
 # ------ PNG --------------------------------------------------------------
 # # save the latest
 outStr = paste0('dailyMap_', yr, '_leg', leg, '_', ship)
-# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-# cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
-# 
-# # save a copy of today's run
+ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'),
+       height = height,
+       width = width,
+       units = 'in', 
+       plot = base_map,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
+
+# save a copy of today's run
 dateName = paste0(outStr, '_', Sys.Date(), '.png')
-# ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-# cat('   saved', paste0('outputs/map_arcive/', dateName), '\n')
+ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName),
+       height = height,
+       width = width,
+       plot = base_map,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+cat('   saved', paste0('outputs/map_archive/', dateName), '\n')
 
 # ------ PDF --------------------------------------------------------------
-# # save the latest
-# ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.pdf'),
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'png') 
-# 
-# # save a copy of today
-# dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
-# ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName), 
-#        height = height, 
-#        width = width,
-#        plot = gg, 
-#        dpi = 320,
-#        bg = 'white', 
-#        device = 'pdf') 
+# save the latest
+ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.pdf'),
+       height = height,
+       width = width,
+       plot = base_map,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+cat('   saved', paste0('outputs/', outStr, '.pdf'), '\n')
 
+# save a copy of today
+dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
+ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName),
+       height = height,
+       width = width,
+       plot = base_map,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+cat('   saved', paste0('outputs/map_archive/', dateName), '\n')
 
 
 
