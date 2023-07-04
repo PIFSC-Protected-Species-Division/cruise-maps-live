@@ -70,34 +70,8 @@ cat(' dir_wd =', dir_wd, '\n')
 
 # ------ Libraries --------------------------------------------------------
 
-# search/install/load needed packages
-# source(paste0(dir_wd, 'code/functions/', 'using.R'))
-
-# using("googledrive",
-#       "swfscDAS", #https://github.com/smwoodman/swfscDAS, this installs 'sf' too
-#       "tidyverse",
-#       "flextable",
-#       "ggspatial",
-#       "ggsn",
-#       "ggrepel",
-#       "ggnewscale",
-#       "cowplot",
-#       "terra",
-#       "raster",
-#       "sf",
-#       "sp",
-#       "plotKML",
-#       # "rgdal", # being retired so removed
-#       "# rgeos",  # being retired so removed
-#       "RColorBrewer",
-#       "viridis"
-#        )
-# if it seems frozen...look for a pop up!
-
-# library(googledrive)
-# library(swfscDAS) 
-# library(ggplot2)
-# library(flextable)
+# most functions are called with :: so don't have to load all libraries, but do 
+# have to load a few for using %>% pipeline
 library(raster)
 library(tidyverse)
 
