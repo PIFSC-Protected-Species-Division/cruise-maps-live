@@ -388,3 +388,22 @@ made it to THIS FAR - 116
    saved outputs/dailyMap_2017_leg00_OES.pdf 
    saved outputs/map_archive/dailyMap_2017_leg00_OES_2023-07-04.pdf 
 ...run complete 2023-07-04 12:02:54 PDT ...
+
+...run started 2023-07-04 12:13:37 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live/ 
+ Processing 0 new das files:
+  DASALL.731 
+   saved outputs/data_snapshots/newEffortTracks_2017_leg00_OES_2023-07-04.Rda 
+   saved outputs/compiledEffortTracks_2017_leg00_OES as .Rda and .csv
+   saved outputs/data_snapshots/newEffortPoints_2017_leg00_OES_2023-07-04.Rda 
+   saved outputs/compiledEffortPoints_2017_leg00_OES as .Rda and .csv
+   saved outputs/data_snapshots/newSightings_2017_leg00_OES_2023-07-04.Rda 
+   saved outputs/compiledSightings_2017_leg00_OES as .Rda and .csv
+   saved outputs/summaryTable_2017.Rda 
+   saved outputs/summaryTable_2017_leg00_OES.png 
+   saved outputs/table_archive/summaryTable_2017_leg00_OES_2023-07-04.png 
+   saved outputs/dailyMap_2017_leg00_OES.png 
+   saved outputs/map_archive/dailyMap_2017_leg00_OES_2023-07-04.png 
+   saved outputs/dailyMap_2017_leg00_OES.pdf 
+   saved outputs/map_archive/dailyMap_2017_leg00_OES_2023-07-04.pdf 
+...run complete 2023-07-04 12:14:17 PDT ...
