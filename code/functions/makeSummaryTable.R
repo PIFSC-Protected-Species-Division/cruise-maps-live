@@ -81,21 +81,21 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   # View(st)
 
   # create nicely formated flextable
-  ft = flextable(st)
-  ft = theme_vanilla(ft)
-  ft = set_header_labels(ft, leg_ship = 'Leg and Ship', days = 'Days at Sea',
+  ft = flextable::flextable(st)
+  ft = flextable::theme_vanilla(ft)
+  ft = flextable::set_header_labels(ft, leg_ship = 'Leg and Ship', days = 'Days at Sea',
                          segments = 'Segments', dist = 'Distance [km]', 
                          spVis = 'Visual Sightings', 
                          spPam = 'Acoustic Detections')
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
 
-  ft = width(ft, 1, width = 1.1)
+  ft = flextable::width(ft, 1, width = 1.1)
   # ft = width(ft, 2, width = 0.6)
-  ft = width(ft, c(2,3), width = 0.8)
-  ft = width(ft, c(4,5), width = 1.2)
-  ft = align(ft, j = c(2,3,4,5), align = 'center')
-  ft = align(ft, align = 'center', part = 'header')
-  ft = colformat_double(ft, j = 3, digits = 1)
+  ft = flextable::width(ft, c(2,3), width = 0.8)
+  ft = flextable::width(ft, c(4,5), width = 1.2)
+  ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
+  ft = flextable::align(ft, align = 'center', part = 'header')
+  ft = flextable::colformat_double(ft, j = 3, digits = 1)
   # align_text_col(ft, align = "center", header = TRUE, footer = TRUE)
   # ft = set_table_properties(ft,align = 'center')
   # ft = ft |>

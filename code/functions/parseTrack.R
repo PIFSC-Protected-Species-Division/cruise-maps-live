@@ -22,7 +22,7 @@ parseTrack <- function(df_proc){
   
   # summarize effort segments. 'section' method pulls lat/lon for all 'R' (resume
   # effort) and all 'E' (end effort) entries, then calcs dist btwn
-  et_all = das_effort(df_proc, method = 'section', dist.method = 'greatcircle', 
+  et_all = swfscDAS::das_effort(df_proc, method = 'section', dist.method = 'greatcircle', 
                        num.cores = 1)
   # trim to just what we want
   et_seg = et_all$segdata

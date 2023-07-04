@@ -28,8 +28,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   ## Load map layers & helpers
   key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"))
   load(file.path(dir_wd, 'inputs', "map_layers.RData")) 
-  bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda"))%>%terra::rast()
-  
+  bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
+    terra::rast()
   
   if(test_code==FALSE){
     if(length(ship)<2){
@@ -47,12 +47,12 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
     
     # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
     effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
-    effort <- st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
+    effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
     
     ## Load HICEAS points, recent (etNew)
     # tmp<-read.csv(file.path(dir, file.name.recent))
     tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
-    tmp <- st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
+    tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
     
     
     ##################
@@ -64,7 +64,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
     # vs already exists and is now a function input so don't need to load file. 
     
     vsMap$lon <- ifelse(vsMap$Lon > 0, vsMap$Lon-360, vsMap$Lon)
-    vsMap <- st_as_sf(vsMap,coords=c("lon","Lat"), crs = 4326)%>%
+    vsMap <- sf::st_as_sf(vsMap,coords=c("lon","Lat"), crs = 4326)%>%
       dplyr::left_join(key, by = "SpCode")
     
     
@@ -81,7 +81,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
       mutate(DateTime = as.POSIXct(DateTime, format = "%Y-%m-%d %H:%M:%OS"))
     effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)
     effort <- filter(effort, lon <= -150)%>% 
-      st_as_sf(coords=c("lon","Lat"), crs = 4326)
+      sf::st_as_sf(coords=c("lon","Lat"), crs = 4326)
     
     ## Load HICEAS points, recent 
     tmp<-effort%>%filter(DateTime >  "2017-07-31 00:00:00")# Fake, just to show--"recent" data vs "all"
@@ -103,7 +103,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   
   colors_lines<-c("deeppink","deeppink4", "grey0")
   
-  colors_enc<-brewer.pal(length(unique(vsMap$SpCode)), "Set2")
+  colors_enc<-RColorBrewer::brewer.pal(length(unique(vsMap$SpCode)), "Set2")
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
@@ -111,7 +111,6 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   
   
   labels_enc<-unique(vsMap$SpName)
-  
   
   
   base_map <- ggplot() + 
@@ -138,13 +137,15 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
     geom_sf(data=nwhi, fill= "white", color = "white")+
     ggspatial::layer_spatial(effort, alpha=0.5, size=0.5, aes(color=colors_lines[2]))+
     ggspatial::layer_spatial(tmp, alpha=0.5, size=0.5, aes(color=colors_lines[1]))+
-    scale_color_manual(name = "Tracklines & Effort", values = colors_lines, labels=labels_lines)+
+    scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
+                       labels=labels_lines)+
     
     
-    new_scale_color() +
+    ggnewscale::new_scale_color() +
     geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
-    scale_shape_manual(name="Encounters", values = 1:length(unique(vsMap$SpName)),labels = labels_enc)+
+    scale_shape_manual(name="Encounters", values = 1:length(unique(vsMap$SpName)),
+                       labels = labels_enc)+
     guides(colour = guide_legend(override.aes = list(size=3)))+
     
     
@@ -159,7 +160,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
              angle=-20)+
     
     
-    ggsn::scalebar(location = "bottomleft", dist = 200, dist_unit = "nm", st.dist = 0.025,
+    ggsn::scalebar(location = "bottomleft", dist = 200, dist_unit = "nm", 
+                   st.dist = 0.025,
                    transform=TRUE, st.size = 3, st.color="white",
                    model = 'WGS84', st.bottom=TRUE,
                    x.min = min(lines$Longitude),

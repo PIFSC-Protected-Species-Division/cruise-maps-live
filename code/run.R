@@ -71,32 +71,35 @@ cat(' dir_wd =', dir_wd, '\n')
 # ------ Libraries --------------------------------------------------------
 
 # search/install/load needed packages
-source(paste0(dir_wd, 'code/functions/', 'using.R'))
+# source(paste0(dir_wd, 'code/functions/', 'using.R'))
 
-using("googledrive",
-      "swfscDAS", #https://github.com/smwoodman/swfscDAS
-      # 'ggplot2', within tidyverse?
-      "flextable",
-      "raster",
-      "viridis",
-      "plotKML",
-      "rgdal",
-      "tidyverse",
-      "sf",
-      "sp",
-      "rgeos",
-      "ggsn",
-      "ggrepel",
-      "cowplot",
-      "ggnewscale",
-      "RColorBrewer",
-      "ggspatial")
+# using("googledrive",
+#       "swfscDAS", #https://github.com/smwoodman/swfscDAS, this installs 'sf' too
+#       "tidyverse",
+#       "flextable",
+#       "ggspatial",
+#       "ggsn",
+#       "ggrepel",
+#       "ggnewscale",
+#       "cowplot",
+#       "terra",
+#       "raster",
+#       "sf",
+#       "sp",
+#       "plotKML",
+#       # "rgdal", # being retired so removed
+#       "# rgeos",  # being retired so removed
+#       "RColorBrewer",
+#       "viridis"
+#        )
 # if it seems frozen...look for a pop up!
 
 # library(googledrive)
 # library(swfscDAS) 
 # library(ggplot2)
 # library(flextable)
+library(raster)
+library(tidyverse)
 
 # ------ Sign in to google drive ------------------------------------------
 
@@ -147,10 +150,10 @@ dasFile = paste0(dir_wd, 'gd_downloads/', yr, '/', d$name)
 cat(' ', d$name, '\n')
 
 # basic data checks
-df_check = das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
 # read and process
-df_read = das_read(dasFile, skip = 0)
-df_proc = das_process(dasFile)
+df_read = swfscDAS::das_read(dasFile, skip = 0)
+df_proc = swfscDAS::das_process(dasFile)
 # View(df_proc)
 
 # ------ Parse track data from das ----------------------------------------
@@ -254,10 +257,10 @@ cat('   saved', outStr, 'as .Rda and .csv\n')
 
 # acoustics file will just be a single sql file that is updated/appended to each day
 # it can be large so may be a bit slow to download
-pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
-googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-                            overwrite = TRUE,
-                            path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
+# pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
+# googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
+                            # overwrite = TRUE,
+                            # path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
 
 
 # FUTURE GOALS
@@ -312,8 +315,8 @@ cat('   saved', paste0('outputs/summaryTable_', yr, '.Rda'), '\n')
 ft = lt$ft
 # save with leg/ship info and copy with run date
 outStr = paste0('summaryTable_', yr, '_leg', leg, '_', ship)
-save_as_image(ft, path = paste0(dir_wd, 'outputs/', outStr, '.png'), res = 300)
-save_as_image(ft, paste0(dir_wd, 'outputs/table_archive/', outStr, 
+flextable::save_as_image(ft, path = paste0(dir_wd, 'outputs/', outStr, '.png'), res = 300)
+flextable::save_as_image(ft, paste0(dir_wd, 'outputs/table_archive/', outStr, 
                          '_', Sys.Date(), '.png'), res = 300)
 cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
 cat('   saved', paste0('outputs/table_archive/', outStr, 

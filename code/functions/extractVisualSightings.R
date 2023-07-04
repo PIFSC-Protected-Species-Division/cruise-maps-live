@@ -20,7 +20,7 @@ extractVisualSightings <- function(df_proc){
   
   
   # pull out 'S' events of cetaceans only, regardless of effort
-  vs_all = das_sight(df_proc, return.format = 'default')
+  vs_all = swfscDAS::das_sight(df_proc, return.format = 'default')
   vs_S = subset(vs_all, Event == 'S')
   vs_S$SpCode = as.integer(vs_S$SpCode)
   vs_SCet = subset(vs_S, SpCode >= 0)
