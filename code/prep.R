@@ -7,14 +7,17 @@
 #' to run map generation
 #' ---------------------------
 
-# SET UP WORKING DIRECTORY
-locationCodes <- c('sf', 'yb', 'vm'
-)
+# ------ SET UP WORKING DIRECTORY -----------------------------------------
+# cannot use the here package for this because it doesn't work with task scheduler
+# instead, define a few options, try them, and use the first valid one
+
+# add initials and path to this repo on your local machine
+locationCodes <- c('sf', 'yb', 'vm')
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
   'C:/users/yvonne.barkley/github/cruise-maps-live/',
-  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
-) # others add path on their local machine
+  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # server for vms?
+) 
 
 for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
@@ -25,7 +28,18 @@ for (i in 1:length(locations)){
 }
 
 
-# search/install/load needed packages
+# ------ CREATE GD_DOWNLOADS FOLDER IF NEEDED -----------------------------
+
+# this stores data files downloaded from google drive
+# it is ignored in .gitignore because we don't want the files publically shared 
+# and because the acoustics file is too big to host on GitHub
+if (!dir.exists(file.path(dir_wd, 'gd_downloads'))){
+  dir.create(file.path(dir_wd, 'gd_downloads'))
+}
+
+
+# ------ SEARCH/INSTALL/LOAD NEEDED PACKAGES ------------------------------
+
 source(paste0(dir_wd, 'code/functions/', 'using.R'))
 
 using("googledrive",
@@ -48,9 +62,3 @@ using("googledrive",
       # "plotKML", # not actually used?
        )
 # if it seems frozen...look for a pop up!
-
-
-# library(googledrive)
-# library(swfscDAS)
-# library(ggplot2)
-# library(flextable)
