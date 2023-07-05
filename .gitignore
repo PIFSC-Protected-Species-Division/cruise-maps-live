@@ -1,6 +1,10 @@
-# input .das files - bc repo may end up being public
-# and some too big
+# data files so not public access
 /gd_downloads/
+/data/
+/snapshots/
+
+# sf testing files
+/code/testing/
 
 # History files
 .Rhistory
