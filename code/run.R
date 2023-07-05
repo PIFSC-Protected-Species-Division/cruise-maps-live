@@ -25,6 +25,7 @@ if (yr == 2017){
 } else if (yr == 2023){
   dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
   dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
+  dir_gd_processed <- 'https://drive.google.com/drive/u/0/folders/1S6nIzYxM13qDsLonRwXg580xoi6JWo_-'
 }
 
 # set working directory
@@ -113,122 +114,116 @@ if (leg == '00'){
 
 # loop through all idxNew
 for (i in 1:length(idxNew)){
-d = dasList[idxNew[i],]
-
-# ### for testing #########################
-# # COMMENT OUT WHEN DONE TESTING
-# i = 3
-# d = dasList[i,]
-# #########################################
-
-
-# ------ Download, read and process das file ------------------------------
-
-dasFile = file.path(dir_wd, 'gd_downloads', yr, d$name)
-cat(' ', d$name, '\n')
-
-# download and save to git repo
-googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
-                            path = dasFile)
-
-# basic data checks
-df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
-# read and process
-df_read = swfscDAS::das_read(dasFile, skip = 0)
-df_proc = swfscDAS::das_process(dasFile)
-# View(df_proc)
-
-# ------ Parse track data from das ----------------------------------------
-
-# parse on-effort segments as straight lines from Begin/Resume to End 
-source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
-etNew = parseTrack(df_proc)
-
-# save a 'snapshot' of the data for this run
-outName = paste0('newEffortTracks_', y_l_s, '_', Sys.Date(), '.Rda')
-save(etNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
-cat('   saved data_snapshots/', outName, '\n')
-
-# combine the old vs dataframe with the new one
-outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
-if (file.exists(file.path(dir_wd, 'outputs', outName))){
-  # load old if it exists
-  load(file.path(dir_wd, 'outputs', outName))
-  # combine
-  et = rbind(et, etNew)
-  et = unique(et)                 # remove duplicates (in case ran already)
-  et = et[order(et$DateTime1),]   # sort in case out of order
-} else {
-  et = etNew
-}
-
-save(et, file = file.path(dir_wd, 'outputs', outName))
-write.csv(et, file = file.path(dir_wd, 'outputs', 
-                               paste0('compiledEffortTracks_', y_l_s, '.csv')))
-cat('   saved', outName, 'and as .csv\n')
-
-# ------ Parse track data as points ---------------------------------------
-# alternatively, can parse individual lines to get the segments out as points
-
-source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
-epNew = parseTrack_asPoints(df_proc)
-
-# save a 'snapshot' of the data for this run
-outName = paste0('newEffortPoints_', y_l_s, '_', Sys.Date(), '.Rda')
-save(epNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
-cat('   saved data_snapshots/', outName, '\n')
-
-# combine the old vs dataframe with the new one
-outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
-if (file.exists(file.path(dir_wd, 'outputs', outName))){
-  # load old if it exists
-  load(file.path(dir_wd, 'outputs', outName))
-  # combine, remove dupes, sort by date
-  ep = rbind(ep, epNew)
-  ep = unique(ep)
-  ep = ep[order(ep$DateTime),]
-} else {
-  ep = epNew
-}
-
-save(ep, file = file.path(dir_wd, 'outputs', outName))
-write.csv(ep, file = file.path(dir_wd, 'outputs', 
-                               paste0('compiledEffortPoints_', y_l_s, '.csv')))
-cat('   saved', outName, 'and as .csv\n')
-
-# ------ Extract visual sighting data -------------------------------------
-
-# do some stuff here to extract visual sighting data for the day from das
-source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
-vsNew = extractVisualSightings(df_proc)
-
-# confirm all species codes are numeric and delete rows that aren't
-vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
-vsNew = vsNew_clean
-
-# save a 'snapshot' of the data for this run
-outName = paste0('newSightings_', y_l_s, '_', Sys.Date(), '.Rda')
-save(vsNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
-cat('   saved data_snapshots/', outName, '\n')
-
-# combine the old vs dataframe with the new one
-outName = paste0('compiledSightings_', y_l_s, '.Rda')
-if (file.exists(file.path(dir_wd, 'outputs', outName))){
-  # load old if it exists
-  load(file.path(dir_wd, 'outputs', outName))
-  # combine, remove dupes, sort by date
-  vs = rbind(vs, vsNew)
-  vs = unique(vs)
-  vs = vs[order(vs$DateTime),]
-} else { # if no previous sightings file exists
-  vs = vsNew
-}
-
-save(vs, file = file.path(dir_wd, 'outputs', outName))
-write.csv(vs, file = file.path(dir_wd, 'outputs', 
-                               paste0('compiledSightings_', y_l_s, '.csv')))
-cat('   saved', outName, 'and as .csv\n')
-
+  d = dasList[idxNew[i],]
+  
+  
+  # ------ Download, read and process das file ------------------------------
+  
+  dasFile = file.path(dir_wd, 'data', 'gd_downloads', d$name)
+  cat(' ', d$name, '\n')
+  
+  # download and save to git repo
+  googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
+                              path = dasFile)
+  
+  # basic data checks
+  df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+  # read and process
+  df_read = swfscDAS::das_read(dasFile, skip = 0)
+  df_proc = swfscDAS::das_process(dasFile)
+  # View(df_proc)
+  
+  # ------ Parse track data from das ----------------------------------------
+  
+  # parse on-effort segments as straight lines from Begin/Resume to End 
+  source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
+  etNew = parseTrack(df_proc)
+  
+  # save a 'snapshot' of the data for this run
+  outName = paste0('newEffortTracks_', y_l_s, '_', Sys.Date(), '.Rda')
+  save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  cat('   saved data/snapshots/', outName, '\n')
+  
+  # combine the old vs dataframe with the new one
+  outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
+  if (file.exists(file.path(dir_wd, 'data', outName))){
+    # load old if it exists
+    load(file.path(dir_wd, 'data', outName))
+    # combine
+    et = rbind(et, etNew)
+    et = unique(et)                 # remove duplicates (in case ran already)
+    et = et[order(et$DateTime1),]   # sort in case out of order
+  } else {
+    et = etNew
+  }
+  
+  save(et, file = file.path(dir_wd, 'data', outName))
+  write.csv(et, file = file.path(dir_wd, 'data', 
+                                 paste0('compiledEffortTracks_', y_l_s, '.csv')))
+  cat('   saved', outName, 'and as .csv\n')
+  
+  # ------ Parse track data as points ---------------------------------------
+  # alternatively, can parse individual lines to get the segments out as points
+  
+  source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
+  epNew = parseTrack_asPoints(df_proc)
+  
+  # save a 'snapshot' of the data for this run
+  outName = paste0('newEffortPoints_', y_l_s, '_', Sys.Date(), '.Rda')
+  save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  cat('   saved data/snapshots/', outName, '\n')
+  
+  # combine the old vs dataframe with the new one
+  outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
+  if (file.exists(file.path(dir_wd, 'data', outName))){
+    # load old if it exists
+    load(file.path(dir_wd, 'data', outName))
+    # combine, remove dupes, sort by date
+    ep = rbind(ep, epNew)
+    ep = unique(ep)
+    ep = ep[order(ep$DateTime),]
+  } else {
+    ep = epNew
+  }
+  
+  save(ep, file = file.path(dir_wd, 'data', outName))
+  write.csv(ep, file = file.path(dir_wd, 'data', 
+                                 paste0('compiledEffortPoints_', y_l_s, '.csv')))
+  cat('   saved', outName, 'and as .csv\n')
+  
+  # ------ Extract visual sighting data -------------------------------------
+  
+  # do some stuff here to extract visual sighting data for the day from das
+  source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
+  vsNew = extractVisualSightings(df_proc)
+  
+  # confirm all species codes are numeric and delete rows that aren't
+  vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
+  vsNew = vsNew_clean
+  
+  # save a 'snapshot' of the data for this run
+  outName = paste0('newSightings_', y_l_s, '_', Sys.Date(), '.Rda')
+  save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  cat('   saved data/snapshots/', outName, '\n')
+  
+  # combine the old vs dataframe with the new one
+  outName = paste0('compiledSightings_', y_l_s, '.Rda')
+  if (file.exists(file.path(dir_wd, 'data', outName))){
+    # load old if it exists
+    load(file.path(dir_wd, 'data', outName))
+    # combine, remove dupes, sort by date
+    vs = rbind(vs, vsNew)
+    vs = unique(vs)
+    vs = vs[order(vs$DateTime),]
+  } else { # if no previous sightings file exists
+    vs = vsNew
+  }
+  
+  save(vs, file = file.path(dir_wd, 'data', outName))
+  write.csv(vs, file = file.path(dir_wd, 'data', 
+                                 paste0('compiledSightings_', y_l_s, '.csv')))
+  cat('   saved', outName, 'and as .csv\n')
+  
 } # end loop through all idxNew
 
 # ------ Extract acoustic detections --------------------------------------
@@ -238,8 +233,8 @@ cat(' Skipping acoustic detections...\n')
 # it can be large so may be a bit slow to download
 # pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
 # googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-                            # overwrite = TRUE,
-                            # path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
+# overwrite = TRUE,
+# path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
 
 
 # FUTURE GOALS

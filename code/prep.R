@@ -28,13 +28,21 @@ for (i in 1:length(locations)){
 }
 
 
-# ------ CREATE GD_DOWNLOADS FOLDER IF NEEDED -----------------------------
+# ------ CREATE LOCAL FOLDERS IF NEEDED -----------------------------
 
-# this stores data files downloaded from google drive
-# it is ignored in .gitignore because we don't want the files publically shared 
-# and because the acoustics file is too big to host on GitHub
-if (!dir.exists(file.path(dir_wd, 'gd_downloads'))){
-  dir.create(file.path(dir_wd, 'gd_downloads'))
+# data - stores raw and processed data files to keep private
+if (!dir.exists(file.path(dir_wd, 'data'))){
+  dir.create(file.path(dir_wd, 'data'))
+}
+
+# gd_downloads - raw files from google drive
+if (!dir.exists(file.path(dir_wd, 'data', 'gd_downloads'))){
+  dir.create(file.path(dir_wd, 'data', 'gd_downloads'))
+}
+
+# processed daily snapshots
+if (!dir.exists(file.path(dir_wd, 'data', 'snapshots'))){
+  dir.create(file.path(dir_wd, 'data', 'snapshots'))
 }
 
 
