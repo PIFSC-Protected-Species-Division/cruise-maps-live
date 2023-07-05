@@ -110,14 +110,14 @@ idxNew = which(!(dasNames_new %in% dasNames_old))
 cat(' Processing', length(idxNew), 'new das files:\n')
 
 ### FOR TESTING ###
-# if (leg == '00'){
-#   idxNew = 3
-# }
+if (leg == '00'){
+  idxNew = 3
+}
 ###################
 
 # loop through all idxNew
 for (i in 1:length(idxNew)){
-  # i = 1
+  # i = 1 # for testing
   d = dasList[idxNew[i],]
   
   # ------ Download, read and process das file ------------------------------
@@ -125,7 +125,7 @@ for (i in 1:length(idxNew)){
   dasFile = file.path(dir_wd, 'data', 'gd_downloads', d$name)
   cat(' ', d$name, '\n')
   
-  # download and save to git repo
+  # download and save locally
   googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
                               path = dasFile)
   
@@ -142,8 +142,8 @@ for (i in 1:length(idxNew)){
   source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
   etNew = parseTrack(df_proc)
   
-  # save a 'snapshot' of the data for this run
-  outName = paste0('newEffortTracks_', y_l_s, '_', Sys.Date(), '.Rda')
+  # save a 'snapshot' of the data for this das file with date it was run
+  outName = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
   save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
   googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
                             path = dir_gd_snapshots)
@@ -178,7 +178,7 @@ for (i in 1:length(idxNew)){
   epNew = parseTrack_asPoints(df_proc)
   
   # save a 'snapshot' of the data for this run
-  outName = paste0('newEffortPoints_', y_l_s, '_', Sys.Date(), '.Rda')
+  outName = paste0('newEffortPoints_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
   save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
   googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
                             path = dir_gd_snapshots)
@@ -217,7 +217,7 @@ for (i in 1:length(idxNew)){
   vsNew = vsNew_clean
   
   # save a 'snapshot' of the data for this run
-  outName = paste0('newSightings_', y_l_s, '_', Sys.Date(), '.Rda')
+  outName = paste0('newSightings_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
   save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
   googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
                             path = dir_gd_snapshots)
@@ -372,12 +372,6 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.p
        bg = 'white',
        device = 'pdf')
 cat('   saved map_archive/', outStr, 'as .png and .pdf\n')
-
-
-# ------ Upload processed data to Google Drive ----------------------------
-
-googledrive::drive_upload(file.path('dir_wd', 'data', ))
-dir_gd_processed
 
 # ------ Close up log -----------------------------------------------------
 
