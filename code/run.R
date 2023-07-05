@@ -99,8 +99,7 @@ if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))){
 # look for current list of .das files on Google Drive
 dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
 dasNames_new = dasList$name
-save(dasList, file = file.path(dir_wd, 'outputs', 
-                               paste0(dir_wd, 'dasList_', yr, '.Rda')))
+save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
 
 # identify which files are new/need to be processed
 idxNew = which(!(dasNames_new %in% dasNames_old))
@@ -234,7 +233,7 @@ cat('   saved', outName, 'and as .csv\n')
 
 # ------ Extract acoustic detections --------------------------------------
 
-
+cat(' Skipping acoustic detections...\n')
 # acoustics file will just be a single sql file that is updated/appended to each day
 # it can be large so may be a bit slow to download
 # pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
@@ -272,6 +271,7 @@ adNew = data.frame()
 # cat('   saved', outStr, 'as .Rda and .csv\n')
 
 # ------ Make summary table -----------------------------------------------
+cat(' Updating summary table:\n')
 
 # load previously created summary table if it exists
 stName = paste0('summaryTable_', yr, '.Rda')
@@ -301,6 +301,8 @@ flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', 'table_archive'
 cat('   saved table_archive/', outName, '\n')
 
 # ------ Plot map ---------------------------------------------------------
+cat(' Generating latest map:\n')
+
 source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 
 test_code = FALSE
@@ -353,7 +355,7 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.p
        dpi = res,
        bg = 'white',
        device = 'pdf')
-cat('   saved /map_archive', outStr, 'as .png and .pdf\n')
+cat('   saved map_archive/', outStr, 'as .png and .pdf\n')
 
 
 # ------ Close up log -----------------------------------------------------
