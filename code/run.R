@@ -27,14 +27,15 @@ if (yr == 2017){
   dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
 }
 
-locationCodes <- c('sf', 'yb', 'vm'
-)
+# set working directory
+# will search through list of possible and select first one
+# add initials and path to run on your local machine
+locationCodes <- c('sf', 'yb', 'vm')
 locations <- c(
-  'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
-  'C:/users/yvonne.barkley/github/cruise-maps-live/',
-  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # want to set up a server location? for virtual machines?
-) # others add path on their local machine
-
+  'C:/users/selene.fregosi/documents/github/cruise-maps-live',
+  'C:/users/yvonne.barkley/github/cruise-maps-live',
+  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live' # server for vms?
+) 
 for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
@@ -42,7 +43,6 @@ for (i in 1:length(locations)){
     break # take first available valid location
   }
 }
-
 
 # or specify manually
 # dir_wd <- "C:/Users/selene.fregosi/documents/github/cruise-maps-live/"
@@ -55,16 +55,19 @@ for (i in 1:length(locations)){
 #
 
 # ------ Make a log file --------------------------------------------------
-# define directory to save log file
-logDir = paste0(dir_wd, 'outputs/run_logs/', yr, '_leg', leg, '_', ship, '/')
-# check that the directory exists
+# string for yr_legXX_SHP - used for filename generation
+y_l_s = paste0(yr, '_leg', leg, '_', ship)
+
+# define directory to save log file and create if doesn't exist
+logDir = file.path(dir_wd, 'outputs', 'run_logs', y_l_s)
 if (!dir.exists(logDir)) {
   dir.create(logDir)}
-# define log file name
-logFile = paste0(logDir, 'run_', Sys.Date(), '_', locCode, '.log')
 
+# start log
+logFile = file.path(logDir, paste0('run_', Sys.Date(), '_', locCode, '.log'))
 sink(logFile, append = TRUE)
 
+# first entries
 cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
 
@@ -86,8 +89,8 @@ googledrive::drive_auth()
 # ------ Identify new das file --------------------------------------------
 
 # open up list of previously checked das files
-if (file.exists(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))){
-  load(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
+if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))){
+  load(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
   dasNames_old = dasList$name
 } else {
   dasNames_old = character()
@@ -96,32 +99,38 @@ if (file.exists(paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))){
 # look for current list of .das files on Google Drive
 dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
 dasNames_new = dasList$name
-save(dasList, file = paste0(dir_wd, 'outputs/dasList_', yr, '.Rda'))
+save(dasList, file = file.path(dir_wd, 'outputs', 
+                               paste0(dir_wd, 'dasList_', yr, '.Rda')))
 
 # identify which files are new/need to be processed
 idxNew = which(!(dasNames_new %in% dasNames_old))
 cat(' Processing', length(idxNew), 'new das files:\n')
 
-### UNCOMMENT BELOW WHEN DONE TESTING ###
-# eventually loop through all idxNew
-# for (i in 1:length(idxNew)){
-# d = dasList[idxNew[i],]
+### FOR TESTING ###
+if (leg == '00'){
+  idxNew = 3
+}
+###################
 
-### for testing #########################
-# COMMENT OUT WHEN DONE TESTING
-i = 3
-d = dasList[i,]
-#########################################
+# loop through all idxNew
+for (i in 1:length(idxNew)){
+d = dasList[idxNew[i],]
 
-# download new das and save to git repo
-googledrive::drive_download(file = googledrive::as_id(d$id),
-                            overwrite = TRUE,
-                            path = paste0(dir_wd, 'gd_downloads/', yr, '/', d$name))
+# ### for testing #########################
+# # COMMENT OUT WHEN DONE TESTING
+# i = 3
+# d = dasList[i,]
+# #########################################
 
-# ------ Read and process das file ----------------------------------------
 
-dasFile = paste0(dir_wd, 'gd_downloads/', yr, '/', d$name)
+# ------ Download, read and process das file ------------------------------
+
+dasFile = file.path(dir_wd, 'gd_downloads', yr, d$name)
 cat(' ', d$name, '\n')
+
+# download and save to git repo
+googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
+                            path = dasFile)
 
 # basic data checks
 df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
@@ -133,20 +142,19 @@ df_proc = swfscDAS::das_process(dasFile)
 # ------ Parse track data from das ----------------------------------------
 
 # parse on-effort segments as straight lines from Begin/Resume to End 
-source(paste0(dir_wd, 'code/functions/', 'parseTrack.R'))
+source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
 etNew = parseTrack(df_proc)
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/data_snapshots/newEffortTracks_', yr, '_leg', leg, '_', 
-                ship, '_', Sys.Date(), '.Rda')
-save(etNew, file = paste0(dir_wd, outStr))
-cat('   saved', outStr, '\n')
+outName = paste0('newEffortTracks_', y_l_s, '_', Sys.Date(), '.Rda')
+save(etNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
+cat('   saved data_snapshots/', outName, '\n')
 
 # combine the old vs dataframe with the new one
-outStr = paste0('outputs/compiledEffortTracks_', yr, '_leg', leg, '_', ship)
-if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
+if (file.exists(file.path(dir_wd, 'outputs', outName))){
   # load old if it exists
-  load(paste0(dir_wd, outStr, '.Rda'))
+  load(file.path(dir_wd, 'outputs', outName))
   # combine
   et = rbind(et, etNew)
   et = unique(et)                 # remove duplicates (in case ran already)
@@ -155,27 +163,27 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   et = etNew
 }
 
-save(et, file = paste0(dir_wd, outStr, '.Rda'))
-write.csv(et, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, 'as .Rda and .csv\n')
+save(et, file = file.path(dir_wd, 'outputs', outName))
+write.csv(et, file = file.path(dir_wd, 'outputs', 
+                               paste0('compiledEffortTracks_', y_l_s, '.csv')))
+cat('   saved', outName, 'and as .csv\n')
 
 # ------ Parse track data as points ---------------------------------------
 # alternatively, can parse individual lines to get the segments out as points
 
-source(paste0(dir_wd, 'code/functions/', 'parseTrack_asPoints.R'))
+source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
 epNew = parseTrack_asPoints(df_proc)
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/data_snapshots/newEffortPoints_', yr, '_leg', leg, '_', ship, 
-                '_', Sys.Date(), '.Rda')
-save(epNew, file = paste0(dir_wd, outStr))
-cat('   saved', outStr, '\n')
+outName = paste0('newEffortPoints_', y_l_s, '_', Sys.Date(), '.Rda')
+save(epNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
+cat('   saved data_snapshots/', outName, '\n')
 
 # combine the old vs dataframe with the new one
-outStr = paste0('outputs/compiledEffortPoints_', yr, '_leg', leg, '_', ship)
-if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
+if (file.exists(file.path(dir_wd, 'outputs', outName))){
   # load old if it exists
-  load(paste0(dir_wd, outStr, '.Rda'))
+  load(file.path(dir_wd, 'outputs', outName))
   # combine, remove dupes, sort by date
   ep = rbind(ep, epNew)
   ep = unique(ep)
@@ -184,14 +192,15 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   ep = epNew
 }
 
-save(ep, file = paste0(dir_wd, outStr, '.Rda'))
-write.csv(ep, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, 'as .Rda and .csv\n')
+save(ep, file = file.path(dir_wd, 'outputs', outName))
+write.csv(ep, file = file.path(dir_wd, 'outputs', 
+                               paste0('compiledEffortPoints_', y_l_s, '.csv')))
+cat('   saved', outName, 'and as .csv\n')
 
 # ------ Extract visual sighting data -------------------------------------
 
 # do some stuff here to extract visual sighting data for the day from das
-source(paste0(dir_wd, 'code/functions/', 'extractVisualSightings.R'))
+source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
 vsNew = extractVisualSightings(df_proc)
 
 # confirm all species codes are numeric and delete rows that aren't
@@ -199,16 +208,15 @@ vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ]
 vsNew = vsNew_clean
 
 # save a 'snapshot' of the data for this run
-outStr = paste0('outputs/data_snapshots/newSightings_', yr, '_leg', leg, '_', ship, 
-                '_', Sys.Date(), '.Rda')
-save(vsNew, file = paste0(dir_wd, outStr))
-cat('   saved', outStr, '\n')
+outName = paste0('newSightings_', y_l_s, '_', Sys.Date(), '.Rda')
+save(vsNew, file = file.path(dir_wd, 'outputs', 'data_snapshots', outName))
+cat('   saved data_snapshots/', outName, '\n')
 
 # combine the old vs dataframe with the new one
-outStr = paste0('outputs/compiledSightings_', yr, '_leg', leg, '_', ship)
-if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
+outName = paste0('compiledSightings_', y_l_s, '.Rda')
+if (file.exists(file.path(dir_wd, 'outputs', outName))){
   # load old if it exists
-  load(paste0(dir_wd, outStr, '.Rda'))
+  load(file.path(dir_wd, 'outputs', outName))
   # combine, remove dupes, sort by date
   vs = rbind(vs, vsNew)
   vs = unique(vs)
@@ -217,14 +225,12 @@ if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
   vs = vsNew
 }
 
-save(vs, file = paste0(dir_wd, outStr, '.Rda'))
-write.csv(vs, file = paste0(dir_wd, outStr, '.csv'))
-cat('   saved', outStr, 'as .Rda and .csv\n')
+save(vs, file = file.path(dir_wd, 'outputs', outName))
+write.csv(vs, file = file.path(dir_wd, 'outputs', 
+                               paste0('compiledSightings_', y_l_s, '.csv')))
+cat('   saved', outName, 'and as .csv\n')
 
-
-#### UNCOMMENT THIS WHEN DONE TESTING ####
-# } # for looping through all idxNew
-##########################################
+} # end loop through all idxNew
 
 # ------ Extract acoustic detections --------------------------------------
 
@@ -238,7 +244,7 @@ cat('   saved', outStr, 'as .Rda and .csv\n')
 
 
 # FUTURE GOALS
-# source(paste0(dir_wd, 'code/functions/', 'extractAcousticDetections.R')
+# source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R')
 # adNew = extractAcousticDetections()
 adNew = data.frame()
 
@@ -268,44 +274,41 @@ adNew = data.frame()
 # ------ Make summary table -----------------------------------------------
 
 # load previously created summary table if it exists
-if (file.exists(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))){
-  load(paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))
-  dasNames_old = dasList$name
+stName = paste0('summaryTable_', yr, '.Rda')
+if (file.exists(file.path(dir_wd, 'outputs', stName))){
+  load(file.path(dir_wd, 'outputs', stName))
 } else {
   st = data.frame()
 }
 
-source(paste0(dir_wd, 'code/functions/', 'makeSummaryTable.R'))
+source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
 lt = makeSummaryTable(st, et, vs, ad, leg, ship)
-
-# breakup the list that is returned by the function and save
-# summary table .rda
+# break out pieces of returned list
 st = lt$st
-# save .rda as combined for the whole year (bc loaded on later legs)
-save(st, file = paste0(dir_wd, 'outputs/summaryTable_', yr, '.Rda'))
-cat('   saved', paste0('outputs/summaryTable_', yr, '.Rda'), '\n')
-
-# formatted flextable as image
 ft = lt$ft
-# save with leg/ship info and copy with run date
-outStr = paste0('summaryTable_', yr, '_leg', leg, '_', ship)
-flextable::save_as_image(ft, path = paste0(dir_wd, 'outputs/', outStr, '.png'), res = 300)
-flextable::save_as_image(ft, paste0(dir_wd, 'outputs/table_archive/', outStr, 
-                         '_', Sys.Date(), '.png'), res = 300)
-cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
-cat('   saved', paste0('outputs/table_archive/', outStr, 
-                       '_', Sys.Date(), '.png'), '\n')
 
+# save st .rda as combined for the whole year (bc loaded on later legs)
+save(st, file = file.path(dir_wd, 'outputs', stName))
+cat('   saved', stName, '\n')
+
+# save ft (formatted flexttable) as image
+outName = paste0('summaryTable_', y_l_s, '.png')
+flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), res = 300)
+cat('   saved', outName, '\n')
+outName = paste0('summaryTable_', y_l_s, '_', Sys.Date(), '.png')
+flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', 'table_archive',
+                                              outName), res = 300)
+cat('   saved table_archive/', outName, '\n')
 
 # ------ Plot map ---------------------------------------------------------
-source(paste0(dir_wd, 'code/functions/', 'plotMap.R'))
+source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 
 test_code = FALSE
 mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code)
 base_map = mapOut$base_map
 vsMap = mapOut$vsMap
 
-# ------ Save stuff -------------------------------------------------------
+# ------ Save map figures -------------------------------------------------
 # then save daily update plot as .png and .pdf
 # the latest will be in the 'outputs' folder and a snapshot of each day will
 # saved in the 'map_archive' folder
@@ -313,10 +316,9 @@ height = 5
 width = 10
 res = 400
 
-# ------ PNG --------------------------------------------------------------
-# # save the latest
-outStr = paste0('dailyMap_', yr, '_leg', leg, '_', ship)
-ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'),
+# save the latest - as .png and .pdf
+outStr = paste0('dailyMap_', y_l_s)
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
        height = height,
        width = width,
        units = 'in', 
@@ -324,59 +326,35 @@ ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.png'),
        dpi = res,
        bg = 'white',
        device = 'png')
-cat('   saved', paste0('outputs/', outStr, '.png'), '\n')
 
-# save a copy of today's run
-dateName = paste0(outStr, '_', Sys.Date(), '.png')
-ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName),
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+cat('   saved', outStr, 'as .png and .pdf\n')
+
+# save a copy of today's run - as .png and .pdf
+outStr = paste0('dailyMap_', y_l_s, '_', Sys.Date())
+ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.png')),
        height = height,
        width = width,
        plot = base_map,
        dpi = res,
        bg = 'white',
        device = 'png')
-cat('   saved', paste0('outputs/map_archive/', dateName), '\n')
 
-# ------ PDF --------------------------------------------------------------
-# save the latest
-ggsave(filename = paste0(dir_wd, 'outputs/', outStr, '.pdf'),
+ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.pdf')),
        height = height,
        width = width,
        plot = base_map,
        dpi = res,
        bg = 'white',
        device = 'pdf')
-cat('   saved', paste0('outputs/', outStr, '.pdf'), '\n')
+cat('   saved /map_archive', outStr, 'as .png and .pdf\n')
 
-# save a copy of today
-dateName = paste0(outStr, '_', Sys.Date(), '.pdf')
-ggsave(filename = paste0(dir_wd, 'outputs/map_archive/', dateName),
-       height = height,
-       width = width,
-       plot = base_map,
-       dpi = res,
-       bg = 'white',
-       device = 'pdf')
-cat('   saved', paste0('outputs/map_archive/', dateName), '\n')
-
-
-
-# # ------ Simple test outputs ----------------------------------------------
-# 
-# # make a dummy csv and dummy plot just to confirm we can make it this far!
-# s = data.frame(col1 = seq(1,5,1), col2 = seq(101, 105, 1))
-# 
-# gg = ggplot(data = s, aes(x = col1, y = col2)) + geom_line()
-# # gg
-# outStr = paste0('outputs/plot_', yr, '_leg', leg, '_', ship)
-# ggsave(filename = paste0(dir_wd, outStr, '.png'),
-#        height = 2,
-#        width = 2,
-#        plot = gg,
-#        dpi = 120,
-#        bg = 'white',
-#        device = 'png')
-# cat('   saved', outStr, '\n')
 
 # ------ Close up log -----------------------------------------------------
 
