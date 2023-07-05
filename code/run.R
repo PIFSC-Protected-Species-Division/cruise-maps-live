@@ -22,10 +22,13 @@ leg = '00'
 if (yr == 2017){
   dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1x4GzvtLQDGT1nA7nuAPHs5CPXxsX6Umt'
   dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1uONES1aEE9SGxAIgI7g1EY-qb1pkwH16'
+  dir_gd_processed <- googledrive::as_id('1slkbanFN3Avxxr1hcM99JxKk-TJE1C4k')
+  dir_gd_snapshots <- googledrive::as_id('1ABge_3f1491s5odPcHU1p8KIWhG3ymLl')
 } else if (yr == 2023){
   dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
   dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
-  dir_gd_processed <- 'https://drive.google.com/drive/u/0/folders/1S6nIzYxM13qDsLonRwXg580xoi6JWo_-'
+  dir_gd_processed <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
+  dir_gd_snapshots <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
 }
 
 # set working directory
@@ -107,15 +110,15 @@ idxNew = which(!(dasNames_new %in% dasNames_old))
 cat(' Processing', length(idxNew), 'new das files:\n')
 
 ### FOR TESTING ###
-if (leg == '00'){
-  idxNew = 3
-}
+# if (leg == '00'){
+#   idxNew = 3
+# }
 ###################
 
 # loop through all idxNew
 for (i in 1:length(idxNew)){
+  # i = 1
   d = dasList[idxNew[i],]
-  
   
   # ------ Download, read and process das file ------------------------------
   
@@ -142,6 +145,8 @@ for (i in 1:length(idxNew)){
   # save a 'snapshot' of the data for this run
   outName = paste0('newEffortTracks_', y_l_s, '_', Sys.Date(), '.Rda')
   save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                            path = dir_gd_snapshots)
   cat('   saved data/snapshots/', outName, '\n')
   
   # combine the old vs dataframe with the new one
@@ -158,8 +163,12 @@ for (i in 1:length(idxNew)){
   }
   
   save(et, file = file.path(dir_wd, 'data', outName))
-  write.csv(et, file = file.path(dir_wd, 'data', 
-                                 paste0('compiledEffortTracks_', y_l_s, '.csv')))
+  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                            path = dir_gd_processed)
+  outNameCSV = paste0('compiledEffortTracks_', y_l_s, '.csv')
+  write.csv(et, file = file.path(dir_wd, 'data', outNameCSV))
+  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                            path = dir_gd_processed)
   cat('   saved', outName, 'and as .csv\n')
   
   # ------ Parse track data as points ---------------------------------------
@@ -171,6 +180,8 @@ for (i in 1:length(idxNew)){
   # save a 'snapshot' of the data for this run
   outName = paste0('newEffortPoints_', y_l_s, '_', Sys.Date(), '.Rda')
   save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                            path = dir_gd_snapshots)
   cat('   saved data/snapshots/', outName, '\n')
   
   # combine the old vs dataframe with the new one
@@ -187,8 +198,12 @@ for (i in 1:length(idxNew)){
   }
   
   save(ep, file = file.path(dir_wd, 'data', outName))
-  write.csv(ep, file = file.path(dir_wd, 'data', 
-                                 paste0('compiledEffortPoints_', y_l_s, '.csv')))
+  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                            path = dir_gd_processed)
+  outNameCSV = paste0('compiledEffortPoints_', y_l_s, '.csv')
+  write.csv(ep, file = file.path(dir_wd, 'data', outNameCSV))
+  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                            path = dir_gd_processed)
   cat('   saved', outName, 'and as .csv\n')
   
   # ------ Extract visual sighting data -------------------------------------
@@ -204,6 +219,8 @@ for (i in 1:length(idxNew)){
   # save a 'snapshot' of the data for this run
   outName = paste0('newSightings_', y_l_s, '_', Sys.Date(), '.Rda')
   save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                            path = dir_gd_snapshots)
   cat('   saved data/snapshots/', outName, '\n')
   
   # combine the old vs dataframe with the new one
@@ -220,8 +237,12 @@ for (i in 1:length(idxNew)){
   }
   
   save(vs, file = file.path(dir_wd, 'data', outName))
-  write.csv(vs, file = file.path(dir_wd, 'data', 
-                                 paste0('compiledSightings_', y_l_s, '.csv')))
+  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                            path = dir_gd_processed)
+  outNameCSV = paste0('compiledSightings_', y_l_s, '.csv')
+  write.csv(vs, file = file.path(dir_wd, 'data', outNameCSV))
+  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                            path = dir_gd_processed)
   cat('   saved', outName, 'and as .csv\n')
   
 } # end loop through all idxNew
@@ -352,6 +373,11 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.p
        device = 'pdf')
 cat('   saved map_archive/', outStr, 'as .png and .pdf\n')
 
+
+# ------ Upload processed data to Google Drive ----------------------------
+
+googledrive::drive_upload(file.path('dir_wd', 'data', ))
+dir_gd_processed
 
 # ------ Close up log -----------------------------------------------------
 
