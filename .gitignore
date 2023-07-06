@@ -5,7 +5,8 @@
 
 # sf testing files
 /code/testing/
-/automation/
+/code/automation/
+!autocommit.sh
 
 # History files
 .Rhistory
