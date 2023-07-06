@@ -5,6 +5,7 @@
 
 # sf testing files
 /code/testing/
+/automation/
 
 # History files
 .Rhistory
