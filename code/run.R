@@ -16,6 +16,9 @@ dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
 ship = 'OES' # 'LSK'
 leg = '00'
 
+# string for yr_legXX_SHP - used for filename generation
+y_l_s = paste0(yr, '_leg', leg, '_', ship)
+
 # dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
 # specifying path this way searches through all of google drive and is kind of slow
 # alternative hard code to url.
@@ -59,9 +62,6 @@ for (i in 1:length(locations)){
 #
 
 # ------ Make a log file --------------------------------------------------
-# string for yr_legXX_SHP - used for filename generation
-y_l_s = paste0(yr, '_leg', leg, '_', ship)
-
 # define directory to save log file and create if doesn't exist
 logDir = file.path(dir_wd, 'outputs', 'run_logs', y_l_s)
 if (!dir.exists(logDir)) {

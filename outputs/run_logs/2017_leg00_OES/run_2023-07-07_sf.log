@@ -1,0 +1,40 @@
+
+...run started 2023-07-07 13:31:54 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+  DASALL.731 
+   saved data/snapshots/ newEffortTracks_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledEffortTracks_2017_leg00_OES.Rda and as .csv
+   saved data/snapshots/ newEffortPoints_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledEffortPoints_2017_leg00_OES.Rda and as .csv
+   saved data/snapshots/ newSightings_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledSightings_2017_leg00_OES.Rda and as .csv
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2017.Rda 
+   saved summaryTable_2017_leg00_OES.png 
+   saved table_archive/ summaryTable_2017_leg00_OES_2023-07-07.png 
+ Generating latest map:
+   saved dailyMap_2017_leg00_OES as .png and .pdf
+   saved map_archive/ dailyMap_2017_leg00_OES_2023-07-07 as .png and .pdf
+...run complete 2023-07-07 13:32:56 PDT ...
+
+...run started 2023-07-07 14:16:18 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+  DASALL.731 
+   saved data/snapshots/ newEffortTracks_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledEffortTracks_2017_leg00_OES.Rda and as .csv
+   saved data/snapshots/ newEffortPoints_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledEffortPoints_2017_leg00_OES.Rda and as .csv
+   saved data/snapshots/ newSightings_2017_leg00_OES_DASALL.731_2023-07-07.Rda 
+   saved compiledSightings_2017_leg00_OES.Rda and as .csv
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2017.Rda 
+   saved summaryTable_2017_leg00_OES.png 
+   saved table_archive/ summaryTable_2017_leg00_OES_2023-07-07.png 
+ Generating latest map:
+   saved dailyMap_2017_leg00_OES as .png and .pdf
+   saved map_archive/ dailyMap_2017_leg00_OES_2023-07-07 as .png and .pdf
+...run complete 2023-07-07 14:17:36 PDT ...
