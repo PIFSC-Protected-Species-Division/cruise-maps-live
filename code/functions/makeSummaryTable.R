@@ -32,15 +32,15 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
-  legList = c('Leg 01 OES', 'Leg 02 OES', 'Leg 03 OES', 'Leg 04 OES', 'Leg 05 OES', 
-              'Leg 01 LSK', 'Leg 02 LSK', 'Total')
-  st = data.frame(leg_ship = legList, 
-                  days = integer(length(legList)), 
-                  #segments = integer(length(legList)), 
-                  dist = integer(length(legList)), 
-                  spVis = integer(length(legList)), 
-                  spPam = integer(length(legList)))
-  st[st == 0] <- NA
+    legList = c('Leg 01 OES', 'Leg 02 OES', 'Leg 03 OES', 'Leg 04 OES', 'Leg 05 OES', 
+                'Leg 01 LSK', 'Leg 02 LSK', 'Total')
+    st = data.frame(leg_ship = legList, 
+                    days = integer(length(legList)), 
+                    #segments = integer(length(legList)), 
+                    dist = integer(length(legList)), 
+                    spVis = integer(length(legList)), 
+                    spPam = integer(length(legList)))
+    st[st == 0] <- NA
   }
   
   # define row indices for this leg and ship
@@ -79,30 +79,55 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
   
   # View(st)
-
+  
   # create nicely formated flextable
   ft = flextable::flextable(st)
   ft = flextable::theme_vanilla(ft)
   ft = flextable::set_header_labels(ft, leg_ship = 'Leg and Ship', days = 'Days at Sea',
-                         segments = 'Segments', dist = 'Distance [km]', 
-                         spVis = 'Visual Sightings', 
-                         spPam = 'Acoustic Detections')
+                                    segments = 'Segments', dist = 'Distance [km]', 
+                                    spVis = 'Visual Sightings', 
+                                    spPam = 'Acoustic Detections')
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
-
+  
+  # limit significant digits
+  ft = flextable::colformat_double(ft, j = 3, digits = 1)
+  
+  # define column widths and center align
   ft = flextable::width(ft, 1, width = 1.1)
   # ft = width(ft, 2, width = 0.6)
   ft = flextable::width(ft, c(2,3), width = 0.8)
   ft = flextable::width(ft, c(4,5), width = 1.2)
   ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
   ft = flextable::align(ft, align = 'center', part = 'header')
-  ft = flextable::colformat_double(ft, j = 3, digits = 1)
-  # align_text_col(ft, align = "center", header = TRUE, footer = TRUE)
-  # ft = set_table_properties(ft,align = 'center')
-  # ft = ft |>
-  #   separate_header() |>
-  #   align(align = 'center', part = 'all') |>
-  #   autofit()
-  # ft
+  
+  # change borders and text color
+  # relevant web colors
+  purp = '#7F7FFF'
+  wht = 'white'
+  grn = '#93D500'
+  teal = '#57b8E0'
+  bg = '#373737'
+  
+  # body borders
+  bd_thin = officer::fp_border(color = wht, width = 0.6)
+  ft = flextable::hline(ft, part = 'body', border = bd_thin)
+  # header/footer borders
+  bd_thick = officer::fp_border(color = purp, width = 2)
+  ft = flextable::hline_top(ft, part = 'header', border = bd_thick)
+  ft = flextable::hline_bottom(ft, part = 'header', border = bd_thick)
+  ft = flextable::hline_bottom(ft, part = 'body', border = bd_thick)
+  # totals border
+ bd_med = officer::fp_border(color = teal, width = 1.6)
+ ft = flextable::hline(ft, i = 7, border = bd_med)
+ 
+ # text colors
+ ft = flextable::color(ft, color = wht, part = 'body')
+ ft = flextable::color(ft, i = 8, color = teal) # Totals row
+ ft = flextable::bold(ft, i = 8) # totals row
+ ft = flextable::color(ft, color = purp, part = 'header')
+ # ft = flextable::bg(ft, bg = bg, part = 'all')
+ ft
+
   
   lt = list(st = st, ft = ft)
   
