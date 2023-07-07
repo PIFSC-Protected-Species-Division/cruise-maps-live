@@ -26,7 +26,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #'
   
   ## Load map layers & helpers
-  key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"))
+  key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), fileEncoding="UTF-8-BOM")
   load(file.path(dir_wd, 'inputs', "map_layers.RData")) 
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()

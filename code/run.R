@@ -37,7 +37,7 @@ if (yr == 2017){
 locationCodes <- c('sf', 'yb', 'vm')
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live',
-  'C:/users/yvonne.barkley/github/cruise-maps-live',
+  'C:/users/yvonne.barkley/Github/cruise-maps-live',
   '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live' # server for vms?
 ) 
 for (i in 1:length(locations)){
