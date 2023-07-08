@@ -15,7 +15,7 @@ data_source = 'gd' # google drive
 dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
 ship = 'OES' # 'LSK'
-leg = '01'
+leg = '00'
 
 # string for yr_legXX_SHP - used for filename generation
 y_l_s = paste0(yr, '_leg', leg, '_', ship)
