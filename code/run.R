@@ -9,12 +9,13 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-yr = 2017
-data_source = 'gd' # google drive
+yr = 2023
+# data_source = 'gd' # google drive
+data_source = 'blank' # for making blank table and map
 dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
 ship = 'OES' # 'LSK'
-leg = '00'
+leg = '01'
 
 # string for yr_legXX_SHP - used for filename generation
 y_l_s = paste0(yr, '_leg', leg, '_', ship)
@@ -84,168 +85,195 @@ library(tidyverse)
 
 # ------ Sign in to google drive ------------------------------------------
 
-googledrive_dl <- TRUE
-googledrive::drive_deauth()
-googledrive::drive_auth()
-# push through authorization approval
-2 # this may need to change??
-
-# ------ Identify new das file --------------------------------------------
-
-# open up list of previously checked das files
-if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))){
-  load(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
-  dasNames_old = dasList$name
-} else {
-  dasNames_old = character()
+# if just creating a blank map, don't sign in
+if (data_source == 'blank'){
+  # to make blank table and map
+  load(file.path(dir_wd, 'data', 'emptyEffortPoints.Rda'))
+  load(file.path(dir_wd, 'data', 'emptyEffortTracks.Rda'))
+  load(file.path(dir_wd, 'data', 'emptySightings.Rda'))
+  epNew = ep
+  
+  # map testing options
+  test_code = FALSE
+  blank_map = TRUE
+  
+} else if (data_source == 'gd'){
+  googledrive_dl <- TRUE
+  googledrive::drive_deauth()
+  googledrive::drive_auth()
+  # push through authorization approval
+  2 # this may need to change??
+  
+  
+  # ------ Identify new das file --------------------------------------------
+  
+  # open up list of previously checked das files
+  if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))){
+    load(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
+    dasNames_old = dasList$name
+  } else {
+    dasNames_old = character()
+  }
+  
+  # look for current list of .das files on Google Drive
+  dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
+  dasNames_new = dasList$name
+  save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
+  
+  
+  
+  # identify which files are new/need to be processed
+  idxNew = which(!(dasNames_new %in% dasNames_old))
+  cat(' Processing', length(idxNew), 'new das files:\n')
+  
+  ### FOR TESTING ###
+  # test reading in new das
+  if (leg == '00'){
+    idxNew = 3
+  }
+  ###################
+  
 }
 
-# look for current list of .das files on Google Drive
-dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
-dasNames_new = dasList$name
-save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
+# ------ Download, read and process das file ------------------------------
 
-# identify which files are new/need to be processed
-idxNew = which(!(dasNames_new %in% dasNames_old))
-cat(' Processing', length(idxNew), 'new das files:\n')
+# if there are new das to process
+if (length(idxNew) != 0){
+  # loop through all idxNew
+  for (i in 1:length(idxNew)){
+    # i = 1 # for testing
+    d = dasList[idxNew[i],]
+    
+    
+    
+    dasFile = file.path(dir_wd, 'data', 'gd_downloads', d$name)
+    cat(' ', d$name, '\n')
+    
+    # download and save locally
+    googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
+                                path = dasFile)
+    
+    # basic data checks
+    df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+    # read and process
+    df_read = swfscDAS::das_read(dasFile, skip = 0)
+    df_proc = swfscDAS::das_process(dasFile)
+    # View(df_proc)
+    
+    # ------ Parse track data from das ----------------------------------------
+    
+    # parse on-effort segments as straight lines from Begin/Resume to End 
+    source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
+    etNew = parseTrack(df_proc)
+    
+    # save a 'snapshot' of the data for this das file with date it was run
+    outName = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', 
+                     Sys.Date(), '.Rda')
+    save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                              path = dir_gd_snapshots)
+    cat('   saved data/snapshots/', outName, '\n')
+    
+    # combine the old vs dataframe with the new one
+    outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
+    if (file.exists(file.path(dir_wd, 'data', outName))){
+      # load old if it exists
+      load(file.path(dir_wd, 'data', outName))
+      # combine
+      et = rbind(et, etNew)
+      et = unique(et)                 # remove duplicates (in case ran already)
+      et = et[order(et$DateTime1),]   # sort in case out of order
+    } else {
+      et = etNew
+    }
+    
+    save(et, file = file.path(dir_wd, 'data', outName))
+    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                           path = dir_gd_processed)
+    outNameCSV = paste0('compiledEffortTracks_', y_l_s, '.csv')
+    write.csv(et, file = file.path(dir_wd, 'data', outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                           path = dir_gd_processed)
+    cat('   saved', outName, 'and as .csv\n')
+    
+    # ------ Parse track data as points ---------------------------------------
+    # alternatively, can parse individual lines to get the segments out as points
+    
+    source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
+    epNew = parseTrack_asPoints(df_proc)
+    
+    # save a 'snapshot' of the data for this run
+    outName = paste0('newEffortPoints_', y_l_s, '_', d$name, '_', 
+                     Sys.Date(), '.Rda')
+    save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                              path = dir_gd_snapshots)
+    cat('   saved data/snapshots/', outName, '\n')
+    
+    # combine the old vs dataframe with the new one
+    outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
+    if (file.exists(file.path(dir_wd, 'data', outName))){
+      # load old if it exists
+      load(file.path(dir_wd, 'data', outName))
+      # combine, remove dupes, sort by date
+      ep = rbind(ep, epNew)
+      ep = unique(ep)
+      ep = ep[order(ep$DateTime),]
+    } else {
+      ep = epNew
+    }
+    
+    save(ep, file = file.path(dir_wd, 'data', outName))
+    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                           path = dir_gd_processed)
+    outNameCSV = paste0('compiledEffortPoints_', y_l_s, '.csv')
+    write.csv(ep, file = file.path(dir_wd, 'data', outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                           path = dir_gd_processed)
+    cat('   saved', outName, 'and as .csv\n')
+    
+    # ------ Extract visual sighting data -------------------------------------
+    
+    # do some stuff here to extract visual sighting data for the day from das
+    source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
+    vsNew = extractVisualSightings(df_proc)
+    
+    # confirm all species codes are numeric and delete rows that aren't
+    vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
+    vsNew = vsNew_clean
+    
+    # save a 'snapshot' of the data for this run
+    outName = paste0('newSightings_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
+    save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+                              path = dir_gd_snapshots)
+    cat('   saved data/snapshots/', outName, '\n')
+    
+    # combine the old vs dataframe with the new one
+    outName = paste0('compiledSightings_', y_l_s, '.Rda')
+    if (file.exists(file.path(dir_wd, 'data', outName))){
+      # load old if it exists
+      load(file.path(dir_wd, 'data', outName))
+      # combine, remove dupes, sort by date
+      vs = rbind(vs, vsNew)
+      vs = unique(vs)
+      vs = vs[order(vs$DateTime),]
+    } else { # if no previous sightings file exists
+      vs = vsNew
+    }
+    
+    save(vs, file = file.path(dir_wd, 'data', outName))
+    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+                           path = dir_gd_processed)
+    outNameCSV = paste0('compiledSightings_', y_l_s, '.csv')
+    write.csv(vs, file = file.path(dir_wd, 'data', outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+                           path = dir_gd_processed)
+    cat('   saved', outName, 'and as .csv\n')
+    
+  } # end loop through all idxNew
+} # end check for non-empty idxNew
 
-### FOR TESTING ###
-if (leg == '00'){
-  idxNew = 3
-}
-###################
-
-# loop through all idxNew
-for (i in 1:length(idxNew)){
-  # i = 1 # for testing
-  d = dasList[idxNew[i],]
-  
-  # ------ Download, read and process das file ------------------------------
-  
-  dasFile = file.path(dir_wd, 'data', 'gd_downloads', d$name)
-  cat(' ', d$name, '\n')
-  
-  # download and save locally
-  googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
-                              path = dasFile)
-  
-  # basic data checks
-  df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
-  # read and process
-  df_read = swfscDAS::das_read(dasFile, skip = 0)
-  df_proc = swfscDAS::das_process(dasFile)
-  # View(df_proc)
-  
-  # ------ Parse track data from das ----------------------------------------
-  
-  # parse on-effort segments as straight lines from Begin/Resume to End 
-  source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
-  etNew = parseTrack(df_proc)
-  
-  # save a 'snapshot' of the data for this das file with date it was run
-  outName = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
-  save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
-                            path = dir_gd_snapshots)
-  cat('   saved data/snapshots/', outName, '\n')
-  
-  # combine the old vs dataframe with the new one
-  outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
-  if (file.exists(file.path(dir_wd, 'data', outName))){
-    # load old if it exists
-    load(file.path(dir_wd, 'data', outName))
-    # combine
-    et = rbind(et, etNew)
-    et = unique(et)                 # remove duplicates (in case ran already)
-    et = et[order(et$DateTime1),]   # sort in case out of order
-  } else {
-    et = etNew
-  }
-  
-  save(et, file = file.path(dir_wd, 'data', outName))
-  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
-                            path = dir_gd_processed)
-  outNameCSV = paste0('compiledEffortTracks_', y_l_s, '.csv')
-  write.csv(et, file = file.path(dir_wd, 'data', outNameCSV))
-  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
-                            path = dir_gd_processed)
-  cat('   saved', outName, 'and as .csv\n')
-  
-  # ------ Parse track data as points ---------------------------------------
-  # alternatively, can parse individual lines to get the segments out as points
-  
-  source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
-  epNew = parseTrack_asPoints(df_proc)
-  
-  # save a 'snapshot' of the data for this run
-  outName = paste0('newEffortPoints_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
-  save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
-                            path = dir_gd_snapshots)
-  cat('   saved data/snapshots/', outName, '\n')
-  
-  # combine the old vs dataframe with the new one
-  outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
-  if (file.exists(file.path(dir_wd, 'data', outName))){
-    # load old if it exists
-    load(file.path(dir_wd, 'data', outName))
-    # combine, remove dupes, sort by date
-    ep = rbind(ep, epNew)
-    ep = unique(ep)
-    ep = ep[order(ep$DateTime),]
-  } else {
-    ep = epNew
-  }
-  
-  save(ep, file = file.path(dir_wd, 'data', outName))
-  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
-                            path = dir_gd_processed)
-  outNameCSV = paste0('compiledEffortPoints_', y_l_s, '.csv')
-  write.csv(ep, file = file.path(dir_wd, 'data', outNameCSV))
-  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
-                            path = dir_gd_processed)
-  cat('   saved', outName, 'and as .csv\n')
-  
-  # ------ Extract visual sighting data -------------------------------------
-  
-  # do some stuff here to extract visual sighting data for the day from das
-  source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
-  vsNew = extractVisualSightings(df_proc)
-  
-  # confirm all species codes are numeric and delete rows that aren't
-  vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
-  vsNew = vsNew_clean
-  
-  # save a 'snapshot' of the data for this run
-  outName = paste0('newSightings_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
-  save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-  googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
-                            path = dir_gd_snapshots)
-  cat('   saved data/snapshots/', outName, '\n')
-  
-  # combine the old vs dataframe with the new one
-  outName = paste0('compiledSightings_', y_l_s, '.Rda')
-  if (file.exists(file.path(dir_wd, 'data', outName))){
-    # load old if it exists
-    load(file.path(dir_wd, 'data', outName))
-    # combine, remove dupes, sort by date
-    vs = rbind(vs, vsNew)
-    vs = unique(vs)
-    vs = vs[order(vs$DateTime),]
-  } else { # if no previous sightings file exists
-    vs = vsNew
-  }
-  
-  save(vs, file = file.path(dir_wd, 'data', outName))
-  googledrive::drive_put(file.path(dir_wd, 'data', outName), 
-                            path = dir_gd_processed)
-  outNameCSV = paste0('compiledSightings_', y_l_s, '.csv')
-  write.csv(vs, file = file.path(dir_wd, 'data', outNameCSV))
-  googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
-                            path = dir_gd_processed)
-  cat('   saved', outName, 'and as .csv\n')
-  
-} # end loop through all idxNew
 
 # ------ Extract acoustic detections --------------------------------------
 
@@ -309,7 +337,8 @@ cat('   saved', stName, '\n')
 
 # save ft (formatted flexttable) as image
 outName = paste0('summaryTable_', y_l_s, '.png')
-flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), res = 300)
+flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
+                         res = 300)
 cat('   saved', outName, '\n')
 outName = paste0('summaryTable_', y_l_s, '_', Sys.Date(), '.png')
 flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', 'table_archive',
@@ -321,8 +350,7 @@ cat(' Generating latest map:\n')
 
 source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 
-test_code = FALSE
-mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code)
+mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code, blank_map)
 base_map = mapOut$base_map
 vsMap = mapOut$vsMap
 

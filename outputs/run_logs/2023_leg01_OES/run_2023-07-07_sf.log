@@ -1,0 +1,31 @@
+
+...run started 2023-07-07 16:49:08 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+  NA 
+[1] 0
+
+...run started 2023-07-07 17:12:56 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+[1] "blank"
+
+...run started 2023-07-07 17:23:50 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-07-07 17:25:13 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+[1] FALSE
+
+...run started 2023-07-07 17:27:24 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+[1] "C:/users/selene.fregosi/documents/github/cruise-maps-live/outputs/summaryTable_2023_leg01_OES.png"
+   saved summaryTable_2023_leg01_OES.png 
+[1] "C:/users/selene.fregosi/documents/github/cruise-maps-live/outputs/table_archive/summaryTable_2023_leg01_OES_2023-07-07.png"
+   saved table_archive/ summaryTable_2023_leg01_OES_2023-07-07.png 
+ Generating latest map:
+   saved dailyMap_2023_leg01_OES as .png and .pdf
+   saved map_archive/ dailyMap_2023_leg01_OES_2023-07-07 as .png and .pdf
+...run complete 2023-07-07 17:28:17 PDT ...

@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
+plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code, blank_map){
   
   #' plotMap
   #' 
@@ -15,6 +15,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #' @param ship character string with code for ship (either 'OES' or 'LSK', or
   #' in the future, both as c('OES', 'LSK'))
   #' @param test_code logical input to randomly generate and plot data for testing
+  #' @param blank_map logical input to create a blank map
   #' 
   #' @return base_map map figure 
   #' @export
@@ -102,7 +103,10 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   ##Now for THE MAP ####
   
   colors_lines<-c("deeppink","deeppink4", "grey0")
-  
+  if (blank_map == TRUE){
+    colors_lines = ('grey0')
+  }
+
   colors_enc<-RColorBrewer::brewer.pal(length(unique(vsMap$SpCode)), "Set2")
   
   labels_lines<-c( "Survey effort (recent)", 
