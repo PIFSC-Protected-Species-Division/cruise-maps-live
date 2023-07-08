@@ -10,8 +10,8 @@
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
 yr = 2023
-# data_source = 'gd' # google drive
-data_source = 'blank' # for making blank table and map
+data_source = 'gd' # google drive
+# data_source = 'blank' # for making blank table and map
 dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
 ship = 'OES' # 'LSK'
