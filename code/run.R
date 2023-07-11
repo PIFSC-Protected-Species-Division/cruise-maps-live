@@ -9,14 +9,15 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-yr = 2023
-data_source = 'gd' # google drive
-# data_source = 'blank' # for making blank table and map
-dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
-# Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
-ship = 'OES' # 'LSK'
-leg = '00'
+# data_source = 'gd' # google drive
+data_source = 'blank' # for making blank table and map
 
+# dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
+# Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
+
+yr = 2023
+ship = 'OES' # 'LSK'
+leg = '01'
 # string for yr_legXX_SHP - used for filename generation
 y_l_s = paste0(yr, '_leg', leg, '_', ship)
 
@@ -87,15 +88,17 @@ library(tidyverse)
 
 # if just creating a blank map, don't sign in
 if (data_source == 'blank'){
-  # to make blank table and map
-  load(file.path(dir_wd, 'data', 'emptyEffortPoints.Rda'))
-  load(file.path(dir_wd, 'data', 'emptyEffortTracks.Rda'))
-  load(file.path(dir_wd, 'data', 'emptySightings.Rda'))
+  # to make blank table and map - these were made by hand
+  load(file.path(dir_wd, 'data', 'blankEffortPoints.Rda'))
+  load(file.path(dir_wd, 'data', 'blankEffortTracks.Rda'))
+  load(file.path(dir_wd, 'data', 'blankSightings.Rda'))
   epNew = ep
   
   # map testing options
   test_code = FALSE
-  blank_map = TRUE
+  # blank_map = TRUE
+  blank_table = TRUE
+  idxNew = integer(0)
   
 } else if (data_source == 'gd'){
   googledrive_dl <- TRUE
@@ -119,7 +122,6 @@ if (data_source == 'blank'){
   dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
   dasNames_new = dasList$name
   save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
-  
   
   
   # identify which files are new/need to be processed
@@ -326,7 +328,7 @@ if (file.exists(file.path(dir_wd, 'outputs', stName))){
 }
 
 source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-lt = makeSummaryTable(st, et, vs, ad, leg, ship)
+lt = makeSummaryTable(st, et, vs, ad, leg, ship, blank_table)
 # break out pieces of returned list
 st = lt$st
 ft = lt$ft
@@ -350,7 +352,7 @@ cat(' Generating latest map:\n')
 
 source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 
-mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code, blank_map)
+mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code)
 base_map = mapOut$base_map
 vsMap = mapOut$vsMap
 

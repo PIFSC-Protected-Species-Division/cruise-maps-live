@@ -1,0 +1,33 @@
+
+...run started 2023-07-11 14:07:53 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-07-11 15:28:31 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+   saved summaryTable_2023_leg01_OES.png 
+   saved table_archive/ summaryTable_2023_leg01_OES_2023-07-11.png 
+ Generating latest map:
+
+...run started 2023-07-11 15:29:15 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+   saved summaryTable_2023_leg01_OES.png 
+   saved table_archive/ summaryTable_2023_leg01_OES_2023-07-11.png 
+ Generating latest map:
+
+...run started 2023-07-11 15:40:47 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+   saved summaryTable_2023_leg01_OES.png 
+   saved table_archive/ summaryTable_2023_leg01_OES_2023-07-11.png 
+ Generating latest map:
+   saved dailyMap_2023_leg01_OES as .png and .pdf
+   saved map_archive/ dailyMap_2023_leg01_OES_2023-07-11 as .png and .pdf
+...run complete 2023-07-11 15:41:07 PDT ...

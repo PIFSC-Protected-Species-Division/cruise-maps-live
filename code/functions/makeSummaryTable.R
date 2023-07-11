@@ -1,4 +1,4 @@
-makeSummaryTable <- function(st, et, vs, ad, leg, ship){
+makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   
   #' makeSummaryTable
   #' 
@@ -23,6 +23,7 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   #' 'extractAcousticDetections.R'
   #' @param leg string for leg number set in beginning of run.R
   #' @param ship string for ship set in beginning of run.R
+  #' @param blank_table logical to create empty placeholder table with 0s
   #' 
   #' @return a list 'lt' with st - a data.frame summary table and ft - a flextable 
   #' @export
@@ -71,6 +72,14 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   st$spVis[idx] = length(vs$SpCode)
   st$spPam[idx] = NA
   
+  # zero everything if this is a blank table (for start of each leg)
+  if (blank_table == TRUE){
+    st$days[idx] = 0
+    st$dist[idx] = 0
+    st$spVis[idx] = 0
+    st$spPam[idx] = NA
+  }
+  
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
   # st$segments[8] = sum(as.integer(st$segments[1:7]), na.rm = TRUE)
@@ -79,6 +88,7 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
   
   # View(st)
+  
   
   # create nicely formated flextable
   ft = flextable::flextable(st)
@@ -107,6 +117,7 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   grn = '#93D500'
   teal = '#57b8E0'
   bg = '#373737'
+  ltgry = '#D0D0D0'
   
   # body borders
   bd_thin = officer::fp_border(color = wht, width = 0.6)
@@ -117,14 +128,14 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship){
   ft = flextable::hline_bottom(ft, part = 'header', border = bd_thick)
   ft = flextable::hline_bottom(ft, part = 'body', border = bd_thick)
   # totals border
- bd_med = officer::fp_border(color = teal, width = 1.6)
+ bd_med = officer::fp_border(color = purp, width = 1)
  ft = flextable::hline(ft, i = 7, border = bd_med)
  
  # text colors
- ft = flextable::color(ft, color = wht, part = 'body')
- ft = flextable::color(ft, i = 8, color = teal) # Totals row
+ ft = flextable::color(ft, color = ltgry, part = 'body')
+ ft = flextable::color(ft, i = 8, color = purp) # Totals row
  ft = flextable::bold(ft, i = 8) # totals row
- ft = flextable::color(ft, color = purp, part = 'header')
+ ft = flextable::color(ft, color = teal, part = 'header')
  # ft = flextable::bg(ft, bg = bg, part = 'all')
  ft
 
