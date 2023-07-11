@@ -1,0 +1,15 @@
+MAP
+
+Attribution
+NOAA Fisheries
+
+Alt Text
+A bathymetric map of the HICEAS study area and the planned transect lines. The U.S. Exclusive Economic Zone surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area is shaded in white. The transect lines run lengthwise from northwest to the southeast of the EEZ. This map image will be updated to include actual survey effort (shown by a thick, non-black colored lines) and cetacean sightings (shown by colored shapes).
+
+TABLE
+
+Attribution
+NOAA Fisheries
+
+Alt Text 
+A table showing preliminary survey data from HICEAS 2023. This figure will be updated to include recent survey effort, cetacean sightings, and acoustic detections.
