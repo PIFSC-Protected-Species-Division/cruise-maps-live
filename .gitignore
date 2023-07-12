@@ -8,6 +8,9 @@
 /code/automation/
 !autocommit.sh
 
+#################
+#### R FILES ####
+#################
 # History files
 .Rhistory
 .Rapp.history
@@ -47,3 +50,14 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+######################
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
