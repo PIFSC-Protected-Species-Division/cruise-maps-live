@@ -178,7 +178,7 @@ if (length(idxNew) != 0){
     # i = 1 # for testing
     d = dasList[idxNew[i],]
     
-    dasFile = file.path(dir_wd, 'data', 'gd_downloads', y_l_s, d$name)
+    dasFile = file.path(dir_wd,  y_l_s, 'data', 'gd_downloads', d$name)
     cat(' ', d$name, '\n')
     
     # download and save locally
