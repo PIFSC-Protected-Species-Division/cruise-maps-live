@@ -39,9 +39,8 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
                     days = integer(length(legList)), 
                     #segments = integer(length(legList)), 
                     dist = integer(length(legList)), 
-                    spVis = integer(length(legList)) #, 
-                    # spPam = integer(length(legList))
-                    )
+                    spVis = integer(length(legList)), 
+                    spPam = integer(length(legList)))
     st[st == 0] <- NA
   }
   
@@ -71,22 +70,22 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist)
   st$spVis[idx] = length(vs$SpCode)
-  # st$spPam[idx] = NA
+  st$spPam[idx] = NA
   
   # zero everything if this is a blank table (for start of each leg)
   if (blank_table == TRUE){
     st$days[idx] = 0
     st$dist[idx] = 0
     st$spVis[idx] = 0
-    # st$spPam[idx] = NA
+    st$spPam[idx] = NA
   }
   
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
   # st$segments[8] = sum(as.integer(st$segments[1:7]), na.rm = TRUE)
-  st$dist[8] = sum(as.double(st$dist[1:7]), na.rm = TRUE)
+  st$dist[8] = round(sum(as.double(st$dist[1:7]), na.rm = TRUE))
   st$spVis[8] = sum(as.integer(st$spVis[1:7]), na.rm = TRUE)
-  # st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
+  st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
   
   # View(st)
   
@@ -96,9 +95,8 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   ft = flextable::theme_vanilla(ft)
   ft = flextable::set_header_labels(ft, leg_ship = 'Leg and Ship', days = 'Days at Sea',
                                     segments = 'Segments', dist = 'Distance [km]', 
-                                    spVis = 'Visual Sightings' #, 
-                                    # spPam = 'Acoustic Detections'
-                                    )
+                                    spVis = 'Visual Sightings', 
+                                    spPam = 'Acoustic Detections')
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
   
   # limit significant digits
@@ -108,10 +106,8 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   ft = flextable::width(ft, 1, width = 1.1)
   # ft = width(ft, 2, width = 0.6)
   ft = flextable::width(ft, c(2,3), width = 0.8)
-  ft = flextable::width(ft, c(4), width = 1.2)
-  # ft = flextable::width(ft, c(4,5), width = 1.2)
-  ft = flextable::align(ft, j = c(2,3,4), align = 'center')
-  # ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
+  ft = flextable::width(ft, c(4,5), width = 1.2)
+  ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
   ft = flextable::align(ft, align = 'center', part = 'header')
   
   # change borders and text color
