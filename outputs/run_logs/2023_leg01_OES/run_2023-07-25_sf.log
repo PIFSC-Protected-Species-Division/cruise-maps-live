@@ -144,3 +144,17 @@ integer(0)
 batch script test commit. 
 
 shell script test commit. 
+...run started 2023-07-25 12:56:27 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+ Skipping acoustic detections...
+ Updating summary table:
+
+...run started 2023-07-25 12:57:30 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+ Skipping acoustic detections...
+ Updating summary table:
+
+...run started 2023-07-25 13:05:39 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
