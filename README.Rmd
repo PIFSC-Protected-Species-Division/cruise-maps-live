@@ -48,7 +48,7 @@ The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolp
 
 ## Notes
 
-[How to set up the task scheduler](https://docs.google.com/document/d/1pwBmR6AqgnvUx_AiWYQxtYxIRjWMfdd5EPWwFvpI3Ug/edit) *( thank you Emily!)*
+[How to set up automation using Windows Task Scheduler](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit)
 
 Where the input and output files will be saved: [Google Drive - Restricted access](https://drive.google.com/drive/u/0/folders/1okUHW9LRxXJ8T8Djxu_VUKV3LPmEMp6c)
 

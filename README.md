@@ -5,7 +5,7 @@
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 05 Jul 2023*
+style="width:0.88em;height:1em" /> *Last Update: 25 Jul 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -46,9 +46,8 @@ website.
 
 ## Notes
 
-[How to set up the task
-scheduler](https://docs.google.com/document/d/1pwBmR6AqgnvUx_AiWYQxtYxIRjWMfdd5EPWwFvpI3Ug/edit)
-*( thank you Emily!)*
+[How to set up automation using Windows Task
+Scheduler](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit)
 
 Where the input and output files will be saved: [Google Drive -
 Restricted
