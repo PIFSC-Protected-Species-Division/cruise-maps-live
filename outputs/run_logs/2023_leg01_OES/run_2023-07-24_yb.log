@@ -1,0 +1,56 @@
+
+...run started 2023-07-24 15:56:36 HST ...
+ dir_wd = C:/users/yvonne.barkley/Github/cruise-maps-live 
+ Processing 1 new das files:
+  DASALL.723 
+   saved data/snapshots/ newEffortTracks_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newEffortPoints_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newSightings_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+  DASALL.723 
+   saved data/snapshots/ newEffortTracks_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newEffortPoints_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newSightings_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+[1] "C:/users/yvonne.barkley/Github/cruise-maps-live/outputs/summaryTable_2023_leg01_OES.png"
+   saved summaryTable_2023_leg01_OES.png 
+[1] "C:/users/yvonne.barkley/Github/cruise-maps-live/outputs/table_archive/summaryTable_2023_leg01_OES_2023-07-24.png"
+   saved table_archive/ summaryTable_2023_leg01_OES_2023-07-24.png 
+ Generating latest map:
+ Processing 1 new das files:
+  DASALL.723 
+   saved data/snapshots/ newEffortTracks_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newEffortPoints_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved data/snapshots/ newSightings_2023_leg01_OES_DASALL.723_2023-07-24.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+ Generating latest map:
+$base_map
+
+$vsMap
+Simple feature collection with 2 features and 13 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -156.2193 ymin: 19.68367 xmax: -156.1213 ymax: 19.76917
+Geodetic CRS:  WGS 84
+  SpCode SightNo            DateTime Cruise       Lon EffType OnEffort
+1     31     001 2023-07-23 06:26:25    203 -156.2193       N     TRUE
+2    177     002 2023-07-23 07:12:39    203 -156.1213       N     TRUE
+  EffortDot ObsStd Mixed Bft PerpDistKm               SpName
+1      TRUE   TRUE FALSE   2  0.7937055   Melon-headed whale
+2      TRUE   TRUE FALSE   3  6.9280823 Unidentified dolphin
+                    geometry
+1 POINT (-156.2193 19.76917)
+2 POINT (-156.1213 19.68367)
+
+   saved dailyMap_2023_leg01_OES as .png and .pdf
+   saved map_archive/ dailyMap_2023_leg01_OES_2023-07-24 as .png and .pdf
+...run complete 2023-07-24 16:07:52 HST ...
