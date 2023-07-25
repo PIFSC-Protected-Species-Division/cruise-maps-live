@@ -35,15 +35,15 @@ if (!dir.exists(file.path(dir_wd, 'data'))){
   dir.create(file.path(dir_wd, 'data'))
 }
 
-# gd_downloads - raw files from google drive
-if (!dir.exists(file.path(dir_wd, 'data', 'gd_downloads'))){
-  dir.create(file.path(dir_wd, 'data', 'gd_downloads'))
-}
+# # gd_downloads - raw files from google drive
+# if (!dir.exists(file.path(dir_wd, 'data', 'gd_downloads'))){
+#   dir.create(file.path(dir_wd, 'data', 'gd_downloads'))
+# }
 
-# processed daily snapshots
-if (!dir.exists(file.path(dir_wd, 'data', 'snapshots'))){
-  dir.create(file.path(dir_wd, 'data', 'snapshots'))
-}
+# # processed daily snapshots
+# if (!dir.exists(file.path(dir_wd, 'data', 'snapshots'))){
+#   dir.create(file.path(dir_wd, 'data', 'snapshots'))
+# }
 
 
 # ------ SEARCH/INSTALL/LOAD NEEDED PACKAGES ------------------------------

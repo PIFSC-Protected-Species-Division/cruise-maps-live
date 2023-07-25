@@ -63,6 +63,34 @@ for (i in 1:length(locations)){
 # invisible(sapply(functionNames, FUN = source))
 #
 
+
+# ------ Set up folder structure ------------------------------------------
+# create nested subfolders for this year_leg_ship if needed
+# data folder
+if (!dir.exists(file.path(dir_wd, 'data', y_l_s))){
+  dir.create(file.path(dir_wd, 'data', y_l_s))
+}
+# downloaded google drive files
+if (!dir.exists(file.path(dir_wd, 'data', y_l_s, 'gd_downloads'))){
+  dir.create(file.path(dir_wd, 'data', y_l_s, 'gd_downloads'))
+}
+# data snapshots
+if (!dir.exists(file.path(dir_wd, 'data', y_l_s, 'snapshots'))){
+  dir.create(file.path(dir_wd, 'data', y_l_s, 'snapshots'))
+}
+# map snapshots
+if (!dir.exists(file.path(dir_wd, 'outputs', 'map_archive', y_l_s))){
+  dir.create(file.path(dir_wd, 'outputs', 'map_archive', y_l_s))
+}
+# table snapshots
+if (!dir.exists(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))){
+  dir.create(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))
+}
+# log files
+if (!dir.exists(file.path(dir_wd, 'outputs', 'run_logs', y_l_s))){
+  dir.create(file.path(dir_wd, 'outputs', 'run_logs', y_l_s))
+}
+
 # ------ Make a log file --------------------------------------------------
 # define directory to save log file and create if doesn't exist
 logDir = file.path(dir_wd, 'outputs', 'run_logs', y_l_s)
@@ -150,9 +178,7 @@ if (length(idxNew) != 0){
     # i = 1 # for testing
     d = dasList[idxNew[i],]
     
-    
-    
-    dasFile = file.path(dir_wd, 'data', 'gd_downloads', d$name)
+    dasFile = file.path(dir_wd, 'data', 'gd_downloads', y_l_s, d$name)
     cat(' ', d$name, '\n')
     
     # download and save locally
@@ -175,16 +201,16 @@ if (length(idxNew) != 0){
     # save a 'snapshot' of the data for this das file with date it was run
     outName = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', 
                      Sys.Date(), '.Rda')
-    save(etNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+    save(etNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/snapshots/', outName, '\n')
+    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
-    if (file.exists(file.path(dir_wd, 'data', outName))){
+    if (file.exists(file.path(dir_wd, 'data', y_l_s, outName))){
       # load old if it exists
-      load(file.path(dir_wd, 'data', outName))
+      load(file.path(dir_wd, 'data', y_l_s, outName))
       # combine
       et = rbind(et, etNew)
       et = unique(et)                 # remove duplicates (in case ran already)
@@ -193,12 +219,12 @@ if (length(idxNew) != 0){
       et = etNew
     }
     
-    save(et, file = file.path(dir_wd, 'data', outName))
+    save(et, file = file.path(dir_wd, 'data', y_l_s, outName))
     googledrive::drive_put(file.path(dir_wd, 'data', outName), 
                            path = dir_gd_processed)
     outNameCSV = paste0('compiledEffortTracks_', y_l_s, '.csv')
-    write.csv(et, file = file.path(dir_wd, 'data', outNameCSV))
-    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+    write.csv(et, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outNameCSV), 
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
@@ -211,16 +237,16 @@ if (length(idxNew) != 0){
     # save a 'snapshot' of the data for this run
     outName = paste0('newEffortPoints_', y_l_s, '_', d$name, '_', 
                      Sys.Date(), '.Rda')
-    save(epNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+    save(epNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/snapshots/', outName, '\n')
+    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
-    if (file.exists(file.path(dir_wd, 'data', outName))){
+    if (file.exists(file.path(dir_wd, 'data', y_l_s, outName))){
       # load old if it exists
-      load(file.path(dir_wd, 'data', outName))
+      load(file.path(dir_wd, 'data', y_l_s, outName))
       # combine, remove dupes, sort by date
       ep = rbind(ep, epNew)
       ep = unique(ep)
@@ -229,12 +255,12 @@ if (length(idxNew) != 0){
       ep = epNew
     }
     
-    save(ep, file = file.path(dir_wd, 'data', outName))
-    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+    save(ep, file = file.path(dir_wd, 'data', y_l_s, outName))
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outName), 
                            path = dir_gd_processed)
     outNameCSV = paste0('compiledEffortPoints_', y_l_s, '.csv')
-    write.csv(ep, file = file.path(dir_wd, 'data', outNameCSV))
-    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+    write.csv(ep, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outNameCSV), 
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
@@ -250,16 +276,16 @@ if (length(idxNew) != 0){
     
     # save a 'snapshot' of the data for this run
     outName = paste0('newSightings_', y_l_s, '_', d$name, '_', Sys.Date(), '.Rda')
-    save(vsNew, file = file.path(dir_wd, 'data', 'snapshots', outName))
-    googledrive::drive_upload(file.path(dir_wd, 'data', 'snapshots', outName), 
+    save(vsNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
+    googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/snapshots/', outName, '\n')
+    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledSightings_', y_l_s, '.Rda')
-    if (file.exists(file.path(dir_wd, 'data', outName))){
+    if (file.exists(file.path(dir_wd, 'data', y_l_s, outName))){
       # load old if it exists
-      load(file.path(dir_wd, 'data', outName))
+      load(file.path(dir_wd, 'data', y_l_s, outName))
       # combine, remove dupes, sort by date
       vs = rbind(vs, vsNew)
       vs = unique(vs)
@@ -268,12 +294,12 @@ if (length(idxNew) != 0){
       vs = vsNew
     }
     
-    save(vs, file = file.path(dir_wd, 'data', outName))
-    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+    save(vs, file = file.path(dir_wd, 'data', y_l_s, outName))
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outName), 
                            path = dir_gd_processed)
     outNameCSV = paste0('compiledSightings_', y_l_s, '.csv')
-    write.csv(vs, file = file.path(dir_wd, 'data', outNameCSV))
-    googledrive::drive_put(file.path(dir_wd, 'data', outNameCSV), 
+    write.csv(vs, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outNameCSV), 
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
@@ -348,7 +374,7 @@ flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName),
 cat('   saved', outName, '\n')
 outName = paste0('summaryTable_', y_l_s, '_', Sys.Date(), '.png')
 flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', 'table_archive',
-                                              outName), res = 300)
+                                              y_l_s, outName), res = 300)
 cat('   saved table_archive/', outName, '\n')
 
 # ------ Plot map ---------------------------------------------------------
@@ -390,7 +416,8 @@ cat('   saved', outStr, 'as .png and .pdf\n')
 
 # save a copy of today's run - as .png and .pdf
 outStr = paste0('dailyMap_', y_l_s, '_', Sys.Date())
-ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.png')),
+ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', y_l_s, 
+                            paste0(outStr, '.png')),
        height = height,
        width = width,
        plot = base_map,
@@ -398,14 +425,15 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.p
        bg = 'white',
        device = 'png')
 
-ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', paste0(outStr, '.pdf')),
+ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', y_l_s, 
+                            paste0(outStr, '.pdf')),
        height = height,
        width = width,
        plot = base_map,
        dpi = res,
        bg = 'white',
        device = 'pdf')
-cat('   saved map_archive/', outStr, 'as .png and .pdf\n')
+cat('   saved map_archive/', y_l_s, '/', outStr, 'as .png and .pdf\n')
 
 # ------ Close up log -----------------------------------------------------
 
