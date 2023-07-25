@@ -131,7 +131,7 @@ if (data_source == 'blank'){
   # push through authorization approval
   2 # this may need to change??
   
-  # turn of test/blank checks
+  # turn off test/blank checks
   blank_table = FALSE
   test_code = FALSE
   
@@ -159,7 +159,8 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '00'){
-    idxNew = 3
+    # idxNew = 3
+    idxNew = c(1,2)
   }
   ###################
   
