@@ -114,6 +114,7 @@ if (data_source == 'blank'){
   # ------ Identify new das file --------------------------------------------
   
   # open up list of previously checked das files
+  # to re-run all, delete dasList_yr.Rda file from your local outputs folder
   if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))){
     load(file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
     dasNames_old = dasList$name
