@@ -9,8 +9,8 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-# data_source = 'gd' # google drive
-data_source = 'blank' # for making blank table and map
+data_source = 'gd' # google drive
+# data_source = 'blank' # for making blank table and map
 
 # dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
 # Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
@@ -107,6 +107,9 @@ if (data_source == 'blank'){
   # push through authorization approval
   2 # this may need to change??
   
+  # turn of test/blank checks
+  blank_table = FALSE
+  test_code = FALSE
   
   # ------ Identify new das file --------------------------------------------
   
