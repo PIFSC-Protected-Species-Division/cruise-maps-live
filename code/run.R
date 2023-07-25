@@ -204,7 +204,7 @@ if (length(idxNew) != 0){
     save(etNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
     googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
+    cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledEffortTracks_', y_l_s, '.Rda')
@@ -220,7 +220,7 @@ if (length(idxNew) != 0){
     }
     
     save(et, file = file.path(dir_wd, 'data', y_l_s, outName))
-    googledrive::drive_put(file.path(dir_wd, 'data', outName), 
+    googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outName), 
                            path = dir_gd_processed)
     outNameCSV = paste0('compiledEffortTracks_', y_l_s, '.csv')
     write.csv(et, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
@@ -240,7 +240,7 @@ if (length(idxNew) != 0){
     save(epNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
     googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
+    cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledEffortPoints_', y_l_s, '.Rda')
@@ -279,7 +279,7 @@ if (length(idxNew) != 0){
     save(vsNew, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
     googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
                               path = dir_gd_snapshots)
-    cat('   saved data/', y_l_s, '/snapshots/', outName, '\n')
+    cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
     outName = paste0('compiledSightings_', y_l_s, '.Rda')
@@ -375,7 +375,7 @@ cat('   saved', outName, '\n')
 outName = paste0('summaryTable_', y_l_s, '_', Sys.Date(), '.png')
 flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', 'table_archive',
                                               y_l_s, outName), res = 300)
-cat('   saved table_archive/', outName, '\n')
+cat('   saved', outName, '\n')
 
 # ------ Plot map ---------------------------------------------------------
 cat(' Generating latest map:\n')
@@ -433,7 +433,7 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', y_l_s,
        dpi = res,
        bg = 'white',
        device = 'pdf')
-cat('   saved map_archive/', y_l_s, '/', outStr, 'as .png and .pdf\n')
+cat('   saved', outStr, 'as .png and .pdf\n')
 
 # ------ Close up log -----------------------------------------------------
 
