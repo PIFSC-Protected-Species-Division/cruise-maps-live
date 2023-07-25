@@ -86,10 +86,6 @@ if (!dir.exists(file.path(dir_wd, 'outputs', 'map_archive', y_l_s))){
 if (!dir.exists(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))){
   dir.create(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))
 }
-# log files
-if (!dir.exists(file.path(dir_wd, 'outputs', 'run_logs', y_l_s))){
-  dir.create(file.path(dir_wd, 'outputs', 'run_logs', y_l_s))
-}
 
 # ------ Make a log file --------------------------------------------------
 # define directory to save log file and create if doesn't exist
