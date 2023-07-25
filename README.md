@@ -46,9 +46,7 @@ website.
 
 ## Notes
 
-[How to set up the task
-scheduler](https://docs.google.com/document/d/1pwBmR6AqgnvUx_AiWYQxtYxIRjWMfdd5EPWwFvpI3Ug/edit)
-*( thank you Emily!)*
+[How to automate the process](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit)
 
 Where the input and output files will be saved: [Google Drive -
 Restricted
