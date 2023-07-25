@@ -300,7 +300,7 @@ if (length(idxNew) != 0){
     cat('   saved', outName, 'and as .csv\n')
     
   } # end loop through all idxNew
-} # end check for non-empty idxNew
+
 
 
 # ------ Extract acoustic detections --------------------------------------
@@ -430,6 +430,8 @@ ggsave(filename = file.path(dir_wd, 'outputs', 'map_archive', y_l_s,
        bg = 'white',
        device = 'pdf')
 cat('   saved', outStr, 'as .png and .pdf\n')
+
+} # end check for non-empty idxNew
 
 # ------ Close up log -----------------------------------------------------
 
