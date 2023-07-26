@@ -13,3 +13,5 @@ NOAA Fisheries
 
 Alt Text 
 A table showing preliminary survey data from HICEAS 2023. This figure will be updated to include recent survey effort, cetacean sightings, and acoustic detections.
+
+A table showing preliminary survey data from HICEAS 2023. This figure will be updated to include recent survey effort and cetacean sightings.
