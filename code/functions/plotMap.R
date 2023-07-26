@@ -68,6 +68,9 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
         dplyr::left_join(key, by = "SpCode")
       vsMap = na.omit(vsMap) # remove any species names that didn't find a match
       
+      #sort vsMap by species name 
+      vsMap = vsMap[order(vsMap$SpName),]
+      
       
       # #################
       # ## Load acoustics events data 
