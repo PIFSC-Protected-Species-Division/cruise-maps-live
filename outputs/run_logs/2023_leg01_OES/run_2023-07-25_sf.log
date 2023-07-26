@@ -158,3 +158,30 @@ shell script test commit.
 
 ...run started 2023-07-25 13:05:39 PDT ...
  dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-07-25 17:29:09 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 2 new das files:
+  DASALL.724 
+   saved newEffortTracks_2023_leg01_OES_DASALL.724_2023-07-25.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved newEffortPoints_2023_leg01_OES_DASALL.724_2023-07-25.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved newSightings_2023_leg01_OES_DASALL.724_2023-07-25.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+  DASALL.723 
+   saved newEffortTracks_2023_leg01_OES_DASALL.723_2023-07-25.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved newEffortPoints_2023_leg01_OES_DASALL.723_2023-07-25.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved newSightings_2023_leg01_OES_DASALL.723_2023-07-25.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+   saved summaryTable_2023_leg01_OES.png 
+   saved summaryTable_2023_leg01_OES_2023-07-25.png 
+ Generating latest map:
+   saved dailyMap_2023_leg01_OES as .png and .pdf
+   saved dailyMap_2023_leg01_OES_2023-07-25 as .png and .pdf
+...run complete 2023-07-25 17:30:27 PDT ...
