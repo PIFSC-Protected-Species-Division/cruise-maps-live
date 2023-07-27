@@ -18,3 +18,37 @@
    saved dailyMap_2023_leg01_OES as .png and .pdf
    saved dailyMap_2023_leg01_OES_2023-07-26 as .png and .pdf
 ...run complete 2023-07-26 08:02:51 PDT ...
+
+...run started 2023-07-26 22:05:57 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 3 new das files:
+  DASALL.725 
+   saved newEffortTracks_2023_leg01_OES_DASALL.725_2023-07-26.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved newEffortPoints_2023_leg01_OES_DASALL.725_2023-07-26.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved newSightings_2023_leg01_OES_DASALL.725_2023-07-26.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+  DASALL.724 
+   saved newEffortTracks_2023_leg01_OES_DASALL.724_2023-07-26.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved newEffortPoints_2023_leg01_OES_DASALL.724_2023-07-26.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved newSightings_2023_leg01_OES_DASALL.724_2023-07-26.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+  DASALL.723 
+   saved newEffortTracks_2023_leg01_OES_DASALL.723_2023-07-26.Rda 
+   saved compiledEffortTracks_2023_leg01_OES.Rda and as .csv
+   saved newEffortPoints_2023_leg01_OES_DASALL.723_2023-07-26.Rda 
+   saved compiledEffortPoints_2023_leg01_OES.Rda and as .csv
+   saved newSightings_2023_leg01_OES_DASALL.723_2023-07-26.Rda 
+   saved compiledSightings_2023_leg01_OES.Rda and as .csv
+ Skipping acoustic detections...
+ Updating summary table:
+   saved summaryTable_2023.Rda 
+   saved summaryTable_2023_leg01_OES.png 
+   saved summaryTable_2023_leg01_OES_2023-07-26.png 
+ Generating latest map:
+   saved dailyMap_2023_leg01_OES as .png and .pdf
+   saved dailyMap_2023_leg01_OES_2023-07-26 as .png and .pdf
+...run complete 2023-07-26 22:07:37 PDT ...
