@@ -194,6 +194,9 @@ if (length(idxNew) != 0){
     df_proc = swfscDAS::das_process(dasFile)
     # View(df_proc)
     
+    # correct cruise number
+    df_proc$Cruise = 2303
+    
     # ------ Parse track data from das ----------------------------------------
     
     # parse on-effort segments as straight lines from Begin/Resume to End 
