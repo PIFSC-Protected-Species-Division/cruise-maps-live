@@ -246,6 +246,7 @@ if (length(idxNew) != 0){
     outGPX = file.path(dir_wd, 'data', y_l_s, 'gpx', 
                        paste0('compiledEffortTracks_', y_l_s, '.gpx'))
     trackToGPX(et, outGPX)
+    googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
     
     
     # ------ Parse track data as points ---------------------------------------
