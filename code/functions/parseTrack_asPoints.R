@@ -27,7 +27,7 @@ parseTrack_asPoints <- function(df_proc){
   df_proc_sub$OnEffort[which(df_proc_sub$Event == 'E')] <- TRUE
   df_proc_sub$EffortDot[which(df_proc_sub$Event == 'E')] <- TRUE
   
-  # loop through all lines and add a segment number for continous effort segments
+  # loop through all lines and add a segment number for continuous effort segments
   df_proc_sub$SegID = 0
   segCounter = 1
   for(i in 1:length(df_proc_sub$line_num)) { 
