@@ -1,26 +1,28 @@
 trackToGPX = function(et, outGPX){
-  
-  #' plotMap
+  #' trackToGPX
   #' 
-  #' description:
+  #' @description create a .gpx file based on the effort track data recorded in 
+  #' HICEAS .DAS files. The track data needs to have been extracted from the 
+  #' .DAS file using `parseTrack()` which creates the 'et' dataframe
+  #' 
+  #' Track segments within days are plotted separately but are connected. Tracks
+  #' across days are not connected.
   #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 27 July 2023
+  #' date: 28 July 2023
   #'
-  #' @param et data.frame of effort as tracks, can be 'et' cumlative over a HICEAS
+  #' @param et data.frame of effort as tracks, can be 'et' cumulative over a HICEAS
   #' leg or 'et' for just a single DAS
   #' @param outGPX fullpath filename to save
   #' example: outGPX = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', Sys.Date(), '.gpx')
   #' 
   #' @return none, will write a file
-  #' @export
   #' @examples
+  #' load('./cruise-maps-live/data/2023_leg01_OES/compiledEffortTracks_2023_leg01_OES.Rda')
+  #' trackToGPX(et, './cruise-maps-live/data/2023_leg01_OES/gpx/test.gpx')
   #'  
   #'
-  #'
-  #'
-  #'
-  #'
+  #' ######################################################################
   
   # Get et into a simplified longform format
   # clean up et to the essential cols
@@ -28,7 +30,7 @@ trackToGPX = function(et, outGPX){
                                  lat2, lon2, DateTime2))
   
   # add a 'date' only column
-  etTrim$date = date(et$DateTime1)
+  etTrim$date = lubridate::date(et$DateTime1)
   # create a unique ID based on date and segnum
   etTrim$uid = paste0(etTrim$date, '_', etTrim$segnum)
   
@@ -48,6 +50,11 @@ trackToGPX = function(et, outGPX){
   
   # reorder by segnum, and rearrange columns
   etLong = etLong[order(etLong$date, etLong$segnum), c(1, 4, 3, 2, 5:8)]
+  
+  # apply correct timezone to datetimes
+  etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
+  # create datetime col with proper formatting for gpx
+  etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S+10:00")
   
   # get info about segments for populating the GPX
   uidList = unique(etLong$uid)
@@ -106,9 +113,7 @@ trackToGPX = function(et, outGPX){
         o = c(o, 
               paste0('    <trkpt lat="', etLong$lat[dtIdx][segIdx][j], 
                      '" lon="', etLong$lon[dtIdx][segIdx][j],'">'), 
-              paste0('      <time>', paste0(gsub(' ', 'T', as.character(
-                etLong$DateTime[dtIdx][segIdx][j])), 'Z'),
-                '</time>'), 
+              paste0('      <time>', etLong$dt[dtIdx][segIdx][j],'</time>'), 
               '    </trkpt>')
       }
       o = c(o,
