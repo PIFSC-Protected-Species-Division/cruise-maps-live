@@ -153,6 +153,8 @@ if (data_source == 'blank'){
   
   # look for current list of .das files on Google Drive
   dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
+  # sort by day 
+  dasList = dasList[order(dasList$name),]
   dasNames_new = dasList$name
 
   
@@ -197,7 +199,7 @@ if (length(idxNew) != 0){
     # View(df_proc)
     
     # correct cruise number (only need on first few days of Leg 1)
-    # df_proc$Cruise = 2303
+    df_proc$Cruise = 2303
     
     # ------ Parse track data from das ----------------------------------------
     
