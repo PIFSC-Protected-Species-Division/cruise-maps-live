@@ -154,7 +154,7 @@ if (data_source == 'blank'){
   # look for current list of .das files on Google Drive
   dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
   dasNames_new = dasList$name
-  save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
+
   
   
   # identify which files are new/need to be processed
@@ -244,13 +244,14 @@ if (length(idxNew) != 0){
                               Sys.Date(), '.gpx'))
     trackToGPX(etNew, outGPX)
     googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+    cat('   saved', outGPX, '\n')
     
     # compiled tracks
     outGPX = file.path(dir_wd, 'data', y_l_s, 'gpx', 
                        paste0('compiledEffortTracks_', y_l_s, '.gpx'))
     trackToGPX(et, outGPX)
     googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
-    
+    cat('   saved', outGPX, '\n')
     
     # ------ Parse track data as points ---------------------------------------
     # alternatively, can parse individual lines to get the segments out as points
@@ -461,6 +462,8 @@ if (length(idxNew) != 0){
   
 } # end check for non-empty idxNew
 
+# if all ran ok, save updated dasList so these files won't be run again
+save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
 # ------ Close up log -----------------------------------------------------
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
