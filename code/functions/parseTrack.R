@@ -26,13 +26,17 @@ parseTrack <- function(df_proc){
                        num.cores = 1)
   # trim to just what we want
   et_seg = et_all$segdata
-  et_seg_sub = subset(et_seg, select = c(Cruise, segnum, stlin:mtime, Mode, 
+  et= subset(et_seg, select = c(Cruise, segnum, stlin:mtime, Mode, 
                                           EffType, avgSpdKt, avgBft))
   # effort types can be 'N' non-standard, 'S' standard', and 'F' fine-scale
   # could further trim by this. 
-  # View(et_seg_sub)
   
-  et = et_seg_sub
+  # apply correct timezone to datetime cols
+  et$DateTime1 = lubridate::force_tz(et$DateTime1, tzone = 'HST')
+  et$DateTime2 = lubridate::force_tz(et$DateTime2, tzone = 'HST')
+  et$mDateTime = lubridate::force_tz(et$mDateTime, tzone = 'HST')
+  # View(et)
+  
   return(et)
   
 }

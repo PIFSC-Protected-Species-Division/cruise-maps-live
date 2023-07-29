@@ -46,6 +46,10 @@ extractVisualSightings <- function(df_proc){
   # for now exporting all sightings, can change to only on effort
   vs = vs_SCet
   # vs = vs_SCet_OE
+  
+  # apply correct timezone to datetime col
+  vs$DateTime = lubridate::force_tz(vs$DateTime, tzone = 'HST')
+
 
   return(vs)
   
