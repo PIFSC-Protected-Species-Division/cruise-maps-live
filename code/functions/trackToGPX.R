@@ -54,7 +54,7 @@ trackToGPX = function(et, outGPX){
   # apply correct timezone to datetimes
   etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
   # create datetime col with proper formatting for gpx
-  etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S+10:00")
+  etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
   
   # get info about segments for populating the GPX
   uidList = unique(etLong$uid)
