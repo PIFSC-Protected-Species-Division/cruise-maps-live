@@ -192,10 +192,12 @@ if (length(idxNew) != 0){
     # read and process
     df_read = swfscDAS::das_read(dasFile, skip = 0)
     df_proc = swfscDAS::das_process(dasFile)
+    # update time zone
+    df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, 'HST')
     # View(df_proc)
     
-    # correct cruise number
-    df_proc$Cruise = 2303
+    # correct cruise number (only need on first few days of Leg 1)
+    # df_proc$Cruise = 2303
     
     # ------ Parse track data from das ----------------------------------------
     
