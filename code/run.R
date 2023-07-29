@@ -199,7 +199,10 @@ if (length(idxNew) != 0){
     # View(df_proc)
     
     # correct cruise number (only need on first few days of Leg 1)
-    df_proc$Cruise = 2303
+    if (y_l_s == '2023_leg01_OES'){
+      df_proc$Cruise = 2303
+    }
+
     
     # ------ Parse track data from das ----------------------------------------
     
