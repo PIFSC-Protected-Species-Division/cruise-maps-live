@@ -7,20 +7,16 @@ trackToGPX = function(et, outGPX){
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
   #' date: 27 July 2023
   #'
-  #' @param et data.frame of effort as tracks, can be 'et' cumlative over a HICEAS
+  #' @param et data.frame of effort as tracks, can be 'et' cumulative over a HICEAS
   #' leg or 'et' for just a single DAS
   #' @param outGPX fullpath filename to save
   #' example: outGPX = paste0('newEffortTracks_', y_l_s, '_', d$name, '_', Sys.Date(), '.gpx')
   #' 
   #' @return none, will write a file
-  #' @export
   #' @examples
   #'  
   #'
-  #'
-  #'
-  #'
-  #'
+  #' ######################################################################
   
   # Get et into a simplified longform format
   # clean up et to the essential cols
@@ -28,7 +24,7 @@ trackToGPX = function(et, outGPX){
                                  lat2, lon2, DateTime2))
   
   # add a 'date' only column
-  etTrim$date = date(et$DateTime1)
+  etTrim$date = lubridate::date(et$DateTime1)
   # create a unique ID based on date and segnum
   etTrim$uid = paste0(etTrim$date, '_', etTrim$segnum)
   
