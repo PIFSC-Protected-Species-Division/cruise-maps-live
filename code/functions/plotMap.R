@@ -17,7 +17,6 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #' @param test_code logical input to randomly generate and plot data for testing
   #' 
   #' @return base_map map figure 
-  #' @export
   #'
   #' @examples
   #'  plotMap(dir, leg, ship, test_code=TRUE)

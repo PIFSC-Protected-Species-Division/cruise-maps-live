@@ -9,7 +9,6 @@ using <- function(...){
   #'
   #' @param #none
   #' @return #none
-  #' @export #none
   #'
   #' @examples 
   #' using('raster')

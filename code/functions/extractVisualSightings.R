@@ -12,7 +12,6 @@ extractVisualSightings <- function(df_proc){
   #' @param df_proc processed das file (with swfscDAS::das_process)
   #' 
   #' @return a dataframe of visual cetacean sightings with date and lat/lon
-  #' @export
   #'
   #' @examples
   #' # extract all new sightings from a given das file, d$name

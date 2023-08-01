@@ -26,7 +26,6 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   #' @param blank_table logical to create empty placeholder table with 0s
   #' 
   #' @return a list 'lt' with st - a data.frame summary table and ft - a flextable 
-  #' @export
   #'
   #' @examples
   #'

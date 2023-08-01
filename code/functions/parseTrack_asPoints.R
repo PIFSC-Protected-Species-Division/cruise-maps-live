@@ -12,7 +12,6 @@ parseTrack_asPoints <- function(df_proc){
   #' @param df_proc processed das file (with swfscDAS::das_process)
   #' 
   #' @return a dataframe of effort tracks with date and lat/lon
-  #' @export
   #'
   #' @examples
   #' # extract all new tracks from a given das file, d$name
