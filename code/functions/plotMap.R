@@ -2,10 +2,20 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   
   #' plotMap
   #' 
-  #' description:
+  #' @description create an overview map of HICEAS 2023 survey effort
+  #' 
+  #' The general survey area is outlined and proposed tracklines are plotted in 
+  #' dark grey. Realized effort tracklines are in pink - dark pink for previous
+  #' days and light pink for the most recent day. Animal sightings are overlaid
+  #' with different symbols/colors for each species sighted. Sightings of 
+  #' unidentified small, medium, and large dolphins are all combined with the 
+  #' 'unidentified dolphins' category. Sightings of unidentified small and 
+  #' large whales and unidentified whales and cetaceans are all combined in the 
+  #' 'unidentified cetacenas' category. 
   #' 
   #' author: Janelle Badger janelle.badger [at] noaa.gov
-  #' date: 30 June 2023
+  #' co-author: Selene Fregosi selene.fregosi [at] noaa.gov
+  #' date: 01 August 2023
   #'
   #' @param dir_wd character string to the cruise-maps-live working directory
   #' @param ep data.frame of effort as points, cumulative over a HICEAS leg
@@ -19,10 +29,9 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #' @return base_map map figure 
   #'
   #' @examples
-  #'  plotMap(dir, leg, ship, test_code=TRUE)
+  #'  plotMap(dir, leg, ep, epNew, vs, leg, ship, test_code=TRUE)
   #'
-  #'
-  #'
+  #' ######################################################################
   
   ## Load map layers & helpers
   key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), fileEncoding="UTF-8-BOM")

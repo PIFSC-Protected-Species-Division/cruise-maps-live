@@ -13,6 +13,7 @@ using <- function(...){
   #' @examples 
   #' using('raster')
   #' 
+  #' ######################################################################
   
   libs<-unlist(list(...))
   req<-unlist(lapply(libs,require,character.only=TRUE))

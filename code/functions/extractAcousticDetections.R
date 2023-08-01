@@ -2,14 +2,21 @@ extractAcousticDetections <- function(pamFile){
   
   #' pull acoustic detections from Pamguard sql
   #'
-  #' @description Read in PAM sql database and extract the acoustic detections. Simplify 
-  #' species IDs using decision tree based on visual + acoustic IDs, and 
-  #' arrange into a data.frame output for the summary table and mapping
+  #' @description Read in PAM sql database and extract the acoustic detections.
+  #' Species IDs are simplified using a decision tree that steps through several
+  #' choices based on visual vs acoustic IDs and what ID type. The detections 
+  #' are then cleaned up in a data.frame output to be used in the summary table
+  #' and map. 
+  #' 
+  #' author: Selene Fregosi selene.fregosi [at] noaa.gov
+  #' date: 01 August 2023
   #' 
   #' @param pamFile full file path to downloaded Pamguard sql file
   #' @return ad data.frame of acoustic detections with cols...
   #'
   #' @examples
+  #' 
+  #' ######################################################################
   
   # check that is sqlite file
   isSqlite = grepl("\\.sqlite3$", pamFile)

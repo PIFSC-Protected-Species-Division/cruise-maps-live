@@ -2,12 +2,12 @@ parseTrack <- function(df_proc){
   
   #' parseTrack
   #' 
-  #' description: Pull effort tracks from a relatively raw daily .das file 
+  #' @description Pull effort tracks from a relatively raw daily .das file 
   #' generated during HICEAS 2023. Utilizes the package 'swfscDAS' and then 
   #' cleans up those outputs a bit. 
   #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 16 May 2023
+  #' date: 01 August 2023
   #'
   #' @param df_proc processed das file (with swfscDAS::das_process)
   #' 
@@ -16,6 +16,8 @@ parseTrack <- function(df_proc){
   #' @examples
   #' # extract all new tracks from a given das file, d$name
   #' et = parseTrack(here('inputs', d$name))
+  #' 
+  #' ######################################################################
   
 
   

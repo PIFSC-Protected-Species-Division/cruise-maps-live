@@ -6,13 +6,6 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   #' in a flex table which can be saved and uploaded to the website. Relies on 
   #' previously parsed track and visual sighting data
   #' 
-  #' Sightings
-  #' of unidentified small, medium, and large dolphins and unidentified dolphins
-  #' were combined into a single category, “unidentified dolphins,” for 
-  #' detection function and abundance estimation. Likewise, sightings of 
-  #' unidentified small and large whales and unidentified whales and cetaceans 
-  #' were combined into the category “unidentified cetaceans.”
-  #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
   #' date: 01 August 2023
   #'
@@ -32,6 +25,7 @@ makeSummaryTable <- function(st, et, vs, ad, leg, ship, blank_table){
   #'
   #' @examples
   #'
+  #'#######################################################################
   
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
