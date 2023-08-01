@@ -17,9 +17,11 @@ data_source = 'gd' # google drive
 
 yr = 2023
 ship = 'OES' # 'LSK'
-leg = '01'
+leg = '1'
 # string for yr_legXX_SHP - used for filename generation
 y_l_s = paste0(yr, '_leg', leg, '_', ship)
+crNum = 2303
+crStr = paste0(ship, crNum)
 
 # dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
 # specifying path this way searches through all of google drive and is kind of slow
@@ -31,7 +33,7 @@ if (yr == 2017){
   dir_gd_snapshots <- googledrive::as_id('1ABge_3f1491s5odPcHU1p8KIWhG3ymLl')
 } else if (yr == 2023){
   dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
-  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
+  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX'
   dir_gd_processed <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
   dir_gd_snapshots <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
   dir_gd_gpx <- googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
@@ -156,7 +158,7 @@ if (data_source == 'blank'){
   # sort by day 
   dasList = dasList[order(dasList$name),]
   dasNames_new = dasList$name
-
+  
   
   
   # identify which files are new/need to be processed
@@ -202,7 +204,7 @@ if (length(idxNew) != 0){
     if (y_l_s == '2023_leg01_OES'){
       df_proc$Cruise = 2303
     }
-
+    
     
     # ------ Parse track data from das ----------------------------------------
     
@@ -240,9 +242,9 @@ if (length(idxNew) != 0){
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
-
-# ------ Create GPX from track data ---------------------------------------
-
+    
+    # ------ Create GPX from track data ---------------------------------------
+    
     source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
     
     # by day/das tracks
@@ -335,22 +337,33 @@ if (length(idxNew) != 0){
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
-  } # end loop through all idxNew
+  } # end loop through all idxNew for download and processing of DAS
   
   
   
   # ------ Extract acoustic detections --------------------------------------
   
   cat(' Skipping acoustic detections...\n')
-  # acoustics file will just be a single sql file that is updated/appended to each day
-  # it can be large so may be a bit slow to download
-  # pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
-  # googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-  # overwrite = TRUE,
-  # path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
+  # acoustics file is single sql file that is updated/appended each day
+  # file is large so slow to download
   
+  # assemble search string (may change later to ship name being based on cruise num)
+  # or may define this at top?
+  if (ship == 'OES'){
+    shipName = 'Sette'
+  } else if (ship == 'LSK'){ # maybe will be changed to 'RL'
+    shipName = 'Lasker'
+  }
+  pat = paste0(shipName, 'Leg', leg)
   
-  # FUTURE GOALS
+  # read in the file for this ship and leg - pamList should be length 1
+  pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
+  if (nrow(pamList) == 1){
+    pamFile = file.path(dir_wd, 'data', crStr, 'gd_downloads', pamList$name[1])
+    googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
+                                overwrite = TRUE, path = pamFile)
+  } else {stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')}
+  
   # source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R')
   # adNew = extractAcousticDetections()
   adNew = data.frame()
