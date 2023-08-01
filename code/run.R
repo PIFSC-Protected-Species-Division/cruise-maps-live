@@ -483,6 +483,7 @@ if (length(idxNew) != 0){
 
 # if all ran ok, save updated dasList so these files won't be run again
 save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', yr, '.Rda')))
+
 # ------ Close up log -----------------------------------------------------
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
