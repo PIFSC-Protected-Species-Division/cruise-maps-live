@@ -12,30 +12,35 @@
 data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map
 
-# dates0 = 'latest' # "all" # 'latest' #"2021-06-05",
-# Sys.Date(), # as.character(seq(as.Date("2022-07-30"), as.Date("2022-08-14"), by="days"))
+# yr = 2023
+crNum = 2303
+# ship = 'OES' # 'LSK'
+leg = '1'
 
-yr = 2023
-ship = 'OES' # 'LSK'
-leg = '01'
-# string for yr_legXX_SHP - used for filename generation
-y_l_s = paste0(yr, '_leg', leg, '_', ship)
-
-# dir_gd_raw <- paste0('cruise-maps-live/raw_das_files/', yr)
-# specifying path this way searches through all of google drive and is kind of slow
-# alternative hard code to url.
-if (yr == 2017){
-  dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1x4GzvtLQDGT1nA7nuAPHs5CPXxsX6Umt'
-  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1uONES1aEE9SGxAIgI7g1EY-qb1pkwH16'
-  dir_gd_processed <- googledrive::as_id('1slkbanFN3Avxxr1hcM99JxKk-TJE1C4k')
-  dir_gd_snapshots <- googledrive::as_id('1ABge_3f1491s5odPcHU1p8KIWhG3ymLl')
-} else if (yr == 2023){
-  dir_gd_raw_das <- 'https://drive.google.com/drive/u/0/folders/1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O'
-  dir_gd_raw_pam <- 'https://drive.google.com/drive/u/0/folders/1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp'
+# specify ship info and google drive paths for each cruise num/ship
+if (crNum == 2303){
+  shipCode = 'OES'
+  shipName = 'Sette'
+  projID = 'OES2303'
+  
+  dir_gd_raw_das <- googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
   dir_gd_processed <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
   dir_gd_snapshots <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
   dir_gd_gpx <- googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
+  
+} else if (crNum == 2401){
+  shipCode = 'LSK'
+  shipName = 'Lasker'
+  projID = 'LSK2401'
+  
+  dir_gd_raw_das <- googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
+  dir_gd_processed <- googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
+  dir_gd_snapshots <- googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
+  dir_gd_gpx <- googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
 }
+
+# all pam data is in a single folder
+dir_gd_raw_pam <- googledirve::as_id('1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp')
 
 # set working directory
 # will search through list of possible and select first one
@@ -54,15 +59,8 @@ for (i in 1:length(locations)){
   }
 }
 
-# or specify manually
-# dir_wd <- "C:/Users/selene.fregosi/documents/github/cruise-maps-live/"
-
-# as of now, all functions sourced individually, but could source all together
-# functionNames <- list.files(pattern = '[.]R$', path = paste0(dir_wd, 'code',
-#                                                              functions),
-#                             full.names = TRUE);
-# invisible(sapply(functionNames, FUN = source))
-#
+# build string used throughout for filename generation
+idStr = paste0(projID, '_leg', leg)
 
 
 # ------ Set up folder structure ------------------------------------------
@@ -156,7 +154,7 @@ if (data_source == 'blank'){
   # sort by day 
   dasList = dasList[order(dasList$name),]
   dasNames_new = dasList$name
-
+  
   
   
   # identify which files are new/need to be processed
@@ -202,7 +200,7 @@ if (length(idxNew) != 0){
     if (y_l_s == '2023_leg01_OES'){
       df_proc$Cruise = 2303
     }
-
+    
     
     # ------ Parse track data from das ----------------------------------------
     
@@ -240,9 +238,9 @@ if (length(idxNew) != 0){
                            path = dir_gd_processed)
     cat('   saved', outName, 'and as .csv\n')
     
-
-# ------ Create GPX from track data ---------------------------------------
-
+    
+    # ------ Create GPX from track data ---------------------------------------
+    
     source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
     
     # by day/das tracks
