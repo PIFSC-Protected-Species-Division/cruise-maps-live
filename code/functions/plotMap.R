@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
+plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   
   #' plotMap
   #' 
@@ -11,9 +11,9 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #' @param ep data.frame of effort as points, cumulative over a HICEAS leg
   #' @param epNew data.frame of effort as tracks, just new additions
   #' @param vs data.frame of visual sightings, cumulative over a HICEAS leg
-  #' @param leg character string with leg number (e.g., '01')
-  #' @param ship character string with code for ship (either 'OES' or 'LSK', or
+  #' @param shipCode character string with code for ship (either 'OES' or 'LSK', or
   #' in the future, both as c('OES', 'LSK'))
+  #' #' @param leg character string with leg number (e.g., '01')
   #' @param test_code logical input to randomly generate and plot data for testing
   #' 
   #' @return base_map map figure 
@@ -26,13 +26,14 @@ plotMap <- function(dir_wd, ep, epNew, vs, leg, ship, test_code){
   #'
   
   ## Load map layers & helpers
-  key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), fileEncoding="UTF-8-BOM")
+  key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), 
+                  fileEncoding="UTF-8-BOM")
   load(file.path(dir_wd, 'inputs', "map_layers.RData")) 
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
   if(test_code==FALSE){
-      if(length(ship)<2){
+      if(length(shipCode)<2){
         # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
         effort = ep  # if running within run.R, don't need to reload a just saved csv
         # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
