@@ -293,7 +293,7 @@ if (length(idxNew) != 0){
     vsNew = vsNew_clean
     
     # save a 'snapshot' of the data for this run
-    outName = paste0('newSightings_', legId, '_', d$name, '_ran', Sys.Date(), '.Rda')
+    outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), '.Rda')
     save(vsNew, file = file.path(dir_snaps, outName))
     googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
     cat('   saved', outName, '\n')
@@ -367,7 +367,7 @@ if (length(idxNew) != 0){
   cat(' Updating summary table:\n')
   
   # load previously created summary table if it exists
-  stName = paste0('summaryTable_', yr, '.Rda')
+  stName = paste0('summaryTable.Rda')
   if (file.exists(file.path(dir_wd, 'outputs', stName))){
     load(file.path(dir_wd, 'outputs', stName))
   } else {
@@ -375,7 +375,7 @@ if (length(idxNew) != 0){
   }
   
   source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-  lt = makeSummaryTable(st, et, vs, ad, leg, ship, blank_table)
+  lt = makeSummaryTable(st, et, vs, ad, shipCode, leg, blank_table)
   # break out pieces of returned list
   st = lt$st
   ft = lt$ft
@@ -398,7 +398,7 @@ if (length(idxNew) != 0){
   
   source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
   
-  mapOut = plotMap(dir_wd, ep, epNew, vs, leg, ship, test_code)
+  mapOut = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code)
   base_map = mapOut$base_map
   vsMap = mapOut$vsMap
   
