@@ -27,7 +27,7 @@ trackToGPX = function(et, outGPX){
   # Get et into a simplified longform format
   # clean up et to the essential cols
   etTrim = subset(et, select = c(Cruise, segnum, lat1, lon1, DateTime1, 
-                                 lat2, lon2, DateTime2))
+                                 lat2, lon2, DateTime2, avgBft))
   
   # add a 'date' only column
   etTrim$date = lubridate::date(et$DateTime1)
@@ -49,12 +49,16 @@ trackToGPX = function(et, outGPX){
   )
   
   # reorder by segnum, and rearrange columns
-  etLong = etLong[order(etLong$date, etLong$segnum), c(1, 4, 3, 2, 5:8)]
+  etLong = etLong[order(etLong$date, etLong$segnum), c(1, 5, 4, 2, 5:9, 3)]
   
-  # apply correct timezone to datetimes
-  etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
+  # # apply correct timezone to datetimes
+  # etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
   # create datetime col with proper formatting for gpx
-  etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
+  if (tz(etLong$DateTime[1]) == 'HST'){
+    etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
+  } else {
+    stop('Timezone is NOT HST...figure this out! Exiting.')
+  }
   
   # get info about segments for populating the GPX
   uidList = unique(etLong$uid)
@@ -87,28 +91,32 @@ trackToGPX = function(et, outGPX){
   
   # loop through multiple days if it is the compiled data
   # set up the day (track)
-  for (d in 1:length(dateList)){
-    dt = as.character(dateList[d])
+  for (dl in 1:length(dateList)){
+    dt = as.character(dateList[dl])
     dtIdx = which(etLong$date == dt)
     # how many segments for this day?
     segList = unique(etLong$segnum[dtIdx])
     
-    # add to our output string
-    o = c(o, '<trk>', 
-          paste0('  <name>', 
-                 etLong$Cruise[1], '_', dt,
-                 '</name>'),
-          paste0('  <desc>Vessel tracks for Cruise ',
-                 etLong$Cruise[1], ', ', dt, ', ',
-                 length(segList), ' total segments',
-                 '</desc>')
-    )
-    
     # loop through each segment and write that line as a track segment
     for (i in 1:length(segList)){
       segNum = segList[i]
-      o = c(o, '  <trkseg>')
       segIdx = which(etLong$segnum[dtIdx] == segNum)
+      avgBft = round(etLong$avgBft[dtIdx][segIdx][1], 2)
+      
+      # add to our output string
+      # set up the track and segment
+      o = c(o, '<trk>', 
+            paste0('  <name>', 
+                   etLong$Cruise[1], '_', dt, '_seg', segNum, '_avgBft', avgBft,
+                   '</name>'),
+            paste0('  <desc>Vessel track for Cruise ', etLong$Cruise[1], ', ', 
+                   dt, ', effort segment ', segNum, ', avg Beaufort SS ', avgBft,
+                   '</desc>'),
+            '  <trkseg>'
+      )
+      
+      # parse the lat/lon/datetime info as track points
+
       for (j in 1:2){
         o = c(o, 
               paste0('    <trkpt lat="', etLong$lat[dtIdx][segIdx][j], 
@@ -124,13 +132,11 @@ trackToGPX = function(et, outGPX){
             # paste0('<segnum>', 
             #        etLong$segnum[which(etLong$segnum == segNum)[1]], 
             #        '</segnum>'),
-            '  </trkseg>'
+            '  </trkseg>',
+            '</trk>'
       )
-    }
-    
-    # wrap up this day (track) 
-    o = c(o, '</trk>')
-  }
+    } # loop through each segment
+  } # loop through each day
   # wrap up the file 
   o = c(o, '</gpx>')
   
