@@ -59,35 +59,35 @@ for (i in 1:length(locations)){
   }
 }
 
-# build string used throughout for filename generation
-idStr = paste0(projID, '_leg', leg)
+# build string with leg num used throughout for filename generation
+legID = paste0(projID, '_leg', leg)
 
 
 # ------ Set up folder structure ------------------------------------------
-# create nested subfolders for this year_leg_ship if needed
+# create nested subfolders for this projID or logID if needed
 # data folder
-if (!dir.exists(file.path(dir_wd, 'data', y_l_s))){
-  dir.create(file.path(dir_wd, 'data', y_l_s))
+if (!dir.exists(file.path(dir_wd, 'data', projID))){
+  dir.create(file.path(dir_wd, 'data', projID))
 }
 # downloaded google drive files
-if (!dir.exists(file.path(dir_wd, 'data', y_l_s, 'gd_downloads'))){
-  dir.create(file.path(dir_wd, 'data', y_l_s, 'gd_downloads'))
+if (!dir.exists(file.path(dir_wd, 'data', projID, 'gd_downloads'))){
+  dir.create(file.path(dir_wd, 'data', projID, 'gd_downloads'))
 }
 # data snapshots
-if (!dir.exists(file.path(dir_wd, 'data', y_l_s, 'snapshots'))){
-  dir.create(file.path(dir_wd, 'data', y_l_s, 'snapshots'))
+if (!dir.exists(file.path(dir_wd, 'data', projID, 'snapshots'))){
+  dir.create(file.path(dir_wd, 'data', projID, 'snapshots'))
 }
 # gpx data
-if (!dir.exists(file.path(dir_wd, 'data', y_l_s, 'gpx'))){
-  dir.create(file.path(dir_wd, 'data', y_l_s, 'gpx'))
+if (!dir.exists(file.path(dir_wd, 'data', projID, 'gpx'))){
+  dir.create(file.path(dir_wd, 'data', projID, 'gpx'))
 }
-# map snapshots
-if (!dir.exists(file.path(dir_wd, 'outputs', 'map_archive', y_l_s))){
-  dir.create(file.path(dir_wd, 'outputs', 'map_archive', y_l_s))
+# map snapshots - save these by leg
+if (!dir.exists(file.path(dir_wd, 'outputs', 'map_archive', legID))){
+  dir.create(file.path(dir_wd, 'outputs', 'map_archive', legID))
 }
-# table snapshots
-if (!dir.exists(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))){
-  dir.create(file.path(dir_wd, 'outputs', 'table_archive', y_l_s))
+# table snapshots - save these by leg
+if (!dir.exists(file.path(dir_wd, 'outputs', 'table_archive', legID))){
+  dir.create(file.path(dir_wd, 'outputs', 'table_archive', legID))
 }
 
 # ------ Make a log file --------------------------------------------------
