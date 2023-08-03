@@ -1,7 +1,6 @@
 # data files so not public access
-/data/
-/data/gd_downloads/
-/data/snapshots/
+/data/*
+!/data/blank
 
 # sf testing files
 /code/testing/
