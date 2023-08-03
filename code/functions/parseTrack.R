@@ -17,6 +17,7 @@ parseTrack <- function(df_proc){
   #' @examples
   #' # extract all new tracks from a given das file, d$name
   #' et = parseTrack(here('inputs', d$name))
+  #' 
   
 
   
@@ -26,7 +27,7 @@ parseTrack <- function(df_proc){
                        num.cores = 1)
   # trim to just what we want
   et_seg = et_all$segdata
-  et= subset(et_seg, select = c(Cruise, segnum, stlin:mtime, Mode, 
+  et = subset(et_seg, select = c(Cruise, segnum, stlin:mtime, Mode, 
                                           EffType, avgSpdKt, avgBft))
   # effort types can be 'N' non-standard, 'S' standard', and 'F' fine-scale
   # could further trim by this. 

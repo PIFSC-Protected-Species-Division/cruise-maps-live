@@ -205,6 +205,12 @@ if (length(idxNew) != 0){
     source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
     etNew = parseTrack(df_proc)
     
+    # add on some ship info
+    etNew$shipCode = shipCode
+    etNew$shipName = shipName
+    etNew$projID = projID
+    etNew$leg = leg
+    
     # save a 'snapshot' of the data for this das file with date it was run
     outName = paste0('newEffortTracks_', legID, '_', d$name, '_ran', 
                      Sys.Date(), '.Rda')
@@ -255,6 +261,12 @@ if (length(idxNew) != 0){
     source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
     epNew = parseTrack_asPoints(df_proc)
     
+    # add on some ship info
+    epNew$shipCode = shipCode
+    epNew$shipName = shipName
+    epNew$projID = projID
+    epNew$leg = leg
+    
     # save a 'snapshot' of the data for this run
     outName = paste0('newEffortPoints_', legID, '_', d$name, '_ran', 
                      Sys.Date(), '.Rda')
@@ -287,6 +299,12 @@ if (length(idxNew) != 0){
     # do some stuff here to extract visual sighting data for the day from das
     source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
     vsNew = extractVisualSightings(df_proc)
+    
+    # add on some ship info
+    vsNew$shipCode = shipCode
+    vsNew$shipName = shipName
+    vsNew$projID = projID
+    vsNew$leg = leg
     
     # confirm all species codes are numeric and delete rows that aren't
     vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 

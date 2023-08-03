@@ -138,7 +138,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     ggspatial::layer_spatial(bathy)+ 
     geom_sf(data=p_x1, fill = "white", alpha=0.1, color=NA)+
     geom_sf(data=pmnm_shifted, fill="white", alpha = 0.1, color=NA)+
-    geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, color=colors_lines[3]), alpha=0.5, linewidth=0.5)+
+    geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
+                              color=colors_lines[3]), alpha=0.5, linewidth=0.5)+
     ggspatial::layer_spatial(eez, fill=NA, color = "white")+
     geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
     geom_sf(data=nwhi, fill= "white", color = "white")+
@@ -149,7 +150,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     
     
     ggnewscale::new_scale_color() +
-    geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3)+
+    geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3, stroke = 2)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
     scale_shape_manual(name="Encounters", values = shapes_enc, labels = labels_enc)+
     guides(colour = guide_legend(override.aes = list(size=3)))+
@@ -177,6 +178,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
                    x.max = max(lines$Longitude),
                    y.min = min(lines$Latitude),
                    y.max = max(lines$Latitude))
+  
   
   # rather than print and save within function going to have it as output
   # so easier to map where it needs to be saved and modify name with each leg, etc. 
