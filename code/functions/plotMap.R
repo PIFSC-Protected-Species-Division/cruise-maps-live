@@ -72,6 +72,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     vsMap = na.omit(vsMap) # remove any species names that didn't find a match
     #sort vsMap by species name 
     vsMap = vsMap[order(vsMap$SpName),]
+    # vsMap$SpNameFactor = factor(vsMap$SpName, levels = unique(vsMap$SpName[order(vsMap$Level)]), ordered = TRUE)
     
     
     # #################
@@ -110,7 +111,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   colors_lines<-c("deeppink","deeppink4", "grey0")
   
   colors_enc<-unique(vsMap$SpColor)
-  shapes_enc<-vsMap$SpSymbol
+
+  shapes_enc<-vsMap$SpSymbol #[uci]
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
@@ -146,14 +148,14 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     ggspatial::layer_spatial(effort, alpha=ta, size=tw, aes(color=colors_lines[2]))+
     ggspatial::layer_spatial(tmp, alpha=ta, size=tw, aes(color=colors_lines[1]))+
     scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
-                       labels=labels_lines)+
+                       labels = labels_lines)+
     
     
     ggnewscale::new_scale_color() +
     geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
-    scale_shape_manual(name="Encounters", values = shapes_enc, labels = labels_enc)+
-    guides(colour = guide_legend(override.aes = list(size=3)))+
+    scale_shape_manual(name = "Encounters", values = shapes_enc, labels = labels_enc)+
+    guides(colour = guide_legend(override.aes = list(size = 3)))+
     
     
     annotate("text", x=-168, y=29.5, 
