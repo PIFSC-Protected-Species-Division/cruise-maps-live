@@ -247,13 +247,13 @@ if (length(idxNew) != 0){
     outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, '.gpx'))
     trackToGPX(etNew, outGPX)
     googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
-    cat('   saved', outGPX, '\n')
+    cat('   saved', basename(outGPX), '\n')
     
     # compiled tracks
     outGPX = file.path(dir_gpx, paste0('compiledEffortTracks_', projID, '.gpx'))
     trackToGPX(et, outGPX)
     googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
-    cat('   saved', outGPX, '\n')
+    cat('   saved', basename(outGPX), '\n')
     
     # ------ Parse track data as points ---------------------------------------
     # alternatively, can parse individual lines to get the segments out as points
@@ -300,11 +300,13 @@ if (length(idxNew) != 0){
     source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
     vsNew = extractVisualSightings(df_proc)
     
+    if (nrow(vsNew) > 0){
     # add on some ship info
     vsNew$shipCode = shipCode
     vsNew$shipName = shipName
     vsNew$projID = projID
     vsNew$leg = leg
+    }
     
     # confirm all species codes are numeric and delete rows that aren't
     vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
