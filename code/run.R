@@ -338,48 +338,58 @@ if (length(idxNew) != 0){
     googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
     cat('   saved', outName, 'and as .csv\n')
     
-  } # end loop through all idxNew
+  } # end loop through all idxNew for download and processing of DAS
   
   
   
   # ------ Extract acoustic detections --------------------------------------
   
-  cat(' Skipping acoustic detections...\n')
-  # acoustics file will just be a single sql file that is updated/appended to each day
-  # it can be large so may be a bit slow to download
-  # pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = 'PAM')
-  # googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-  # overwrite = TRUE,
-  # path = paste0(dir_wd, 'gd_downloads/', yr, '/', pamList$name[1]))
+  # cat(' Skipping acoustic detections...\n')
+  # acoustics file is single sql file that is updated/appended each day
+  # file is large so slow to download
   
+  # assemble search string (may change later to ship name being based on cruise num)
+  # or may define this at top?
+  if (ship == 'OES'){
+    shipName = 'Sette'
+  } else if (ship == 'LSK'){ # maybe will be changed to 'RL'
+    shipName = 'Lasker'
+  }
+  pat = paste0(shipName, 'Leg', leg)
   
-  # FUTURE GOALS
-  # source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R')
-  # adNew = extractAcousticDetections()
-  adNew = data.frame()
+  # read in the file for this ship and leg - pamList should be length 1
+  pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
+  if (nrow(pamList) == 1){
+    pamFile = file.path(dir_wd, 'data', crStr, 'gd_downloads', pamList$name[1])
+    googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
+                                overwrite = TRUE, path = pamFile)
+  } else {stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')}
   
-  # # save a 'snapshot' of the data for this run
-  # outStr = paste0('outputs/newDetections_', yr, '_leg', leg, '_', ship, 
-  #                 '_', Sys.Date(), '.Rda')
-  # save(adNew, file = paste0(dir_wd, outStr))
-  # cat('   saved', outStr, '\n')
-  # 
-  # # combine the old vs dataframe with the new one
-  # outStr = paste0('outputs/compiledDetections_', yr, '_leg', leg, '_', ship)
-  # if (file.exists(paste0(dir_wd, outStr, '.Rda'))){
-  #   # load old if it exists
-  #   load(paste0(dir_wd, outStr, '.Rda'))
-  #   # combine, remove dupes, sort by date
-  #   ad = rbind(ad, adNew)
-  #   ad = unique(ad)
-  #   ad = ad[order(ad$DateTime),]
-  # } else { # if no previous detections file exists
-  #   ad = adNew
-  # }
-  # 
-  # save(ad, file = paste0(dir_wd, outStr, '.Rda'))
-  # write.csv(ad, file = paste0(dir_wd, outStr, '.csv'))
-  # cat('   saved', outStr, 'as .Rda and .csv\n')
+  # process
+  source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
+  ad = extractAcousticDetections(pamFile)
+  
+  # acoustic data won't have 'old' and 'new' sightings because all in one sql file
+  # but will still save 'snapshot' of each day (but will be cumlative)
+  
+  # save a 'snapshot' of the data for this run
+  outName = paste0('acousticDetections_', y_l_s, '_', Sys.Date(), '.Rda')
+  save(ad, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
+  googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
+                            path = dir_gd_snapshots)
+  cat('   saved', outName, '\n')
+  
+
+  # save the primary compiled version
+  outName = paste0('compiledDetections_', y_l_s, '.Rda')
+  save(ad, file = file.path(dir_wd, 'data', y_l_s, outName))
+  googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outName), 
+                         path = dir_gd_processed)
+  outNameCSV = paste0('compiledDetections_', y_l_s, '.csv')
+  write.csv(vs, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
+  googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outNameCSV), 
+                         path = dir_gd_processed)
+  cat('   saved', outName, 'and as .csv\n')
   
   # **Would end loop through multiple vessels here. 
   
@@ -481,6 +491,7 @@ if (length(idxNew) != 0){
 
 # if all ran ok, save updated dasList so these files won't be run again
 save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))
+
 
 # ------ Close up log -----------------------------------------------------
 
