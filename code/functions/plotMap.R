@@ -110,7 +110,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   colors_lines<-c("deeppink","deeppink4", "grey0")
   
   colors_enc<-unique(vsMap$SpColor)
-  shapes_enc<- unique(vsMap$SpSymbol)
+  shapes_enc<-vsMap$SpSymbol
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
