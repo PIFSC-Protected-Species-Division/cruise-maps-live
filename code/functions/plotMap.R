@@ -33,54 +33,55 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     terra::rast()
   
   if(test_code==FALSE){
-      if(length(shipCode)<2){
-        # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
-        effort = ep  # if running within run.R, don't need to reload a just saved csv
-        # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
-        tmp = epNew # if running within run.R, don't need to reload a just saved csv
-        # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
-        vsMap = vs # don't need to read in visual sightings, just reference vs
-      }else{stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
-      
-      
-      ####################################
-      ## Load HICEAS points, cumulative ####
-      
-      # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
-      effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
-      effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
-      
-      ## Load HICEAS points, recent (etNew)
-      # tmp<-read.csv(file.path(dir, file.name.recent))
-      tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
-      tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
-      
-      
-      ##################
-      ## Load sightings data 
-      
-      key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
-      
-      # load(file.path(dir, file.name.sightings))
-      # vs already exists and is now a function input so don't need to load file. 
-      
-      vsMap$lon <- ifelse(vsMap$Lon > 0, vsMap$Lon-360, vsMap$Lon)
-      vsMap <- sf::st_as_sf(vsMap,coords=c("lon","Lat"), crs = 4326)%>%
-        dplyr::left_join(key, by = "SpCode")
-      vsMap = na.omit(vsMap) # remove any species names that didn't find a match
-      
-      #sort vsMap by species name 
-      vsMap = vsMap[order(vsMap$SpName),]
-      
-      
-      # #################
-      # ## Load acoustics events data 
-      # ac<-read.csv(file.path(dir, "AcousticsDatabase.csv"))%>%
-      #   mutate(DateTime = as.POSIXct(DateTime, format = "%Y-%m-%d %H:%M:%OS"))
-      # 
-      # ac$lon <- ifelse(ac$Lon > 0, effort$Lon-360, effort$Lon)
-      # effort <- filter(effort, lon <= -150)%>% 
-      #   st_as_sf(coords=c("lon","Lat"), crs = 4326)
+    if(length(shipCode) > 1){stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
+    
+    #######################################
+    ## Load HICEAS points, cumulative #####
+    # if working from files, define and load
+    # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
+    # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
+    effort = ep  # if running within run.R, just rename input 
+    
+    # clean up effort locations
+    effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
+    effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
+    
+    ## Load HICEAS points, recent (etNew) #
+    # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
+    # tmp<-read.csv(file.path(dir, file.name.recent))
+    tmp = epNew # if running within run.R, just rename input
+    
+    # clean up tmp locations
+    tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
+    tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
+    
+    
+    #######################################
+    ## Load sightings data ################
+    # if working from files, define and load
+    # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
+    # load(file.path(dir, file.name.sightings))
+    # vs already exists and is now a function input so don't need to load file. 
+    vsMap = vs # don't need to read in visual sightings, just rename vs
+    
+    # clean up sightings locations and add spNames
+    key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
+    vsMap$lon <- ifelse(vsMap$Lon > 0, vsMap$Lon-360, vsMap$Lon)
+    vsMap <- sf::st_as_sf(vsMap,coords=c("lon","Lat"), crs = 4326)%>%
+      dplyr::left_join(key, by = "SpCode")
+    vsMap = na.omit(vsMap) # remove any species names that didn't find a match
+    #sort vsMap by species name 
+    vsMap = vsMap[order(vsMap$SpName),]
+    
+    
+    # #################
+    # ## Load acoustics events data 
+    # ac<-read.csv(file.path(dir, "AcousticsDatabase.csv"))%>%
+    #   mutate(DateTime = as.POSIXct(DateTime, format = "%Y-%m-%d %H:%M:%OS"))
+    # 
+    # ac$lon <- ifelse(ac$Lon > 0, effort$Lon-360, effort$Lon)
+    # effort <- filter(effort, lon <= -150)%>% 
+    #   st_as_sf(coords=c("lon","Lat"), crs = 4326)
     
   }else{ # TEST DATA
     effort<-read.csv(file.path(dir_wd, "data", "compiledEffortPoints_2017_leg00_OES.csv"))%>%
@@ -107,14 +108,18 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   ##Now for THE MAP ####
   
   colors_lines<-c("deeppink","deeppink4", "grey0")
-
-  colors_enc<-RColorBrewer::brewer.pal(length(unique(vsMap$SpCode)), "Set2")
+  
+  colors_enc<-unique(vsMap$SpColor)
+  shapes_enc<- unique(vsMap$SpSymbol)
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
                    "Pre-determined transect lines")
   
   labels_enc<-unique(vsMap$SpName)
+  
+  tw = 0.3 # track width
+  ta = 0.2 # track alpha
   
   
   base_map <- ggplot() + 
@@ -127,9 +132,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
           panel.border = element_blank(), 
           plot.margin = unit(c(0,0,0,0), "cm"))+
     
-    
     scale_fill_distiller(guide= "none")+
-    
     
     ## add bathymetry layer, depth contours, & tracklines
     ggspatial::layer_spatial(bathy)+ 
@@ -139,8 +142,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     ggspatial::layer_spatial(eez, fill=NA, color = "white")+
     geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
     geom_sf(data=nwhi, fill= "white", color = "white")+
-    ggspatial::layer_spatial(effort, alpha=0.5, size=0.5, aes(color=colors_lines[2]))+
-    ggspatial::layer_spatial(tmp, alpha=0.5, size=0.5, aes(color=colors_lines[1]))+
+    ggspatial::layer_spatial(effort, alpha=ta, size=tw, aes(color=colors_lines[2]))+
+    ggspatial::layer_spatial(tmp, alpha=ta, size=tw, aes(color=colors_lines[1]))+
     scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                        labels=labels_lines)+
     
@@ -148,8 +151,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     ggnewscale::new_scale_color() +
     geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
-    scale_shape_manual(name="Encounters", values = 1:length(unique(vsMap$SpName)),
-                       labels = labels_enc)+
+    scale_shape_manual(name="Encounters", values = shapes_enc, labels = labels_enc)+
     guides(colour = guide_legend(override.aes = list(size=3)))+
     
     
@@ -163,6 +165,9 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
              col="white", size = 3,
              angle=-20)+
     
+    annotate("text", x=-179, y=16.5, 
+             label= paste0("Last Updated: ", Sys.Date()),
+             col="white", size = 2.5)+
     
     ggsn::scalebar(location = "bottomleft", dist = 200, dist_unit = "nm", 
                    st.dist = 0.025,
