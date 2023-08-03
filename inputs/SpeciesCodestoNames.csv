@@ -1,44 +1,44 @@
 SpCode,SpName,SpColor,SpSymbol
-002,Offshore spotted dolphin,#105128,0
-003,Spinner dolphin,#A5CDA4,1
-005,Common dolphin,#95BF96,2
-013,Striped dolphin,springgreen1,3
-015,Rough-toothed dolphin,#84B289,4
-017,Short-beaked common dolphin,seagreen1,5
-018,Bottlenose dolphin,#63966D,6
-021,Risso's dolphin,#52885F,7
-026,Fraser's dolphin,lawngreen,8
-031,Melon-headed whale,#9E9AC8,0
-032,Pygmy killer whale,#54278F,1
-033,False killer whale,darkorchid1,8
-036,Short-finned pilot whale,#756BB1,3
-037,Killer whale,darkviolet,9
-046,Sperm whale,#FFFF33,8
-047,Pygmy sperm whale,#FFFFB2,0
-048,Dwarf sperm whale,#FFF176,1
-049,Unidentified beaked whale,#FEE6CE,0
-051,Unidentified Mesoplodon,#FDD0A2,1
-057,Ginkgo-toothed beaked whale,#FD8D3C,2
-059,Blainville's beaked whale,#FDAE6B,3
-061,Cuvier's beaked whale,#8C2D04,4
-063,Baird's beaked whale,#D94801,5
-065,Longman's beaked whale,#F16913,6
-066,North Pacific right whale,#FFF5F0,0
-070,Unidentified rorqual,#B2383E,1
-071,Minke whale,#FC9272,2
-072,Bryde's whale,#99000D,3
-073,Sei whale,#EF3B2C,4
-074,Fin whale,#FB6A4A,5
-075,Blue whale,#CB181D,6
-076,Humpback whale,#FCBBA1,7
-077,Unidentified dolphin,#C7E9C0,9
-078,Unidentified cetacean,#BDBDBD,0
-079,Unidentified cetacean,#BDBDBD,0
-080,Kogia spp.,gold,2
-096,Unidentified cetacean,#BDBDBD,0
-097,Unidentified object,#737373,1
-098,Unidentified cetacean,#BDBDBD,0
-099,Unidentified rorqual,#B2383E,1
+2,Offshore spotted dolphin,#105128,0
+3,Spinner dolphin,#A5CDA4,1
+5,Common dolphin,#95BF96,2
+13,Striped dolphin,springgreen1,3
+15,Rough-toothed dolphin,#84B289,4
+17,Short-beaked common dolphin,seagreen1,5
+18,Bottlenose dolphin,#63966D,6
+21,Risso's dolphin,#52885F,7
+26,Fraser's dolphin,lawngreen,8
+31,Melon-headed whale,#9E9AC8,0
+32,Pygmy killer whale,#54278F,1
+33,False killer whale,darkorchid1,8
+36,Short-finned pilot whale,#8F88DA,3
+37,Killer whale,darkviolet,9
+46,Sperm whale,#FFFF33,8
+47,Pygmy sperm whale,#FFFFB2,0
+48,Dwarf sperm whale,#FFF176,1
+49,Unidentified beaked whale,#FEE6CE,0
+51,Unidentified Mesoplodon,#FDD0A2,1
+57,Ginkgo-toothed beaked whale,#FD8D3C,2
+59,Blainville's beaked whale,#FDAE6B,3
+61,Cuvier's beaked whale,#8C2D04,4
+63,Baird's beaked whale,#D94801,5
+65,Longman's beaked whale,#F16913,6
+66,North Pacific right whale,#FFF5F0,0
+70,Unidentified rorqual,#B2383E,1
+71,Minke whale,#FC9272,2
+72,Bryde's whale,#99000D,3
+73,Sei whale,#EF3B2C,4
+74,Fin whale,#FB6A4A,5
+75,Blue whale,#CB181D,6
+76,Humpback whale,#FCBBA1,7
+77,Unidentified dolphin,#C7E9C0,9
+78,Unidentified cetacean,#BDBDBD,0
+79,Unidentified cetacean,#BDBDBD,0
+80,Kogia spp.,gold,2
+96,Unidentified cetacean,#BDBDBD,0
+97,Unidentified object,#737373,1
+98,Unidentified cetacean,#BDBDBD,0
+99,Unidentified rorqual,#B2383E,1
 102,Gray's spinner dolphin,#316D44,10
 105,Indian Ocean bottlenose dolphin,#215F36,11
 118,Omura's whale,#D88C88,8
