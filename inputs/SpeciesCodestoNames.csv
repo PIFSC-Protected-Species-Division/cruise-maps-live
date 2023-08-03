@@ -1,50 +1,50 @@
-SpCode,SpName,SpColor,SpSymbol
-2,Offshore spotted dolphin,#105128,0
-3,Spinner dolphin,#A5CDA4,1
-5,Common dolphin,#95BF96,2
-13,Striped dolphin,springgreen1,3
-15,Rough-toothed dolphin,#84B289,4
-17,Short-beaked common dolphin,seagreen1,5
-18,Bottlenose dolphin,#63966D,6
-21,Risso's dolphin,#52885F,7
-26,Fraser's dolphin,lawngreen,8
-31,Melon-headed whale,#9E9AC8,0
-32,Pygmy killer whale,#54278F,1
-33,False killer whale,darkorchid1,8
-36,Short-finned pilot whale,#8F88DA,3
-37,Killer whale,darkviolet,9
-46,Sperm whale,#FFFF33,8
-47,Pygmy sperm whale,#FFFFB2,0
-48,Dwarf sperm whale,#FFF176,1
-49,Unidentified beaked whale,#FEE6CE,0
-51,Unidentified Mesoplodon,#FDD0A2,1
-57,Ginkgo-toothed beaked whale,#FD8D3C,2
-59,Blainville's beaked whale,#FDAE6B,3
-61,Cuvier's beaked whale,#8C2D04,4
-63,Baird's beaked whale,#D94801,5
-65,Longman's beaked whale,#F16913,6
-66,North Pacific right whale,#FFF5F0,0
-70,Unidentified rorqual,#B2383E,1
-71,Minke whale,#FC9272,2
-72,Bryde's whale,#99000D,3
-73,Sei whale,#EF3B2C,4
-74,Fin whale,#FB6A4A,5
-75,Blue whale,#CB181D,6
-76,Humpback whale,#FCBBA1,7
-77,Unidentified dolphin,#C7E9C0,9
-78,Unidentified cetacean,#BDBDBD,0
-79,Unidentified cetacean,#BDBDBD,0
-80,Kogia spp.,gold,2
-96,Unidentified cetacean,#BDBDBD,0
-97,Unidentified object,#737373,1
-98,Unidentified cetacean,#BDBDBD,0
-99,Unidentified rorqual,#B2383E,1
-102,Gray's spinner dolphin,#316D44,10
-105,Indian Ocean bottlenose dolphin,#215F36,11
-118,Omura's whale,#D88C88,8
-149,Unidentified beaked whale,#FEE6CE,0
-177,Unidentified dolphin,#C7E9C0,9
-197,Unidentified marine mammal,#525252,2
-199,Unidentified rorqual,#B2383E,1
-277,Unidentified dolphin,#C7E9C0,9
-377,Unidentified dolphin,#C7E9C0,9
+SpCode,SpName,SpColor,SpSymbol,Level,Group
+2,Offshore spotted dolphin,#105128,0,1,delphinids
+3,Spinner dolphin,#A5CDA4,1,2,delphinids
+5,Common dolphin,#95BF96,2,3,delphinids
+13,Striped dolphin,springgreen1,3,4,delphinids
+15,Rough-toothed dolphin,#84B289,4,5,delphinids
+17,Short-beaked common dolphin,seagreen1,5,6,delphinids
+18,Bottlenose dolphin,#63966D,6,7,delphinids
+21,Risso's dolphin,#52885F,7,8,delphinids
+26,Fraser's dolphin,lawngreen,8,9,delphinids
+31,Melon-headed whale,#9E9AC8,0,13,blackfish
+32,Pygmy killer whale,#54278F,1,14,blackfish
+33,False killer whale,darkorchid1,8,15,blackfish
+36,Short-finned pilot whale,#8F88DA,3,16,blackfish
+37,Killer whale,darkviolet,9,17,blackfish
+46,Sperm whale,#FFFF33,8,18,spermwhales
+47,Pygmy sperm whale,#FFFFB2,0,19,spermwhales
+48,Dwarf sperm whale,#FFF176,1,20,spermwhales
+49,Unidentified beaked whale,#FEE6CE,0,28,beakedwhales
+51,Unidentified Mesoplodon,#FDD0A2,1,27,beakedwhales
+57,Ginkgo-toothed beaked whale,#FD8D3C,2,22,beakedwhales
+59,Blainville's beaked whale,#FDAE6B,3,23,beakedwhales
+61,Cuvier's beaked whale,#8C2D04,4,24,beakedwhales
+63,Baird's beaked whale,#D94801,5,25,beakedwhales
+65,Longman's beaked whale,#F16913,6,26,beakedwhales
+66,North Pacific right whale,#FFF5F0,0,29,baleenwhales
+70,Unidentified rorqual,#B2383E,1,37,baleenwhales
+71,Minke whale,#FC9272,2,30,baleenwhales
+72,Bryde's whale,#99000D,3,31,baleenwhales
+73,Sei whale,#EF3B2C,4,32,baleenwhales
+74,Fin whale,#FB6A4A,5,33,baleenwhales
+75,Blue whale,#CB181D,6,34,baleenwhales
+76,Humpback whale,#FCBBA1,7,35,baleenwhales
+77,Unidentified dolphin,#C7E9C0,9,12,delphinids
+78,Unidentified cetacean,#BDBDBD,0,38,unids
+79,Unidentified cetacean,#BDBDBD,0,38,unids
+80,Kogia spp.,gold,2,21,spermwhales
+96,Unidentified cetacean,#BDBDBD,0,38,unids
+97,Unidentified object,#737373,1,40,unids
+98,Unidentified cetacean,#BDBDBD,0,38,unids
+99,Unidentified rorqual,#B2383E,1,37,baleenwhales
+102,Gray's spinner dolphin,#316D44,10,10,delphinids
+105,Indian Ocean bottlenose dolphin,#215F36,11,11,delphinids
+118,Omura's whale,#D88C88,8,36,baleenwhales
+149,Unidentified beaked whale,#FEE6CE,0,28,beakedwhales
+177,Unidentified dolphin,#C7E9C0,9,12,delphinids
+197,Unidentified marine mammal,#525252,2,39,unids
+199,Unidentified rorqual,#B2383E,1,37,baleenwhales
+277,Unidentified dolphin,#C7E9C0,9,12,delphinids
+377,Unidentified dolphin,#C7E9C0,9,12,delphinids
