@@ -150,7 +150,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     
     
     ggnewscale::new_scale_color() +
-    geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3, stroke = 2)+
+    geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
     scale_shape_manual(name="Encounters", values = shapes_enc, labels = labels_enc)+
     guides(colour = guide_legend(override.aes = list(size=3)))+
