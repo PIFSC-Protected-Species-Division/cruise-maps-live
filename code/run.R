@@ -160,8 +160,8 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '0'){
-    # idxNew = 3
-    idxNew = c(1,2)
+    idxNew = 6
+    # idxNew = c(1,2)
   }
   ### ### ### ### ###  
   
@@ -424,8 +424,6 @@ if (length(idxNew) != 0){
   
   # ------ Save map figures -------------------------------------------------
   # then save daily update plot as .png and .pdf
-  # the latest will be in the 'outputs' folder and a snapshot of each day will
-  # saved in the 'map_archive' folder
   height = 5
   width = 10
   res = 400
@@ -465,6 +463,16 @@ if (length(idxNew) != 0){
          width = width,
          plot = base_map,
          dpi = res,
+         bg = 'white',
+         device = 'pdf')
+  cat('   saved', outStr, 'as .png and .pdf\n')
+  
+  # save a large copy for CLs as PDF
+  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+         height = 10,
+         width = 20,
+         plot = base_map,
+         # dpi = 1200,
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
