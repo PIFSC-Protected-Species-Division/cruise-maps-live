@@ -216,7 +216,7 @@ if (length(idxNew) != 0){
     outName = paste0('newEffortTracks_', legID, '_', d$name, '_ran', 
                      Sys.Date(), '.Rda')
     save(etNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
+    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
     cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
@@ -273,7 +273,7 @@ if (length(idxNew) != 0){
     outName = paste0('newEffortPoints_', legID, '_', d$name, '_ran', 
                      Sys.Date(), '.Rda')
     save(epNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
+    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
     cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
@@ -315,9 +315,10 @@ if (length(idxNew) != 0){
     vsNew = vsNew_clean
     
     # save a 'snapshot' of the data for this run
-    outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), '.Rda')
+    outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), 
+                     '.Rda')
     save(vsNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
+    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
     cat('   saved', outName, '\n')
     
     # combine the old vs dataframe with the new one
@@ -369,7 +370,7 @@ if (length(idxNew) != 0){
   # save a 'snapshot' of the data for this run
   outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
   save(ad, file = file.path(dir_snaps, outName))
-  googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
+  googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
   cat('   saved', outName, '\n')
   
   
@@ -383,6 +384,7 @@ if (length(idxNew) != 0){
   cat('   saved', outName, 'and as .csv\n')
   
   # **Would end loop through multiple vessels here. 
+  
   
   # ------ Make summary table -----------------------------------------------
   cat(' Updating summary table:\n')
@@ -483,8 +485,6 @@ if (length(idxNew) != 0){
                          path = dir_gd_gpx)
   cat('   saved', outName, 'and as .csv\n')
   cat('   saved', outStr, 'as .png and .pdf\n')
-  
-  
   
   # ------ Plot acoustic detections map -----------------------------------
   cat(' Generating latest map of acoustic detections:\n')
