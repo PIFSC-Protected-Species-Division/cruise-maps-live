@@ -80,7 +80,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
       dplyr::left_join(key, by = "SpCode")
     ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
     #sort ceMap by species name 
-    ceMap = ceMap[order(ceMap$SpName),]
+    ceMap = ceMap[rev(order(ceMap$SpName)),]
     # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
     
     
@@ -117,14 +117,14 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   ######################
   ##Now for THE MAP ####
   
-  colors_lines<-c("deeppink","deeppink4", "grey0")
+  colors_lines <- c("deeppink","deeppink4", "grey0")
   
-  colors_enc<-unique(ceMap$SpColor)
+  colors_enc <- unique(ceMap$SpColor)
   
   uci = match(unique(ceMap$SpColor), ceMap$SpColor)
-  shapes_enc<-ceMap$SpSymbol[uci]
+  shapes_enc <- ceMap$SpSymbol[uci]
   
-  labels_lines<-c( "Survey effort (recent)", 
+  labels_lines <- c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
                    "Pre-determined transect lines")
   
@@ -163,8 +163,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
     
     ggnewscale::new_scale_color() +
     geom_sf(data=ceMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
-    scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
-    scale_shape_manual(name = "Encounters", values = shapes_enc, labels = labels_enc)+
+    scale_color_manual(name = "Encounters", values = rev(colors_enc), labels = rev(labels_enc))+
+    scale_shape_manual(name = "Encounters", values = rev(shapes_enc), labels = rev(labels_enc))+
     guides(colour = guide_legend(override.aes = list(size = 3)))+
     
     
