@@ -28,7 +28,7 @@ extractAcousticDetections <- function(pamFile){
   unidDolpList = c(77, 177, 277, 377)
   
   # open database and list all tables
-  db = RSQLite::dbConnect(RSQLite::SQLite(), pamFile)
+  db = DBI::dbConnect(RSQLite::SQLite(), pamFile)
   # tblList = dbListTables(db)
   
   # set up combined detection table
@@ -40,7 +40,7 @@ extractAcousticDetections <- function(pamFile){
   # loop through the three 'Detection' tables and combine
   for (d in 1:3){
     # read in table
-    dt = dbReadTable(db, paste0('Detection', d))
+    dt = DBI::dbReadTable(db, paste0('Detection', d))
     
     # if not empty, process
     if (nrow(dt) != 0){
@@ -109,7 +109,7 @@ extractAcousticDetections <- function(pamFile){
     
   } # loop through 3 detection tables
   
-  dbDisconnect(db)
+  DBI::dbDisconnect(db)
   
   # clean up output ad data.frame
   # sort by time
