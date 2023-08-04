@@ -78,7 +78,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
     ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
     ceMap <- sf::st_as_sf(ceMap,coords=c("lon","Lat"), crs = 4326)%>%
       dplyr::left_join(key, by = "SpCode")
-    ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
+    ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
     #sort ceMap by species name 
     ceMap = ceMap[order(ceMap$SpName),]
     # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
@@ -121,7 +121,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   
   colors_enc<-unique(ceMap$SpColor)
   
-  shapes_enc<-ceMap$SpSymbol #[uci]
+  uci = match(unique(ceMap$SpColor), ceMap$SpColor)
+  shapes_enc<-ceMap$SpSymbol[uci]
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
