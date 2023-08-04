@@ -9,11 +9,11 @@ using <- function(...){
   #'
   #' @param #none
   #' @return #none
-  #' @export #none
   #'
   #' @examples 
   #' using('raster')
   #' 
+  #' ######################################################################
   
   libs<-unlist(list(...))
   req<-unlist(lapply(libs,require,character.only=TRUE))

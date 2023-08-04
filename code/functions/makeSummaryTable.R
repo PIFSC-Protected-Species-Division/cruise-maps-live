@@ -2,16 +2,12 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   
   #' makeSummaryTable
   #' 
-  #' description: Summarize effort track distance and sightings data and display
+  #' @description Summarize effort track distance and sightings data and display
   #' in a flex table which can be saved and uploaded to the website. Relies on 
   #' previously parsed track and visual sighting data
   #' 
-  #' Sightings
-  #' of unidentified small, medium, and large dolphins and unidentified dolphins were combined into a single category, “unidentified dolphins,” for detection function and abundance estimation. Likewise, sightings of unidentified small and large whales and unidentified
-  #' whales and cetaceans were combined into the category “unidentified cetaceans.”
-  #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 30 June 2023
+  #' date: 01 August 2023
   #'
   #' @param st 'summary table' data.frame containing summary data for previous 
   #' days and legs
@@ -26,10 +22,10 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   #' @param blank_table logical to create empty placeholder table with 0s
   #' 
   #' @return a list 'lt' with st - a data.frame summary table and ft - a flextable 
-  #' @export
   #'
   #' @examples
   #'
+  #'#######################################################################
   
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
@@ -39,8 +35,8 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
                     days = integer(length(legList)), 
                     #segments = integer(length(legList)), 
                     dist = integer(length(legList)), 
-                    spVis = integer(length(legList)) #, 
-                    # spPam = integer(length(legList))
+                    spVis = integer(length(legList)), 
+                    spPam = integer(length(legList))
                     )
     st[st == 0] <- NA
   }
@@ -71,7 +67,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist)
   st$spVis[idx] = length(vs$SpCode)
-  # st$spPam[idx] = NA
+  st$spPam[idx] = length(ad$sp_map)
   
   # zero everything if this is a blank table (for start of each leg)
   if (blank_table == TRUE){
@@ -86,7 +82,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   # st$segments[8] = sum(as.integer(st$segments[1:7]), na.rm = TRUE)
   st$dist[8] = sum(as.double(st$dist[1:7]), na.rm = TRUE)
   st$spVis[8] = sum(as.integer(st$spVis[1:7]), na.rm = TRUE)
-  # st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
+  st$spPam[8] = sum(as.integer(st$spPam[1:7]), na.rm = TRUE)
   
   # View(st)
   
@@ -96,8 +92,8 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   ft = flextable::theme_vanilla(ft)
   ft = flextable::set_header_labels(ft, ship_leg = 'Ship Leg', days = 'Days at Sea',
                                     segments = 'Segments', dist = 'Distance [km]', 
-                                    spVis = 'Visual Sightings' #, 
-                                    # spPam = 'Acoustic Detections'
+                                    spVis = 'Visual Sightings', 
+                                    spPam = 'Acoustic Detections'
                                     )
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
   
@@ -108,10 +104,10 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   ft = flextable::width(ft, 1, width = 1.1)
   # ft = width(ft, 2, width = 0.6)
   ft = flextable::width(ft, c(2,3), width = 0.8)
-  ft = flextable::width(ft, c(4), width = 1.2)
-  # ft = flextable::width(ft, c(4,5), width = 1.2)
-  ft = flextable::align(ft, j = c(2,3,4), align = 'center')
-  # ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
+  # ft = flextable::width(ft, c(4), width = 1.2)
+  ft = flextable::width(ft, c(4,5), width = 1.2)
+  # ft = flextable::align(ft, j = c(2,3,4), align = 'center')
+  ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
   ft = flextable::align(ft, align = 'center', part = 'header')
   
   # change borders and text color

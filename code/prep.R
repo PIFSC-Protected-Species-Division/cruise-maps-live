@@ -67,7 +67,8 @@ using("googledrive",
       "raster",
       "sf",
       "sp",
-      "RColorBrewer"
+      "RColorBrewer",
+      "DBI"
       # "cowplot", # not actually used? 
       # "rgdal", # being retired so removed
       # "rgeos",  # being retired so removed
