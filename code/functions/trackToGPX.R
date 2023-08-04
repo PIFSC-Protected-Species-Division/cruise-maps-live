@@ -54,7 +54,7 @@ trackToGPX = function(et, outGPX){
   # # apply correct timezone to datetimes
   # etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
   # create datetime col with proper formatting for gpx
-  if (tz(etLong$DateTime[1]) == 'HST'){
+  if (lubridate::tz(etLong$DateTime[1]) == 'HST'){
     etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
   } else {
     stop('Timezone is NOT HST...figure this out! Exiting.')
