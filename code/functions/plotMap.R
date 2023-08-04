@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
+plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   
   #' plotMap
   #' 
@@ -20,7 +20,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   #' @param dir_wd character string to the cruise-maps-live working directory
   #' @param ep data.frame of effort as points, cumulative over a HICEAS leg
   #' @param epNew data.frame of effort as tracks, just new additions
-  #' @param vs data.frame of visual sightings, cumulative over a HICEAS leg
+  #' @param ce data.frame of 'cetacean encounters', either from visual sightings
+  #' or from acoustic detections, cumulative over a HICEAS leg
   #' @param shipCode character string with code for ship (either 'OES' or 'LSK', or
   #' in the future, both as c('OES', 'LSK'))
   #' #' @param leg character string with leg number (e.g., '01')
@@ -65,22 +66,22 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     
     
     #######################################
-    ## Load sightings data ################
+    ## Load cetacean encounter data #######
     # if working from files, define and load
     # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
     # load(file.path(dir, file.name.sightings))
     # vs already exists and is now a function input so don't need to load file. 
-    vsMap = vs # don't need to read in visual sightings, just rename vs
+    ceMap = ce # rename whatever the encounter input is
     
     # clean up sightings locations and add spNames
     key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
-    vsMap$lon <- ifelse(vsMap$Lon > 0, vsMap$Lon-360, vsMap$Lon)
-    vsMap <- sf::st_as_sf(vsMap,coords=c("lon","Lat"), crs = 4326)%>%
+    ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
+    ceMap <- sf::st_as_sf(ceMap,coords=c("lon","Lat"), crs = 4326)%>%
       dplyr::left_join(key, by = "SpCode")
-    vsMap = na.omit(vsMap) # remove any species names that didn't find a match
-    #sort vsMap by species name 
-    vsMap = vsMap[order(vsMap$SpName),]
-    # vsMap$SpNameFactor = factor(vsMap$SpName, levels = unique(vsMap$SpName[order(vsMap$Level)]), ordered = TRUE)
+    ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
+    #sort ceMap by species name 
+    ceMap = ceMap[order(ceMap$SpName),]
+    # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
     
     
     # #################
@@ -105,8 +106,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     load(file.path(dir_wd, "data", "compiledSightings_2017_leg00_OES.Rda"))
     key$SpCode<-as.integer(key$SpCode)                            #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
     
-    vsMap$lon <- ifelse(vsMap$Lon > 0, vsMap$Lon-360, vsMap$Lon)
-    vsMap <- filter(vsMap, lon <= -150,)%>% 
+    ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
+    ceMap <- filter(ceMap, lon <= -150,)%>% 
       sf::st_as_sf(coords=c("lon","Lat"), crs = 4326)%>%
       dplyr::left_join(key, by = "SpCode")
   }
@@ -118,15 +119,15 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   
   colors_lines<-c("deeppink","deeppink4", "grey0")
   
-  colors_enc<-unique(vsMap$SpColor)
-
-  shapes_enc<-vsMap$SpSymbol #[uci]
+  colors_enc<-unique(ceMap$SpColor)
+  
+  shapes_enc<-ceMap$SpSymbol #[uci]
   
   labels_lines<-c( "Survey effort (recent)", 
                    "Survey effort (to date)", 
                    "Pre-determined transect lines")
   
-  labels_enc<-unique(vsMap$SpName)
+  labels_enc<-unique(ceMap$SpName)
   
   tw = 0.3 # track width
   ta = 0.2 # track alpha
@@ -160,7 +161,7 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
     
     
     ggnewscale::new_scale_color() +
-    geom_sf(data=vsMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
+    geom_sf(data=ceMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
     scale_color_manual(name = "Encounters", values = colors_enc, labels = labels_enc)+
     scale_shape_manual(name = "Encounters", values = shapes_enc, labels = labels_enc)+
     guides(colour = guide_legend(override.aes = list(size = 3)))+
@@ -201,8 +202,8 @@ plotMap <- function(dir_wd, ep, epNew, vs, shipCode, leg, test_code){
   # dev.off()
   
   # need two outputs to make a list
-  # need updated vsMap that has SpName col
-  mapOut = list(base_map = base_map, vsMap = vsMap)
+  # need updated ceMap that has SpName col
+  mapOut = list(base_map = base_map, ceMap = ceMap)
   return(mapOut)
 }
 
