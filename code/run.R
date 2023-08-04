@@ -45,7 +45,7 @@ if (crNum == 2303){
 }
 
 # all pam data is in a single folder
-dir_gd_raw_pam <- googledrive::as_id('1vpj86kkgbC4Y84u3EH4AFx0jmmWuwlRp')
+dir_gd_raw_pam <- googledrive::as_id('1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
 
 # set working directory
 # will search through list of possible and select first one
@@ -115,9 +115,9 @@ library(tidyverse)
 # if just creating a blank map, don't sign in
 if (data_source == 'blank'){
   # to make blank table and map - these were made by hand
-  load(file.path(dir_data, 'blankEffortPoints.Rda'))
-  load(file.path(dir_data, 'blankEffortTracks.Rda'))
-  load(file.path(dir_data, 'blankSightings.Rda'))
+  load(file.path(dir_wd, 'data', 'blank', 'blankEffortPoints.Rda'))
+  load(file.path(dir_wd, 'data', 'blank', 'blankEffortTracks.Rda'))
+  load(file.path(dir_wd, 'data', 'blank', 'blankSightings.Rda'))
   epNew = ep
   
   # map testing options
@@ -140,7 +140,8 @@ if (data_source == 'blank'){
   
   # open up list of previously checked das files
   # to re-run all, delete dasList_yr.Rda file from your local outputs folder
-  if (file.exists(file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))){
+  if (file.exists(file.path(dir_wd, 'outputs', 
+                            paste0('dasList_', projID, '.Rda')))){
     load(file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))
     dasNames_old = dasList$name
   } else {
@@ -244,7 +245,8 @@ if (length(idxNew) != 0){
     source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
     
     # by day/das tracks
-    outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, '.gpx'))
+    outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, 
+                                       '.gpx'))
     trackToGPX(etNew, outGPX)
     googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
     cat('   saved', basename(outGPX), '\n')
@@ -301,11 +303,11 @@ if (length(idxNew) != 0){
     vsNew = extractVisualSightings(df_proc)
     
     if (nrow(vsNew) > 0){
-    # add on some ship info
-    vsNew$shipCode = shipCode
-    vsNew$shipName = shipName
-    vsNew$projID = projID
-    vsNew$leg = leg
+      # add on some ship info
+      vsNew$shipCode = shipCode
+      vsNew$shipName = shipName
+      vsNew$projID = projID
+      vsNew$leg = leg
     }
     
     # confirm all species codes are numeric and delete rows that aren't
@@ -343,24 +345,16 @@ if (length(idxNew) != 0){
   
   
   # ------ Extract acoustic detections --------------------------------------
-  
-  # cat(' Skipping acoustic detections...\n')
   # acoustics file is single sql file that is updated/appended each day
   # file is large so slow to download
   
-  # assemble search string (may change later to ship name being based on cruise num)
-  # or may define this at top?
-  if (ship == 'OES'){
-    shipName = 'Sette'
-  } else if (ship == 'LSK'){ # maybe will be changed to 'RL'
-    shipName = 'Lasker'
-  }
+  # assemble search pattern
   pat = paste0(shipName, 'Leg', leg)
   
   # read in the file for this ship and leg - pamList should be length 1
   pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
   if (nrow(pamList) == 1){
-    pamFile = file.path(dir_wd, 'data', crStr, 'gd_downloads', pamList$name[1])
+    pamFile = file.path(dir_gd_dwnl, pamList$name[1])
     googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                                 overwrite = TRUE, path = pamFile)
   } else {stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')}
@@ -373,22 +367,19 @@ if (length(idxNew) != 0){
   # but will still save 'snapshot' of each day (but will be cumlative)
   
   # save a 'snapshot' of the data for this run
-  outName = paste0('acousticDetections_', y_l_s, '_', Sys.Date(), '.Rda')
-  save(ad, file = file.path(dir_wd, 'data', y_l_s, 'snapshots', outName))
-  googledrive::drive_upload(file.path(dir_wd, 'data', y_l_s, 'snapshots', outName), 
-                            path = dir_gd_snapshots)
+  outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
+  save(ad, file = file.path(dir_snaps, outName))
+  googledrive::drive_upload(file.path(dir_snaps, outName), path = dir_gd_snaps)
   cat('   saved', outName, '\n')
   
-
+  
   # save the primary compiled version
-  outName = paste0('compiledDetections_', y_l_s, '.Rda')
-  save(ad, file = file.path(dir_wd, 'data', y_l_s, outName))
-  googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outName), 
-                         path = dir_gd_processed)
-  outNameCSV = paste0('compiledDetections_', y_l_s, '.csv')
-  write.csv(vs, file = file.path(dir_wd, 'data', y_l_s, outNameCSV))
-  googledrive::drive_put(file.path(dir_wd, 'data', y_l_s, outNameCSV), 
-                         path = dir_gd_processed)
+  outName = paste0('compiledDetections_', projID, '.Rda')
+  save(ad, file = file.path(dir_data, outName))
+  googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+  outNameCSV = paste0('compiledDetections_', projID, '.csv')
+  write.csv(vs, file = file.path(dir_data, outNameCSV))
+  googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
   cat('   saved', outName, 'and as .csv\n')
   
   # **Would end loop through multiple vessels here. 
@@ -423,28 +414,28 @@ if (length(idxNew) != 0){
   flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
   cat('   saved', outName, '\n')
   
-  # ------ Plot map ---------------------------------------------------------
-  cat(' Generating latest map:\n')
+  # ------ Plot visual sightings map --------------------------------------
+  cat(' Generating latest map of visual sightings:\n')
   
   source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
   
-  mapOut = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code)
-  base_map = mapOut$base_map
-  vsMap = mapOut$vsMap
+  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code)
+  base_map_V = mapOutV$base_map
+  vsMap = mapOutV$ceMap
   
-  # ------ Save map figures -------------------------------------------------
+  # ------ Save visuals map figures ---------------------------------------
   # then save daily update plot as .png and .pdf
   height = 5
   width = 10
   res = 400
   
   # save the latest - as .png and .pdf
-  outStr = paste0('dailyMap')
+  outStr = paste0('dailyMap_visuals')
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
          height = height,
          width = width,
          units = 'in', 
-         plot = base_map,
+         plot = base_map_V,
          dpi = res,
          bg = 'white',
          device = 'png')
@@ -452,18 +443,18 @@ if (length(idxNew) != 0){
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
          height = height,
          width = width,
-         plot = base_map,
+         plot = base_map_V,
          dpi = res,
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
   
   # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_', legID, '_ran', Sys.Date())
+  outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
   ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
          height = height,
          width = width,
-         plot = base_map,
+         plot = base_map_V,
          dpi = res,
          bg = 'white',
          device = 'png')
@@ -471,29 +462,92 @@ if (length(idxNew) != 0){
   ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
          height = height,
          width = width,
-         plot = base_map,
+         plot = base_map_V,
          dpi = res,
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
   
   # save a large copy for CLs as PDF
+  outStr = paste0('dailyMap_visuals_CL')
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
          height = 10,
          width = 20,
-         plot = base_map,
+         plot = base_map_V,
          # dpi = 1200,
+         bg = 'white',
+         device = 'pdf')
+  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                         path = dir_gd_proc)
+  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                         path = dir_gd_gpx)
+  cat('   saved', outName, 'and as .csv\n')
+  cat('   saved', outStr, 'as .png and .pdf\n')
+  
+  
+  
+  # ------ Plot acoustic detections map -----------------------------------
+  cat(' Generating latest map of acoustic detections:\n')
+  
+  # add correctly formated SpCode col
+  ad$SpCode = as.integer(ad$sp_map)
+  
+  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code)
+  base_map_A = mapOutA$base_map
+  adMap = mapOutA$ceMap
+  
+  # ------ Save acoustics map figures -------------------------------------
+  # then save daily update plot as .png and .pdf
+  height = 5
+  width = 10
+  res = 400
+  
+  # save the latest - as .png and .pdf
+  outStr = paste0('dailyMap_acoustics')
+  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+         height = height,
+         width = width,
+         units = 'in', 
+         plot = base_map_A,
+         dpi = res,
+         bg = 'white',
+         device = 'png')
+  
+  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+         height = height,
+         width = width,
+         plot = base_map_A,
+         dpi = res,
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
   
+  # save a copy of today's run - as .png and .pdf
+  outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+         height = height,
+         width = width,
+         plot = base_map_A,
+         dpi = res,
+         bg = 'white',
+         device = 'png')
+  
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+         height = height,
+         width = width,
+         plot = base_map_A,
+         dpi = res,
+         bg = 'white',
+         device = 'pdf')
+  cat('   saved', outStr, 'as .png and .pdf\n')
+  
+  
+  # ------ Save dasList and close log  ------------------------------------
+
 } # end check for non-empty idxNew
 
 # if all ran ok, save updated dasList so these files won't be run again
 save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))
-
-
-# ------ Close up log -----------------------------------------------------
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()
