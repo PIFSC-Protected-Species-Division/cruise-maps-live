@@ -50,7 +50,7 @@ extractAcousticDetections <- function(pamFile){
                          dt$latlong_LAT, dt$latlong_LON,
                          dt$class1, dt$species1_class1,
                          dt$class2, dt$species1_class2)
-      colnames(dtTmp) = c('ac_id', 'UTC', 'vis_id', 'lat', 'lon', 
+      colnames(dtTmp) = c('ac_id', 'UTC', 'vis_id', 'Lat', 'Lon', 
                           'class1', 'cl1_sp1', 'class2', 'cl2_sp1')
       # clean up extra spaces out of some cols
       dtTmp$class1 = stringr::str_trim(dtTmp$class1)
