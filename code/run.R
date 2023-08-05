@@ -15,7 +15,7 @@ data_source = 'gd' # google drive
 # yr = 2023
 crNum = 2303
 # ship = 'OES' # 'LSK'
-leg = '1'
+leg = '2'
 
 if (length(crNum) >1){
   stop("We're not ready for two boats yet!! Bug Janelle and Selene.")
