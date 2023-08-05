@@ -36,7 +36,7 @@ repository.
 
 > - [*Purpose*](#purpose)
 > - [*Notes*](#notes)
-> - [*Plot Examples *](#plot-examples-)
+> - [*Plot Examples*](#plot-examples)
 >   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
 > - [*R Version Metadata*](#r-version-metadata)

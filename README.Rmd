@@ -78,7 +78,7 @@ When running the `run.R` script for the first time on your local machine, first 
 
 
 
-## Plot Examples 
+## Plot Examples
 
 As each survey leg completes we will share some example plots and gifs here! 
 
