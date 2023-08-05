@@ -1,11 +1,10 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Near Real-Time Cetacean Cruise Maps
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 25 Jul 2023*
+style="width:0.88em;height:1em" /> *Last Update: 04 Aug 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -13,10 +12,14 @@ style="width:1.12em;height:1em" /> *This code is always in development*
 
 ## Developers
 
-**Janelle Badger** (janelle.badger AT noaa.gov)  
-**Yvonne Barkley** (yvonne.barkley AT noaa.gov)  
-**Selene Fregosi** (selene.fregosi AT noaa.gov)  
-**Kym Yano** (kym.yano AT noaa.gov)
+**Janelle Badger** (janelle.badger AT noaa.gov;
+[@badgerjj](https://github.com/badgerjj))  
+**Yvonne Barkley** (yvonne.barkley AT noaa.gov;
+[@ybarkley](https://github.com/ybarkley))  
+**Selene Fregosi** (selene.fregosi AT noaa.gov;
+[@sfregosi](https://github.com/sfregosi))  
+**Kym Yano** (kym.yano AT noaa.gov;
+[@kmyano](https://github.com/kmyano))
 
 Cetacean Research Program \| Protected Species Division  
 Pacific Islands Fisheries Science Center  
@@ -28,6 +31,16 @@ Alaska Fisheries Science Center’s live survey maps. The code and outputs
 presented here are modified from the AFSC team’s
 [survey-live-temperature-map](https://github.com/afsc-gap-products/survey-live-temperature-map)
 repository.
+
+## Table of contents
+
+> - [*Purpose*](#purpose)
+> - [*Notes*](#notes)
+> - [*Plot Examples *](#plot-examples-)
+>   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
+> - [*Suggestions and Comments*](#suggestions-and-comments)
+> - [*R Version Metadata*](#r-version-metadata)
+> - [*NOAA Disclaimer and License*](#noaa-disclaimer-and-license)
 
 ## Purpose
 
@@ -48,6 +61,9 @@ website.
 
 [How to set up automation using Windows Task
 Scheduler](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit)
+This includes information on setting up the Windows Task Scheduler to
+execute an R script on a schedule (in our case `run.r`) and to
+autocommit and push changes to GitHub.
 
 Where the input and output files will be saved: [Google Drive -
 Restricted
@@ -73,8 +89,7 @@ Islands are labeled in white text. The transect lines run lengthwise
 from northwest to southeast, covering the entire EEZ. This map image
 does not show any completed survey tracklines or cetacaen sightings but
 serves as the basemap that will be populated with this information as
-the survey gets
-underway.](./outputs/hiceas-2023-cruise-map_placeholder.png)
+the survey gets underway.](./outputs/blank/dailyMap_blankCopy.png)
 
 ## Suggestions and Comments
 
@@ -110,10 +125,13 @@ repository](https://github.com/PIFSC-Protected-Species-Division/cruise-maps-live
     FALSE [1] fontawesome_0.5.1
     FALSE 
     FALSE loaded via a namespace (and not attached):
-    FALSE  [1] compiler_4.3.0  fastmap_1.1.1   cli_3.6.1       tools_4.3.0    
-    FALSE  [5] htmltools_0.5.5 rstudioapi_0.14 rsvg_2.4.0      yaml_2.3.7     
-    FALSE  [9] rmarkdown_2.22  knitr_1.43      xfun_0.39       digest_0.6.31  
-    FALSE [13] rlang_1.1.1     evaluate_0.21
+    FALSE  [1] digest_0.6.31     utf8_1.2.3        R6_2.5.1          fastmap_1.1.1    
+    FALSE  [5] xfun_0.39         glue_1.6.2        rsvg_2.4.0        knitr_1.43       
+    FALSE  [9] htmltools_0.5.5   rmarkdown_2.22    lifecycle_1.0.3   cli_3.6.1        
+    FALSE [13] fansi_1.0.4       readtext_0.90     vctrs_0.6.2       data.table_1.14.8
+    FALSE [17] compiler_4.3.0    httr_1.4.6        rstudioapi_0.14   tools_4.3.0      
+    FALSE [21] pillar_1.9.0      evaluate_0.21     yaml_2.3.7        rlang_1.1.1      
+    FALSE [25] stringi_1.7.12
 
 ## NOAA Disclaimer and License
 

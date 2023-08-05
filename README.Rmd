@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+  md_document:
+    variant: gfm
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,6 +16,7 @@ knitr::opts_chunk$set(
   comment = FALSE
 )
 
+link_repo <- "https://github.com/PIFSC-Protected-Species-Division/cruise-maps-live"
 
 library(fontawesome)
 ```
@@ -27,10 +30,10 @@ library(fontawesome)
 
 ## Developers
 
-**Janelle Badger** (janelle.badger AT noaa.gov)  
-**Yvonne Barkley** (yvonne.barkley AT noaa.gov)  
-**Selene Fregosi** (selene.fregosi AT noaa.gov)   
-**Kym Yano** (kym.yano AT noaa.gov)  
+**Janelle Badger** (janelle.badger AT noaa.gov; [\@badgerjj](https://github.com/badgerjj))  
+**Yvonne Barkley** (yvonne.barkley AT noaa.gov; [\@ybarkley](https://github.com/ybarkley))  
+**Selene Fregosi** (selene.fregosi AT noaa.gov; [\@sfregosi](https://github.com/sfregosi))   
+**Kym Yano** (kym.yano AT noaa.gov; [\@kmyano](https://github.com/kmyano))  
 
 Cetacean Research Program | Protected Species Division  
 Pacific Islands Fisheries Science Center  
@@ -38,6 +41,25 @@ National Marine Fisheries Service
 National Oceanic and Atmospheric Administration
 
 The idea for these live maps and this repository was inspired by the Alaska Fisheries Science Center's live survey maps. The code and outputs presented here are modified from the AFSC team's [survey-live-temperature-map](https://github.com/afsc-gap-products/survey-live-temperature-map) repository. 
+
+## Table of contents
+
+```{r toc, echo = FALSE, eval = TRUE, warning=FALSE}
+toc <- strsplit(x = readtext::readtext(file = "./README.Rmd", verbosity = 0)[[2]], split = "\n")
+toc <- toc[[1]][substr(x = toc[[1]], start = 1, stop = 1) == "#"]
+toc <- toc[-c(1:3)]
+toc_list <- toc
+toc_list <- gsub(pattern = "#### ", replacement = ">      - [*", x = toc_list, fixed = TRUE)
+toc_list <- gsub(pattern = "### ", replacement = ">    - [*", x = toc_list, fixed = TRUE)
+toc_list <- gsub(pattern = "## ", replacement = ">  - [*", x = toc_list, fixed = TRUE)
+toc_link <- tolower(gsub(pattern = " ", replacement = "-", 
+                          x = gsub(pattern = "#", replacement = "", 
+                                   x = gsub(pattern = "# ", replacement = "", 
+                                            x = toc, fixed = TRUE), fixed = TRUE)))
+toc <- paste0(toc_list, "*](#", toc_link, ")", collapse = "\n")
+```
+
+`r toc`
 
 ## Purpose
 
@@ -48,11 +70,13 @@ The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolp
 
 ## Notes
 
-[How to set up automation using Windows Task Scheduler](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit)
+[How to set up automation using Windows Task Scheduler](https://docs.google.com/document/d/1eSvKQl3RGqqxyt8O07Qfya14hhlKR16bmz8MlNiHDQ8/edit) This includes information on setting up the Windows Task Scheduler to execute an R script on a schedule (in our case `run.r`) and to autocommit and push changes to GitHub. 
 
 Where the input and output files will be saved: [Google Drive - Restricted access](https://drive.google.com/drive/u/0/folders/1okUHW9LRxXJ8T8Djxu_VUKV3LPmEMp6c)
 
 When running the `run.R` script for the first time on your local machine, first run the `prep.R` script to ensure the folder structure is set up properly and all necessary packages are installed.
+
+
 
 ## Plot Examples 
 
@@ -60,7 +84,7 @@ As each survey leg completes we will share some example plots and gifs here!
 
 ### Blank, pre-survey base map
 
-![HICEAS 2023 Base Map, A bathymetric map of the HICEAS study area and the planned transect lines. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. This map image does not show any completed survey tracklines or cetacaen sightings but serves as the basemap that will be populated with this information as the survey gets underway.](./outputs/hiceas-2023-cruise-map_placeholder.png)
+![HICEAS 2023 Base Map, A bathymetric map of the HICEAS study area and the planned transect lines. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. This map image does not show any completed survey tracklines or cetacaen sightings but serves as the basemap that will be populated with this information as the survey gets underway.](./outputs/blank/dailyMap_blankCopy.png)
 
 ## Suggestions and Comments
 
