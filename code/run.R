@@ -354,28 +354,58 @@ if (length(idxNew) != 0){
   
   # read in the file for this ship and leg - pamList should be length 1
   pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
-  if (nrow(pamList) == 1){
+  if (nrow(pamList) == 0){
+    cat('No PAM file!! Skipping any new acoustic detections.')
+    # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
+    
+  } else if (nrow(pamList) > 1 && nrow(pamList) != 1){
+    cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
+    stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
+    
+  } else if (nrow(pamList) == 1){
+    
     pamFile = file.path(dir_gd_dwnl, pamList$name[1])
     googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                                 overwrite = TRUE, path = pamFile)
-  } else {stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')}
+    
+    # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
+    # ad file will contain all detections from previous legs
+    # will still save a 'snapshot' of each day (but it will be cumulative)
+    
+    # process new file
+    source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
+    adNew = extractAcousticDetections(pamFile)
+    
+    if (nrow(adNew) > 0){
+      # add on some ship info
+      adNew$shipCode = shipCode
+      adNew$shipName = shipName
+      adNew$projID = projID
+      adNew$leg = leg
+    }
+    
+    # save a 'snapshot' of the data for this run
+    outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
+    save(adNew, file = file.path(dir_snaps, outName))
+    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+    cat('   saved', outName, '\n')
+  }
   
-  # process
-  source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
-  ad = extractAcousticDetections(pamFile)
-  
-  # acoustic data won't have 'old' and 'new' sightings because all in one sql file
-  # but will still save 'snapshot' of each day (but will be cumlative)
-  
-  # save a 'snapshot' of the data for this run
-  outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
-  save(ad, file = file.path(dir_snaps, outName))
-  googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
-  cat('   saved', outName, '\n')
-  
+  # combine the old vs dataframe with the new one
+  outName = paste0('compiledDetections_', projID, '.Rda')
+  if (file.exists(file.path(dir_data, outName))){
+    # load old if it exists
+    load(file.path(dir_data, outName))
+    # combine, if new data loaded
+    if (exists('adNew')){ad = rbind(ad, adNew)}
+    # remove dupes, sort by date
+    ad = unique(ad)
+    ad = ad[order(ad$UTC),]
+  } else if (exists('adNew')){ # if no previous sightings file exists, but new does
+    ad = adNew
+  }
   
   # save the primary compiled version
-  outName = paste0('compiledDetections_', projID, '.Rda')
   save(ad, file = file.path(dir_data, outName))
   googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
   outNameCSV = paste0('compiledDetections_', projID, '.csv')
@@ -543,11 +573,12 @@ if (length(idxNew) != 0){
   
   
   # ------ Save dasList and close log  ------------------------------------
-
+  
 } # end check for non-empty idxNew
 
 # if all ran ok, save updated dasList so these files won't be run again
-save(dasList, file = file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))
+save(dasList, file = file.path(dir_wd, 'outputs', 
+                               paste0('dasList_', projID, '.Rda')))
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()

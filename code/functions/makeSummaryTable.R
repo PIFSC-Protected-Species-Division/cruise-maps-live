@@ -66,7 +66,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   st$days[idx] = length(unique(et$monthdays[which(et$leg == leg)]))
   # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist[which(et$leg == leg)])
-  st$spVis[idx] = length(vs$SpCode[which(et$leg == leg)])
+  st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg)])
   st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg)])
   
   # zero everything if this is a blank table (for start of each leg)
