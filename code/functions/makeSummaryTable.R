@@ -62,12 +62,12 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, blank_table){
   }
   
   # calculate summary stats
-  monthdays = format(et$mDateTime, format = '%m%d')
-  st$days[idx] = length(unique(monthdays))
+  et$monthdays = format(et$mDateTime, format = '%m%d')
+  st$days[idx] = length(unique(et$monthdays[which(et$leg == leg)]))
   # st$segments[idx] = length(et$segnum)
-  st$dist[idx] = sum(et$dist)
-  st$spVis[idx] = length(vs$SpCode)
-  st$spPam[idx] = length(ad$sp_map)
+  st$dist[idx] = sum(et$dist[which(et$leg == leg)])
+  st$spVis[idx] = length(vs$SpCode[which(et$leg == leg)])
+  st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg)])
   
   # zero everything if this is a blank table (for start of each leg)
   if (blank_table == TRUE){
