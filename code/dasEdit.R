@@ -1,50 +1,15 @@
 #' ---------------------------
-#' title: Daily Survey Effort and Sightings Map
-#' authors: Selene Fregosi, Janelle Badger, Yvonne Barkley, Kym Yano
-#' inspired by: Emily Markowitz et al at NWFSC
-#' purpose: pull in raw survey data, parse out relevant bits, and create a 
-#' map with the most recent survey effort and sightings
+#' title: Manually edit DAS errors
+#' authors: Selene Fregosi
+#' purpose: modify existing processed DAS files that may contain small errors 
+#' that are affecting plotting and summary tables
+#' 
+#' **TO BE USED MANUALLY BY CODE DEVELOPERS**
 #' ---------------------------
 
-
-# ------ MAKE MANUAL CHANGES ----------------------------------------------
-
-# first tackle epNew
-# load the file of interest
-load("~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06.Rda")
-# create a backup variable
-epNewOrig = epNew
-# save a backup '_original'
-save(epNew, file = "~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06_original.Rda")
-
-# edit out the bad row
-epNew = epNew[-which(epNew$line_num == 297 & epNew$leg == 2 & 
-                       format(epNew$DateTime, format = "%d") == '05'),]
-
-# save corrected file
-save(epNew, file = "~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06.Rda")
-
-
-# then tackle ep
-load("~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
-# create a backup variable
-epOrig = ep
-# edit out the bad row
-ep = ep[-which(ep$line_num == 297 & ep$leg == 2 & 
-                       format(ep$DateTime, format = "%d") == '05'),]
-# save corrected file
-save(ep, file = "~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
-
-
-
-# ------ CREATE NEW MAPS AND TABLES ---------------------------------------
-
-# run a shortened version of 'run.R' to remake map and table. 
-
-# ------ USER SPECIFIED INPUTS --------------------------------------------
+# ------ USER INPUTS/SETUP STUFF ------------------------------------------
 
 crNum = 2303
-# ship = 'OES' # 'LSK'
 leg = '2'
 
 # specify ship info and google drive paths for each cruise num/ship
@@ -68,13 +33,9 @@ if (crNum == 2303){
   dir_gd_snaps <- googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
   dir_gd_gpx <- googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
 }
-
-# all pam data is in a single folder
 dir_gd_raw_pam <- googledrive::as_id('1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
 
 # set working directory
-# will search through list of possible and select first one
-# add initials and path to run on your local machine
 locationCodes <- c('sf', 'yb', 'vm')
 locations <- c(
   'C:/users/selene.fregosi/documents/github/cruise-maps-live',
@@ -92,9 +53,7 @@ for (i in 1:length(locations)){
 # build string with leg num used throughout for filename generation
 legID = paste0(projID, '_leg', leg)
 
-# ------ Set up folder structure ------------------------------------------
-# define the local output paths (so don't have to be changed below)
-# these are projID and legID specific! 
+# Define local output paths
 dir_data = file.path(dir_wd, 'data', projID)                      # outer 'data' folder
 dir_gd_dwnl = file.path(dir_wd, 'data', projID, 'gd_downloads')   # gd downloads
 dir_snaps = file.path(dir_wd, 'data', projID, 'snapshots')        # data snapshots
@@ -102,20 +61,147 @@ dir_gpx = file.path(dir_wd, 'data', projID, 'gpx')                # gpx files
 dir_tsnaps = file.path(dir_wd, 'outputs', 'table_archive', legID) # table snapshots - saved by leg
 dir_msnaps = file.path(dir_wd, 'outputs', 'map_archive', legID)   # map snapshots - saved by leg
 
-
-# ------ sign in to google drive ------------------------------------------
 # sign in to google drive
 googledrive::drive_deauth()
 googledrive::drive_auth()
 # push through authorization approval
 2 # this may need to change??
 
-# ------ Libraries --------------------------------------------------------
-
-# most functions are called with :: so don't have to load all libraries, but do 
-# have to load a few for using %>% pipeline
 library(raster)
 library(tidyverse)
+
+
+# ------ MAKE MANUAL CHANGES ----------------------------------------------
+
+# Below are some suggested code for types of edits we may need to make
+
+# ###### Changes to DAS directly ######
+
+# first manually make a copy of the original with '_original' appended to the name
+# then manually remove or modify the bad line in a text editor
+
+# then, re specify the file and reprocess (DO NOT RE-DOWNLOAD)
+dasFile = '~/github/cruise-maps-live/data/OES2303/gd_downloads/DASALL.805'
+dasName = 'DASALL.805'
+editedDay = 5
+editedDayStr = '05'
+
+df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+df_read = swfscDAS::das_read(dasFile, skip = 0)
+df_proc = swfscDAS::das_process(dasFile)
+df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, 'HST')
+
+# save copy of new df_proc
+outName = paste0('processedDAS_', legID, '_', dasName, '_ran', 
+                 Sys.Date(), '.Rda')
+save(df_proc, file = file.path(dir_snaps, outName))
+
+
+# ###### Changes to ep dataframe ######
+
+# # first tackle epNew
+# # load the file of interest
+# load("~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06.Rda")
+# # create a backup variable
+# epNewOrig = epNew
+# # save a backup '_original'
+# save(epNew, file = "~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06_original.Rda")
+# 
+# # edit out the bad row
+# epNew = epNew[-which(epNew$line_num == 297 & epNew$leg == 2 & 
+#                        format(epNew$DateTime, format = "%d") == '05'),]
+# 
+# # save corrected file
+# save(epNew, file = "~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06.Rda")
+# 
+# # then tackle ep
+# load("~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
+# # create a backup variable
+# epOrig = ep
+# # edit out the bad row
+# ep = ep[-which(ep$line_num == 297 & ep$leg == 2 & 
+#                        format(ep$DateTime, format = "%d") == '05'),]
+# # save corrected file
+# save(ep, file = "~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
+
+
+# ------ RE-RUN WHAT NEEDS TO BE RE-RUN -----------------------------------
+
+# ------ Parse track data from das ----------------------------------------
+# parse on-effort segments as straight lines from Begin/Resume to End 
+source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
+etNew = parseTrack(df_proc)
+
+# add on some ship info
+etNew$shipCode = shipCode
+etNew$shipName = shipName
+etNew$projID = projID
+etNew$leg = leg
+
+# save a 'snapshot' of the data for this das file with date it was run
+outName = paste0('newEffortTracks_', legID, '_', dasName, '_ran', 
+                 Sys.Date(), '.Rda')
+save(etNew, file = file.path(dir_snaps, outName))
+googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+
+# load the old compiled data.frame
+outName = paste0('compiledEffortTracks_', projID, '.Rda')
+  load(file.path(dir_data, outName))
+  # clear the edited day and add on etNew
+  et = et[-which(et$day == editedDay),]
+  et = rbind(et, etNew)
+  et = unique(et)                 # remove duplicates (in case ran already)
+  et = et[order(et$DateTime1),]   # sort in case out of order
+
+save(et, file = file.path(dir_data, outName))
+googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+outNameCSV = paste0('compiledEffortTracks_', projID, '.csv')
+write.csv(et, file = file.path(dir_data, outNameCSV))
+googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+
+# ------ Create GPX from track data ---------------------------------------
+source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
+# by day/das tracks
+outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', dasName, 
+                                   '.gpx'))
+trackToGPX(etNew, outGPX)
+googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+# compiled tracks
+outGPX = file.path(dir_gpx, paste0('compiledEffortTracks_', projID, '.gpx'))
+trackToGPX(et, outGPX)
+googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+
+# ------ Parse track data as points ---------------------------------------
+source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
+epNew = parseTrack_asPoints(df_proc)
+
+# add on some ship info
+epNew$shipCode = shipCode
+epNew$shipName = shipName
+epNew$projID = projID
+epNew$leg = leg
+
+# save a 'snapshot' of the data for this run
+outName = paste0('newEffortPoints_', legID, '_', dasName, '_ran', 
+                 Sys.Date(), '.Rda')
+save(epNew, file = file.path(dir_snaps, outName))
+googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+
+# load the old compiled data.frame
+outName = paste0('compiledEffortPoints_', projID, '.Rda')
+  load(file.path(dir_data, outName))
+  # clear the edited day and add on etNew
+  ep = ep[-which(format(ep$DateTime, format = '%d') == editedDayStr),]
+  ep = rbind(ep, epNew)
+  ep = unique(ep)
+  ep = ep[order(ep$DateTime),]
+
+save(ep, file = file.path(dir_data, outName))
+googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+outNameCSV = paste0('compiledEffortPoints_', projID, '.csv')
+write.csv(ep, file = file.path(dir_data, outNameCSV))
+googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+
 
 # ------ Load files needed for mapping and table --------------------------
 
@@ -123,10 +209,6 @@ library(tidyverse)
 load("~/GitHub/cruise-maps-live/data/OES2303/compiledSightings_OES2303.Rda")
 # acoustic detections
 load("~/GitHub/cruise-maps-live/data/OES2303/compiledDetections_OES2303.Rda")
-
- # load newly replaced effort points
-load("~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
-load("~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-06.Rda")
   
   # ------ Make summary table -----------------------------------------------
   
