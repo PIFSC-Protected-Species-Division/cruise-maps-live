@@ -181,8 +181,8 @@ if (length(idxNew) != 0){
     cat(' ', d$name, '\n')
     
     # download and save locally
-    googledrive::drive_download(file = googledrive::as_id(d$id), overwrite = TRUE, 
-                                path = dasFile)
+    googledrive::drive_download(file = googledrive::as_id(d$id), 
+                                overwrite = TRUE, path = dasFile)
     
     # basic data checks
     df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
@@ -198,6 +198,11 @@ if (length(idxNew) != 0){
     if (crNum == 2303 && leg == 1){
       df_proc$Cruise = 2303
     }
+    
+    # save copy of df_proc
+    outName = paste0('processedDAS_', legID, '_', d$name, '_ran', 
+                     Sys.Date(), '.Rda')
+    save(df_proc, file = file.path(dir_snaps, outName))
     
     
     # ------ Parse track data from das ----------------------------------------
