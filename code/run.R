@@ -396,7 +396,7 @@ if (length(idxNew) != 0){
     cat('   saved', outName, '\n')
   }
   
-  # combine the old vs dataframe with the new one
+  # combine the old ad dataframe with the new one
   outName = paste0('compiledDetections_', projID, '.Rda')
   if (file.exists(file.path(dir_data, outName))){
     # load old if it exists

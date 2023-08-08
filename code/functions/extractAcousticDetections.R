@@ -47,7 +47,7 @@ extractAcousticDetections <- function(pamFile){
       
       # pull just cols needed - not necessary step but easier to view
       dtTmp = data.frame(dt$ac_id, dt$UTC, dt$vis_id, 
-                         dt$date_time_end, dt$date_time_end, 
+                         dt$date_time_start, dt$date_time_end, 
                          dt$latlong_LAT, dt$latlong_LON,
                          dt$class1, dt$species1_class1,
                          dt$class2, dt$species1_class2)
