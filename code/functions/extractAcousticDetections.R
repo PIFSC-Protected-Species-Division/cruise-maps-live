@@ -71,12 +71,19 @@ extractAcousticDetections <- function(pamFile){
           idOpts = c(dtTmp$class1[s], dtTmp$class2[s])
           spOpts = c(dtTmp$cl1_sp1[s], dtTmp$cl2_sp1[s])
           
-          # if acoustic ID is a beaked whale species, use acoustic ID
-          if (spOpts[which(idOpts == 'AT')] %in% bwList){
-            spTmp = spOpts[which(idOpts == 'AT')]
-            
-            # if not a beaked whale species, use visual ID
-          } else {spTmp = spOpts[which(idOpts == 'V')]}
+          # if no Acoustic ID, use visual
+          if (!('AT' %in% idOpts)){
+            spTmp = spOpts[which(idOpts == 'V')]
+          }
+          
+          # if there IS an acoustic ID
+          if ('AT' %in% idOpts){
+            # and its a beaked whale use acoustic ID
+            if (spOpts[which(idOpts == 'AT')] %in% bwList){
+              spTmp = spOpts[which(idOpts == 'AT')]
+              # if not a beaked whale species, use visual ID
+            } else {spTmp = spOpts[which(idOpts == 'V')]}
+          }
         }
         
         # if no visual ID... use acoustic ID but simplify to allowable (JLKM) 
