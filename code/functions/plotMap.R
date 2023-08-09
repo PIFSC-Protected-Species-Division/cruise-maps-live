@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
+plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType, test_code){
   
   #' plotMap
   #' 
@@ -22,9 +22,11 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   #' @param epNew data.frame of effort as tracks, just new additions
   #' @param ce data.frame of 'cetacean encounters', either from visual sightings
   #' or from acoustic detections, cumulative over a HICEAS leg
-  #' @param shipCode character string with code for ship (either 'OES' or 'LSK', or
-  #' in the future, both as c('OES', 'LSK'))
-  #' #' @param leg character string with leg number (e.g., '01')
+  #' @param shipCode character string with code for ship (either 'OES' or 'LSK',
+  #'  or in the future, both as c('OES', 'LSK'))
+  #' @param leg character string with leg number (e.g., '1')
+  #' @param dataType character string of either 'visual' or 'acoustic' to set
+  #' legend, title, and symbol size
   #' @param test_code logical input to randomly generate and plot data for testing
   #' 
   #' @return base_map map figure 
@@ -41,76 +43,62 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
-  if(test_code==FALSE){
-    if(length(shipCode) > 1){stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
-    
-    #######################################
-    ## Load HICEAS points, cumulative #####
-    # if working from files, define and load
-    # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
-    # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
-    effort = ep  # if running within run.R, just rename input 
-    
-    # clean up effort locations
-    effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
-    effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
-    
-    ## Load HICEAS points, recent (etNew) #
-    # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
-    # tmp<-read.csv(file.path(dir, file.name.recent))
-    tmp = epNew # if running within run.R, just rename input
-    
-    # clean up tmp locations
-    tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
-    tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
-    
-    
-    #######################################
-    ## Load cetacean encounter data #######
-    # if working from files, define and load
-    # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
-    # load(file.path(dir, file.name.sightings))
-    # vs already exists and is now a function input so don't need to load file. 
-    ceMap = ce # rename whatever the encounter input is
-    
-    # clean up sightings locations and add spNames
-    key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
-    ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
-    ceMap <- sf::st_as_sf(ceMap,coords=c("lon","Lat"), crs = 4326)%>%
-      dplyr::left_join(key, by = "SpCode")
-    ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
-    #sort ceMap by species name 
-    ceMap = ceMap[rev(order(ceMap$SpName)),]
-    # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
-    
-    
-    # #################
-    # ## Load acoustics events data 
-    # ac<-read.csv(file.path(dir, "AcousticsDatabase.csv"))%>%
-    #   mutate(DateTime = as.POSIXct(DateTime, format = "%Y-%m-%d %H:%M:%OS"))
-    # 
-    # ac$lon <- ifelse(ac$Lon > 0, effort$Lon-360, effort$Lon)
-    # effort <- filter(effort, lon <= -150)%>% 
-    #   st_as_sf(coords=c("lon","Lat"), crs = 4326)
-    
-  }else{ # TEST DATA
-    effort<-read.csv(file.path(dir_wd, "data", "compiledEffortPoints_2017_leg00_OES.csv"))%>%
-      mutate(DateTime = as.POSIXct(DateTime, format = "%Y-%m-%d %H:%M:%OS"))
-    effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)
-    effort <- filter(effort, lon <= -150)%>% 
-      sf::st_as_sf(coords=c("lon","Lat"), crs = 4326)
-    
-    ## Load HICEAS points, recent 
-    tmp<-effort%>%filter(DateTime >  "2017-07-31 00:00:00")# Fake, just to show--"recent" data vs "all"
-    
-    load(file.path(dir_wd, "data", "compiledSightings_2017_leg00_OES.Rda"))
-    key$SpCode<-as.integer(key$SpCode)                            #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
-    
-    ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
-    ceMap <- filter(ceMap, lon <= -150,)%>% 
-      sf::st_as_sf(coords=c("lon","Lat"), crs = 4326)%>%
-      dplyr::left_join(key, by = "SpCode")
+  if(length(shipCode) > 1){stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
+  
+  if (test_code==TRUE){ # TEST DATA
+    load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
+    load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
+                   'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
+    load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
+    load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
+    if (dataType == 'visual'){
+      ce = vs
+    } else if (dataType == 'acoustic'){
+      ad$SpCode = as.integer(ad$sp_map)
+      ce = ad
+    }
   }
+  
+  
+  #######################################
+  ## Load HICEAS points, cumulative #####
+  # if working from files, define and load
+  # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
+  # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
+  effort = ep  # if running within run.R, just rename input 
+  
+  # clean up effort locations
+  effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
+  effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
+  
+  ## Load HICEAS points, recent (etNew) #
+  # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
+  # tmp<-read.csv(file.path(dir, file.name.recent))
+  tmp = epNew # if running within run.R, just rename input
+  
+  # clean up tmp locations
+  tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
+  tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
+  
+  
+  #######################################
+  ## Load cetacean encounter data #######
+  # if working from files, define and load
+  # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
+  # load(file.path(dir, file.name.sightings))
+  # vs already exists and is now a function input so don't need to load file. 
+  ceMap = ce # rename whatever the encounter input is
+  
+  # clean up sightings locations and add spNames
+  key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
+  ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
+  ceMap <- sf::st_as_sf(ceMap,coords=c("lon","Lat"), crs = 4326)%>%
+    dplyr::left_join(key, by = "SpCode")
+  ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
+  #sort ceMap by species name 
+  ceMap = ceMap[rev(order(ceMap$SpName)),]
+  # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
+  
   
   
   
@@ -125,10 +113,20 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
   shapes_enc <- ceMap$SpSymbol[uci]
   
   labels_lines <- c( "Survey effort (recent)", 
-                   "Survey effort (to date)", 
-                   "Pre-determined transect lines")
+                     "Survey effort (to date)", 
+                     "Pre-determined transect lines")
   
   labels_enc<-unique(ceMap$SpName)
+  
+  if (dataType == 'visual'){
+    plotTitle = 'Visual Sightings'
+    legendName = 'Visual Sightings'
+    shapesSize = 3
+  } else if (dataType == 'acoustic'){
+    plotTitle = 'Acoustic Detections'
+    legendName = 'Acoustic Detections'
+    shapesSize = 2
+  }
   
   tw = 0.3 # track width
   ta = 0.2 # track alpha
@@ -162,9 +160,12 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
     
     
     ggnewscale::new_scale_color() +
-    geom_sf(data=ceMap, aes(color=SpName, shape = SpName), size = 3, stroke = 0.8)+
-    scale_color_manual(name = "Encounters", values = rev(colors_enc), labels = rev(labels_enc))+
-    scale_shape_manual(name = "Encounters", values = rev(shapes_enc), labels = rev(labels_enc))+
+    geom_sf(data=ceMap, aes(color=SpName, shape = SpName), size = shapesSize, 
+            stroke = 0.8)+
+    scale_color_manual(name = legendName, values = rev(colors_enc), 
+                       labels = rev(labels_enc))+
+    scale_shape_manual(name = legendName, values = rev(shapes_enc), 
+                       labels = rev(labels_enc))+
     guides(colour = guide_legend(override.aes = list(size = 3)))+
     
     
@@ -189,7 +190,9 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, test_code){
                    x.min = min(lines$Longitude),
                    x.max = max(lines$Longitude),
                    y.min = min(lines$Latitude),
-                   y.max = max(lines$Latitude))
+                   y.max = max(lines$Latitude)) +
+    ggtitle(plotTitle) +
+    theme(plot.title = element_text(hjust = 0.5))
   
   
   # rather than print and save within function going to have it as output
