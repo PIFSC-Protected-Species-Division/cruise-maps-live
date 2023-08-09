@@ -456,7 +456,8 @@ if (length(idxNew) != 0){
   
   source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
   
-  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code)
+  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual',
+                    test_code)
   base_map_V = mapOutV$base_map
   vsMap = mapOutV$ceMap
   
@@ -527,7 +528,8 @@ if (length(idxNew) != 0){
   # add correctly formated SpCode col
   ad$SpCode = as.integer(ad$sp_map)
   
-  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code)
+  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic', 
+                    test_code)
   base_map_A = mapOutA$base_map
   adMap = mapOutA$ceMap
   
