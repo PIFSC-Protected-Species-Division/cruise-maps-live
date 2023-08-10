@@ -9,9 +9,9 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-# data_source = 'gd' # google drive
+data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
-data_source = 'test' # work with test data set. 
+# data_source = 'test' # work with test data set. 
 
 # yr = 2023
 crNum = 2303
@@ -174,7 +174,7 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '0'){
-    idxNew = 6
+    idxNew = 11
     # idxNew = c(1,2)
   }
   ### ### ### ### ###  

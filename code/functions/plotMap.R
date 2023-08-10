@@ -123,7 +123,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
     legendName = 'Sightings'
     shapesSize = 3
   } else if (dataType == 'acoustic'){
-    plotTitle = 'What cetaceans have we heard during HICEAS 2023'
+    plotTitle = 'What cetaceans have we heard during HICEAS 2023?'
     legendName = 'Acoustic Detections'
     shapesSize = 2
   }
