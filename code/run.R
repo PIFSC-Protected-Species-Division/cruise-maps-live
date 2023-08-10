@@ -10,7 +10,8 @@
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
 data_source = 'gd' # google drive
-# data_source = 'blank' # for making blank table and map
+# data_source = 'blank' # for making blank table and map. Set leg to 0
+# data_source = 'test' # work with test data set. 
 
 # yr = 2023
 crNum = 2303
@@ -67,6 +68,11 @@ for (i in 1:length(locations)){
 # build string with leg num used throughout for filename generation
 legID = paste0(projID, '_leg', leg)
 
+# if test data, modify projID and legID
+if (data_source == 'test'){
+  legID = paste0(projID, '_leg', leg, '_test')
+  projID = paste0(projID, '_test')
+}
 
 # ------ Set up folder structure ------------------------------------------
 # define the local output paths (so don't have to be changed below)
@@ -89,6 +95,15 @@ if (makeDirs){
   if (!dir.exists(dir_tsnaps)){dir.create(dir_tsnaps)}
 }
 
+
+# ------ Libraries --------------------------------------------------------
+
+# most functions are called with :: so don't have to load all libraries, but do 
+# have to load a few for using %>% pipeline
+library(raster)
+library(tidyverse)
+
+
 # ------ Make a log file --------------------------------------------------
 # define directory to save log file and create if doesn't exist
 dir_log = file.path(dir_wd, 'outputs', 'run_logs', legID)
@@ -103,40 +118,38 @@ sink(logFile, append = TRUE)
 cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
 
-# ------ Libraries --------------------------------------------------------
 
-# most functions are called with :: so don't have to load all libraries, but do 
-# have to load a few for using %>% pipeline
-library(raster)
-library(tidyverse)
+# ------ Prep data source -------------------------------------------------
 
-# ------ Sign in to google drive ------------------------------------------
-
-# if just creating a blank map, don't sign in
+# if creating blank map, load blank data.frames
 if (data_source == 'blank'){
   # to make blank table and map - these were made by hand
   load(file.path(dir_wd, 'data', 'blank', 'blankEffortPoints.Rda'))
   load(file.path(dir_wd, 'data', 'blank', 'blankEffortTracks.Rda'))
   load(file.path(dir_wd, 'data', 'blank', 'blankSightings.Rda'))
+  load(file.path(dir_wd, 'data', 'blank', 'blankDetections.Rda'))
   epNew = ep
+  idxNew = integer(0) # no new files to download/process
   
-  # map testing options
-  test_code = FALSE
-  # blank_map = TRUE
-  blank_table = TRUE
-  idxNew = integer(0)
+  # if testing, load test data.frames
+} else if (data_source == 'test'){
+  load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
+  load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
+                 'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
+  load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortTracks_OES2303.Rda'))
+  load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
+  load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
+  idxNew = integer(0) # no new files to download/process
   
+  # ------ Sign in to google drive ------------------------------------------
+  # if actually running, log in to Google Drive and download new files
 } else if (data_source == 'gd'){
   googledrive::drive_deauth()
   googledrive::drive_auth()
   # push through authorization approval
   2 # this may need to change??
   
-  # turn off test/blank checks
-  blank_table = FALSE
-  test_code = FALSE
-  
-  # ------ Identify new das file --------------------------------------------
+  # ------ Identify new das files -------------------------------------------
   
   # open up list of previously checked das files
   # to re-run all, delete dasList_yr.Rda file from your local outputs folder
@@ -161,16 +174,16 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '0'){
-    idxNew = 6
+    idxNew = 11
     # idxNew = c(1,2)
   }
   ### ### ### ### ###  
-  
-}
+} # end data source check
 
-# ------ Download, read and process das file ------------------------------
 
-# if there are new das to process
+# ------ Download, read and process new das files -------------------------
+
+# if there are new das to process/not test or blank run
 if (length(idxNew) != 0){
   # loop through all idxNew
   for (i in 1:length(idxNew)){
@@ -348,11 +361,10 @@ if (length(idxNew) != 0){
     
   } # end loop through all idxNew for download and processing of DAS
   
-  
-  
   # ------ Extract acoustic detections --------------------------------------
   # acoustics file is single sql file that is updated/appended each day
   # file is large so slow to download
+  # only do this if there is also new DAS that were processed 
   
   # assemble search pattern
   pat = paste0(shipName, 'Leg', leg)
@@ -417,28 +429,30 @@ if (length(idxNew) != 0){
   write.csv(vs, file = file.path(dir_data, outNameCSV))
   googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
   cat('   saved', outName, 'and as .csv\n')
-  
-  # **Would end loop through multiple vessels here. 
-  
-  
-  # ------ Make summary table -----------------------------------------------
-  cat(' Updating summary table:\n')
-  
-  # load previously created summary table if it exists
-  stName = paste0('summaryTable.Rda')
-  if (file.exists(file.path(dir_wd, 'outputs', stName))){
-    load(file.path(dir_wd, 'outputs', stName))
-  } else {
-    st = data.frame()
-  }
-  
-  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-  lt = makeSummaryTable(st, et, vs, ad, shipCode, leg, blank_table)
-  # break out pieces of returned list
-  st = lt$st
-  ft = lt$ft
-  
-  # save st .rda as combined for the whole year (bc loaded on later legs)
+}
+
+# **Would end loop through multiple vessels here. 
+
+
+# ------ Make summary table -----------------------------------------------
+cat(' Updating summary table:\n')
+
+# load previously created summary table if it exists
+stName = paste0('summaryTable.Rda')
+if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
+  load(file.path(dir_wd, 'outputs', stName))
+} else {
+  st = data.frame()
+}
+
+source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
+# break out pieces of returned list
+st = lt$st
+ft = lt$ft
+
+# save st .rda as combined for the whole year (bc loaded on later legs)
+if (data_source == 'gd'){ # only save if actual run, not test or blank
   save(st, file = file.path(dir_wd, 'outputs', stName))
   cat('   saved', stName, '\n')
   
@@ -450,23 +464,25 @@ if (length(idxNew) != 0){
   outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
   flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
   cat('   saved', outName, '\n')
-  
-  # ------ Plot visual sightings map --------------------------------------
-  cat(' Generating latest map of visual sightings:\n')
-  
-  source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
-  
-  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code)
-  base_map_V = mapOutV$base_map
-  vsMap = mapOutV$ceMap
-  
-  # ------ Save visuals map figures ---------------------------------------
-  # then save daily update plot as .png and .pdf
-  height = 5
-  width = 10
-  res = 400
-  
-  # save the latest - as .png and .pdf
+}
+
+# ------ Plot visual sightings map --------------------------------------
+cat(' Generating latest map of visual sightings:\n')
+
+source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
+
+mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
+base_map_V = mapOutV$base_map
+vsMap = mapOutV$ceMap
+
+# ------ Save visuals map figures ---------------------------------------
+# then save daily update plot as .png and .pdf
+height = 5
+width = 10
+res = 400
+
+# save the latest - as .png and .pdf
+if (data_source == 'gd'){ # only save if actual run, not test or blank
   outStr = paste0('dailyMap_visuals')
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
          height = height,
@@ -478,25 +494,6 @@ if (length(idxNew) != 0){
          device = 'png')
   
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  cat('   saved', outStr, 'as .png and .pdf\n')
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
          height = height,
          width = width,
          plot = base_map_V,
@@ -521,23 +518,47 @@ if (length(idxNew) != 0){
   cat('   saved', outName, 'and as .csv\n')
   cat('   saved', outStr, 'as .png and .pdf\n')
   
-  # ------ Plot acoustic detections map -----------------------------------
-  cat(' Generating latest map of acoustic detections:\n')
-  
-  # add correctly formated SpCode col
-  ad$SpCode = as.integer(ad$sp_map)
-  
-  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code)
-  base_map_A = mapOutA$base_map
-  adMap = mapOutA$ceMap
-  
-  # ------ Save acoustics map figures -------------------------------------
-  # then save daily update plot as .png and .pdf
-  height = 5
-  width = 10
-  res = 400
-  
-  # save the latest - as .png and .pdf
+}
+
+# save a copy of today's run - as .png and .pdf
+outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+cat('   saved', outStr, 'as .png and .pdf\n')
+
+
+# ------ Plot acoustic detections map -----------------------------------
+cat(' Generating latest map of acoustic detections:\n')
+
+# add correctly formated SpCode col
+ad$SpCode = as.integer(ad$sp_map)
+
+mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
+base_map_A = mapOutA$base_map
+adMap = mapOutA$ceMap
+
+# ------ Save acoustics map figures -------------------------------------
+# then save daily update plot as .png and .pdf
+height = 5
+width = 10
+res = 400
+
+
+# save the latest - as .png and .pdf
+if (data_source == 'gd'){ # only save if actual run, not test or blank
   outStr = paste0('dailyMap_acoustics')
   ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
          height = height,
@@ -556,34 +577,36 @@ if (length(idxNew) != 0){
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  cat('   saved', outStr, 'as .png and .pdf\n')
-  
-  
-  # ------ Save dasList and close log  ------------------------------------
-  
-} # end check for non-empty idxNew
+}
+
+# save a copy of today's run - as .png and .pdf
+outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+cat('   saved', outStr, 'as .png and .pdf\n')
+
+
+# ------ Save dasList and close log  ------------------------------------
+
 
 # if all ran ok, save updated dasList so these files won't be run again
-save(dasList, file = file.path(dir_wd, 'outputs', 
-                               paste0('dasList_', projID, '.Rda')))
+if (data_source == 'gd'){ # only save if actual run, not test or blank
+  save(dasList, file = file.path(dir_wd, 'outputs', 
+                                 paste0('dasList_', projID, '.Rda')))
+}
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()
