@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType, test_code){
+plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   
   #' plotMap
   #' 
@@ -45,19 +45,19 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType, test_code){
   
   if(length(shipCode) > 1){stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
   
-  if (test_code==TRUE){ # TEST DATA
-    load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
-    load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
-                   'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
-    load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
-    load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
-    if (dataType == 'visual'){
-      ce = vs
-    } else if (dataType == 'acoustic'){
-      ad$SpCode = as.integer(ad$sp_map)
-      ce = ad
-    }
-  }
+  # if (test_code==TRUE){ # TEST DATA
+  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
+  #   load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
+  #                  'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
+  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
+  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
+  #   if (dataType == 'visual'){
+  #     ce = vs
+  #   } else if (dataType == 'acoustic'){
+  #     ad$SpCode = as.integer(ad$sp_map)
+  #     ce = ad
+  #   }
+  # }
   
   
   #######################################
