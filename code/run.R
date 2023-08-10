@@ -95,12 +95,15 @@ if (makeDirs){
   if (!dir.exists(dir_tsnaps)){dir.create(dir_tsnaps)}
 }
 
+
 # ------ Libraries --------------------------------------------------------
 
 # most functions are called with :: so don't have to load all libraries, but do 
 # have to load a few for using %>% pipeline
 library(raster)
 library(tidyverse)
+
+
 # ------ Make a log file --------------------------------------------------
 # define directory to save log file and create if doesn't exist
 dir_log = file.path(dir_wd, 'outputs', 'run_logs', legID)
@@ -114,7 +117,6 @@ sink(logFile, append = TRUE)
 # first entries
 cat('\n...run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
-
 
 
 # ------ Prep data source -------------------------------------------------
@@ -177,6 +179,7 @@ if (data_source == 'blank'){
   }
   ### ### ### ### ###  
 } # end data source check
+
 
 # ------ Download, read and process new das files -------------------------
 
