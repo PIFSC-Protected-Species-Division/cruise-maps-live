@@ -119,11 +119,11 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   labels_enc<-unique(ceMap$SpName)
   
   if (dataType == 'visual'){
-    plotTitle = 'Visual Sightings'
-    legendName = 'Visual Sightings'
+    plotTitle = 'What cetaceans have we seen during HICEAS 2023?'
+    legendName = 'Sightings'
     shapesSize = 3
   } else if (dataType == 'acoustic'){
-    plotTitle = 'Acoustic Detections'
+    plotTitle = 'What cetaceans have we heard during HICEAS 2023'
     legendName = 'Acoustic Detections'
     shapesSize = 2
   }

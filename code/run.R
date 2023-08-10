@@ -543,8 +543,7 @@ cat(' Generating latest map of acoustic detections:\n')
 # add correctly formated SpCode col
 ad$SpCode = as.integer(ad$sp_map)
 
-mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic', 
-                  test_code)
+mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
 base_map_A = mapOutA$base_map
 adMap = mapOutA$ceMap
 
