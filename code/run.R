@@ -207,6 +207,8 @@ if (length(idxNew) != 0){
     source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
     df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
                                                           'TimeZones.csv'))
+    # If looking at compiled data.frames (tracks, points, etc) all timezones 
+    # will be just a single one (HST), but they will have been adjusted for SST
     # View(df_proc)
     
     # correct cruise number (only need on first few days of Leg 1)
