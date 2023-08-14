@@ -174,8 +174,8 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '0'){
-    idxNew = 16
-    # idxNew = c(1,2)
+    # idxNew = 16
+    idxNew = c(15, 16)
   }
   ### ### ### ### ###  
 } # end data source check
@@ -202,25 +202,11 @@ if (length(idxNew) != 0){
     # read and process
     df_read = swfscDAS::das_read(dasFile, skip = 0)
     df_proc = swfscDAS::das_process(dasFile)
-   
-     # update time zone
-    # CL will specify when they move from HST (-10) to SST (-11) and back
-    # read in the key and convert to 'dates'
-    tzKey = read.csv(file.path(dir_wd, 'inputs', "TimeZones.csv"))
-    tzKey$StartDate = as.Date(tzKey$StartDate, 
-                              if (grepl('^\\d+/\\d+/\\d+$', tzKey$StartDate[1])) 
-                                '%m/%d/%Y' else '%Y-%m-%d')
-    tzKey$EndDate = as.Date(tzKey$EndDate, 
-                              if (grepl('^\\d+/\\d+/\\d+$', tzKey$EndDate[1])) 
-                                '%m/%d/%Y' else '%Y-%m-%d')
     
-    # get day of this DAS (from name? or from entries?)
-    dateCheck = lubridate::date(df_proc$DateTime[1])
-    tzKeyS = tzKey[which(tzKey$Ship == shipCode),]
-    tzStr = tzKeyS$TimeZone[which(dateCheck >= tzKeyS$StartDate & 
-                                    dateCheck <= tzKeyS$EndDate)]
-    # NB! This will be a problem when at Midway
-    df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, tzStr)
+    # update time zone
+    source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
+    df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
+                                                          'TimeZones.csv'))
     # View(df_proc)
     
     # correct cruise number (only need on first few days of Leg 1)
