@@ -51,13 +51,13 @@ trackToGPX = function(et, outGPX){
   # reorder by segnum, and rearrange columns
   etLong = etLong[order(etLong$date, etLong$segnum), c(1, 5, 4, 2, 5:9, 3)]
   
-  # # apply correct timezone to datetimes
-  # etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
   # create datetime col with proper formatting for gpx
   if (lubridate::tz(etLong$DateTime[1]) == 'HST'){
     etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
-  } else {
-    stop('Timezone is NOT HST...figure this out! Exiting.')
+  } else if (lubridate::tz(etLong$DateTime[1]) == 'SST'){
+    etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-11:00")
+} else {
+    stop('Timezone is NOT HST or SST...figure this out! Exiting.')
   }
   
   # get info about segments for populating the GPX
