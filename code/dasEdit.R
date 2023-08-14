@@ -81,15 +81,20 @@ library(tidyverse)
 # then manually remove or modify the bad line in a text editor
 
 # then, re specify the file and reprocess (DO NOT RE-DOWNLOAD)
-dasFile = '~/github/cruise-maps-live/data/OES2303/gd_downloads/DASALL.805'
-dasName = 'DASALL.805'
-editedDay = 5
-editedDayStr = '05'
+dasName = 'DASALL.813'
+dasFile = paste0('~/github/cruise-maps-live/data/OES2303/gd_downloads/', dasName)
+editedDay = 13
+editedDayStr = as.character(editedDay)
 
 df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
 df_read = swfscDAS::das_read(dasFile, skip = 0)
 df_proc = swfscDAS::das_process(dasFile)
-df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, 'HST')
+# update time zone
+# update time zone
+source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
+df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
+                                                      'TimeZones.csv'))
+# View(df_proc)
 
 # save copy of new df_proc
 outName = paste0('processedDAS_', legID, '_', dasName, '_ran', 
@@ -127,6 +132,12 @@ save(df_proc, file = file.path(dir_snaps, outName))
 
 # ------ RE-RUN WHAT NEEDS TO BE RE-RUN -----------------------------------
 
+# load any data.frames that don't need to be re-run
+# visual sightings
+load("~/GitHub/cruise-maps-live/data/OES2303/compiledSightings_OES2303.Rda")
+# acoustic detections
+load("~/GitHub/cruise-maps-live/data/OES2303/compiledDetections_OES2303.Rda")
+
 # ------ Parse track data from das ----------------------------------------
 # parse on-effort segments as straight lines from Begin/Resume to End 
 source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
@@ -146,12 +157,12 @@ googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
 
 # load the old compiled data.frame
 outName = paste0('compiledEffortTracks_', projID, '.Rda')
-  load(file.path(dir_data, outName))
-  # clear the edited day and add on etNew
-  et = et[-which(et$day == editedDay),]
-  et = rbind(et, etNew)
-  et = unique(et)                 # remove duplicates (in case ran already)
-  et = et[order(et$DateTime1),]   # sort in case out of order
+load(file.path(dir_data, outName))
+# clear the edited day and add on etNew
+et = et[-which(et$day == editedDay),]
+et = rbind(et, etNew)
+et = unique(et)                 # remove duplicates (in case ran already)
+et = et[order(et$DateTime1),]   # sort in case out of order
 
 save(et, file = file.path(dir_data, outName))
 googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
@@ -189,12 +200,12 @@ googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
 
 # load the old compiled data.frame
 outName = paste0('compiledEffortPoints_', projID, '.Rda')
-  load(file.path(dir_data, outName))
-  # clear the edited day and add on etNew
-  ep = ep[-which(format(ep$DateTime, format = '%d') == editedDayStr),]
-  ep = rbind(ep, epNew)
-  ep = unique(ep)
-  ep = ep[order(ep$DateTime),]
+load(file.path(dir_data, outName))
+# clear the edited day and add on etNew
+ep = ep[-which(format(ep$DateTime, format = '%d') == editedDayStr),]
+ep = rbind(ep, epNew)
+ep = unique(ep)
+ep = ep[order(ep$DateTime),]
 
 save(ep, file = file.path(dir_data, outName))
 googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
@@ -203,150 +214,186 @@ write.csv(ep, file = file.path(dir_data, outNameCSV))
 googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
 
 
-# ------ Load files needed for mapping and table --------------------------
 
-# visual sightings
-load("~/GitHub/cruise-maps-live/data/OES2303/compiledSightings_OES2303.Rda")
-# acoustic detections
-load("~/GitHub/cruise-maps-live/data/OES2303/compiledDetections_OES2303.Rda")
-  
-  # ------ Make summary table -----------------------------------------------
-  
-  # load previously created summary table if it exists
-  stName = paste0('summaryTable.Rda')
-  if (file.exists(file.path(dir_wd, 'outputs', stName))){
-    load(file.path(dir_wd, 'outputs', stName))
-  } else {
-    st = data.frame()
-  }
-  
-  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-  lt = makeSummaryTable(st, et, vs, ad, shipCode, leg, blank_table = FALSE)
-  # break out pieces of returned list
-  st = lt$st
-  ft = lt$ft
-  
-  # save st .rda as combined for the whole year (bc loaded on later legs)
-  save(st, file = file.path(dir_wd, 'outputs', stName))
-  # save ft (formatted flexttable) as image
-  outName = paste0('summaryTable.png')
-  flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
-                           res = 300)
-  outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-  flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
-  
-  # ------ Plot visual sightings map --------------------------------------
-  source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
-  
-  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code = FALSE)
-  base_map_V = mapOutV$base_map
-  vsMap = mapOutV$ceMap
-  
-  # ------ Save visuals map figures ---------------------------------------
-  # then save daily update plot as .png and .pdf
-  height = 5
-  width = 10
-  res = 400
-  
-  # save the latest - as .png and .pdf
-  outStr = paste0('dailyMap_visuals')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         units = 'in', 
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  
-  # save a large copy for CLs as PDF
-  outStr = paste0('dailyMap_visuals_CL')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-         height = 10,
-         width = 20,
-         plot = base_map_V,
-         # dpi = 1200,
-         bg = 'white',
-         device = 'pdf')
-  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                         path = dir_gd_proc)
-  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                         path = dir_gd_gpx)
-  
-  # ------ Plot acoustic detections map -----------------------------------
-  # add correctly formated SpCode col
-  ad$SpCode = as.integer(ad$sp_map)
-  
-  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code = FALSE)
-  base_map_A = mapOutA$base_map
-  adMap = mapOutA$ceMap
-  
-  # ------ Save acoustics map figures -------------------------------------
-  # then save daily update plot as .png and .pdf
-  height = 5
-  width = 10
-  res = 400
-  
-  # save the latest - as .png and .pdf
-  outStr = paste0('dailyMap_acoustics')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         units = 'in', 
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  
+# ------ Extract visual sighting data -------------------------------------
+# do some stuff here to extract visual sighting data for the day from das
+source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
+vsNew = extractVisualSightings(df_proc)
+
+if (nrow(vsNew) > 0){
+  # add on some ship info
+  vsNew$shipCode = shipCode
+  vsNew$shipName = shipName
+  vsNew$projID = projID
+  vsNew$leg = leg
+}
+
+# confirm all species codes are numeric and delete rows that aren't
+vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
+vsNew = vsNew_clean
+
+# save a 'snapshot' of the data for this run
+outName = paste0('newSightings_', legID, '_', dasName, '_ran', Sys.Date(), 
+                 '.Rda')
+save(vsNew, file = file.path(dir_snaps, outName))
+googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+cat('   saved', outName, '\n')
+
+# combine the old vs dataframe with the new one
+outName = paste0('compiledSightings_', projID, '.Rda')
+# load old if it exists
+load(file.path(dir_data, outName))
+# clear the edited day and add on etNew
+vs = vs[-which(format(vs$DateTime, format = '%d') == editedDayStr),]
+vs = rbind(vs, vsNew)
+vs = unique(vs)
+vs = vs[order(vs$DateTime),]
+
+
+save(vs, file = file.path(dir_data, outName))
+googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+outNameCSV = paste0('compiledSightings_', projID, '.csv')
+write.csv(vs, file = file.path(dir_data, outNameCSV))
+googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+cat('   saved', outName, 'and as .csv\n')
+
+# ------ Make summary table -----------------------------------------------
+
+# load previously created summary table if it exists
+stName = paste0('summaryTable.Rda')
+if (file.exists(file.path(dir_wd, 'outputs', stName))){
+  load(file.path(dir_wd, 'outputs', stName))
+} else {
+  st = data.frame()
+}
+
+source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+lt = makeSummaryTable(st, et, vs, ad, shipCode, leg, blank_table = FALSE)
+# break out pieces of returned list
+st = lt$st
+ft = lt$ft
+
+# save st .rda as combined for the whole year (bc loaded on later legs)
+save(st, file = file.path(dir_wd, 'outputs', stName))
+# save ft (formatted flexttable) as image
+outName = paste0('summaryTable.png')
+flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
+                         res = 300)
+outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
+flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
+
+# ------ Plot visual sightings map --------------------------------------
+source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
+
+mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code = FALSE)
+base_map_V = mapOutV$base_map
+vsMap = mapOutV$ceMap
+
+# ------ Save visuals map figures ---------------------------------------
+# then save daily update plot as .png and .pdf
+height = 5
+width = 10
+res = 400
+
+# save the latest - as .png and .pdf
+outStr = paste0('dailyMap_visuals')
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       units = 'in', 
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+
+# save a copy of today's run - as .png and .pdf
+outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_V,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+
+# save a large copy for CLs as PDF
+outStr = paste0('dailyMap_visuals_CL')
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+       height = 10,
+       width = 20,
+       plot = base_map_V,
+       # dpi = 1200,
+       bg = 'white',
+       device = 'pdf')
+googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                       path = dir_gd_proc)
+googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                       path = dir_gd_gpx)
+
+# ------ Plot acoustic detections map -----------------------------------
+# add correctly formated SpCode col
+ad$SpCode = as.integer(ad$sp_map)
+
+mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code = FALSE)
+base_map_A = mapOutA$base_map
+adMap = mapOutA$ceMap
+
+# ------ Save acoustics map figures -------------------------------------
+# then save daily update plot as .png and .pdf
+height = 5
+width = 10
+res = 400
+
+# save the latest - as .png and .pdf
+outStr = paste0('dailyMap_acoustics')
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       units = 'in', 
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+
+# save a copy of today's run - as .png and .pdf
+outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+       height = height,
+       width = width,
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'png')
+
+ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+       height = height,
+       width = width,
+       plot = base_map_A,
+       dpi = res,
+       bg = 'white',
+       device = 'pdf')
+
