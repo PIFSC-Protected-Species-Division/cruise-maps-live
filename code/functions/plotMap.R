@@ -27,7 +27,6 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   #' @param leg character string with leg number (e.g., '1')
   #' @param dataType character string of either 'visual' or 'acoustic' to set
   #' legend, title, and symbol size
-  #' @param test_code logical input to randomly generate and plot data for testing
   #' 
   #' @return base_map map figure 
   #'
