@@ -127,6 +127,10 @@ extractAcousticDetections <- function(pamFile){
   # clean up output ad data.frame
   # sort by time
   ad = dtCmb[order(dtCmb$UTC),]
+  # times are just character - convert to DateTimes and set time zone to UTC
+  ad$UTC = as.POSIXct(ad$UTC, tz = 'UTC')
+  ad$date_time_start = as.POSIXct(ad$date_time_start, tz = 'UTC')
+  ad$date_time_end = as.POSIXct(ad$date_time_end, tz = 'UTC')
   
   return(ad)
   
