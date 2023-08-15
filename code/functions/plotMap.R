@@ -42,7 +42,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
-  if(length(shipCode) > 1){stop("We're not ready for two boats yet!! Bug Janelle and Selene.")}
+  if(length(shipCode) > 1){stop("We're not ready for two boats yet!! 
+                                Bug Janelle and Selene.")}
   
   # if (test_code==TRUE){ # TEST DATA
   #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
@@ -191,7 +192,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
                    y.min = min(lines$Latitude),
                    y.max = max(lines$Latitude)) +
     ggtitle(plotTitle) +
-    theme(plot.title = element_text(hjust = 0.5))
+    theme(plot.title = element_text(hjust = 0.5)) + 
+      guides(colour = guide_legend(nrow = 13))
   
   
   # rather than print and save within function going to have it as output
@@ -204,9 +206,10 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   # print(base_map)
   # dev.off()
   
+  numCols = ceiling(length(unique(ceMap$SpName))/13)
   # need two outputs to make a list
   # need updated ceMap that has SpName col
-  mapOut = list(base_map = base_map, ceMap = ceMap)
+  mapOut = list(base_map = base_map, ceMap = ceMap, numCols = numCols)
   return(mapOut)
 }
 
