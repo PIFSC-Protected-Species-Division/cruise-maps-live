@@ -6,7 +6,6 @@
 #' map with the most recent survey effort and sightings
 #' ---------------------------
 
-
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
 data_source = 'gd' # google drive
@@ -18,7 +17,7 @@ crNum = 2303
 # ship = 'OES' # 'LSK'
 leg = '2'
 
-if (length(crNum) >1){
+if (length(crNum) > 1){
   stop("We're not ready for two boats yet!! Bug Janelle and Selene.")
 }
 # I envision a for loop here looping through both cruise numbers??!
