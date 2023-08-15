@@ -21,7 +21,7 @@ parseTrack_asPoints <- function(df_proc){
   
   
   # trim the read in data to just the cols we care about
-  df_proc_sub = subset(df_proc, select = c(line_num, Cruise, Event, DateTime, 
+  df_proc_sub = subset(df_proc, select = c(file_das, line_num, Cruise, Event, DateTime, 
                                            Lat, Lon, Mode, OnEffort, EffortDot,
                                            EffType, SpdKt, Bft))
   # technically E is on effort so fix those lines

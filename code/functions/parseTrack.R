@@ -29,6 +29,10 @@ parseTrack <- function(df_proc){
   et_seg = et_all$segdata
   et = subset(et_seg, select = c(Cruise, segnum, file, stlin:mtime, Mode, 
                                           EffType, avgSpdKt, avgBft))
+  
+  # rename the file_das column to match tracks output
+  colnames(et)[3] = 'file_das'
+  
   # effort types can be 'N' non-standard, 'S' standard', and 'F' fine-scale
   # could further trim by this. 
   

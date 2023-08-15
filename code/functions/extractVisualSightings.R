@@ -29,7 +29,7 @@ extractVisualSightings <- function(df_proc){
   # pare down and reorder columns
   vs_SCet <- subset(vs_SCet, select = c(SpCode, SightNo, DateTime, Cruise, Lat, 
                                         Lon, EffType, OnEffort, EffortDot, 
-                                        ObsStd, Mixed, Bft, PerpDistKm))
+                                        ObsStd, Mixed, Bft, PerpDistKm, file_das))
   
   # deal with data points that might be across the dateline
   # not sure this is necessary but leaving here, commented out, in case it is
