@@ -168,7 +168,6 @@ if (data_source == 'blank'){
   
   # identify which files are new/need to be processed
   idxNew = which(!(dasNames_new %in% dasNames_old))
-  cat(' Processing', length(idxNew), 'new das files:\n')
   
   ### FOR TESTING ###
   # test reading in new das
@@ -184,6 +183,7 @@ if (data_source == 'blank'){
 
 # if there are new das to process/not test or blank run
 if (length(idxNew) != 0){
+  cat(' Processing', length(idxNew), 'new das files:\n')
   # loop through all idxNew
   for (i in 1:length(idxNew)){
     # i = 1 # for testing
@@ -432,11 +432,18 @@ if (length(idxNew) != 0){
   write.csv(vs, file = file.path(dir_data, outNameCSV))
   googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
   cat('   saved', outName, 'and as .csv\n')
+  
+  # turn on plotting bc we have new data
+  genPlots = TRUE
+} else {
+  genPlots = FALSE
+  cat(' No new das files to process. Exiting.\n')
 }
+
 
 # **Would end loop through multiple vessels here. 
 
-
+if (genPlots == TRUE){
 # ------ Make summary table -----------------------------------------------
 cat(' Updating summary table:\n')
 
@@ -612,6 +619,7 @@ ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
        device = 'pdf')
 cat('   saved', outStr, 'as .png and .pdf\n')
 
+} # end genPlots TF trigger
 
 # ------ Save dasList and close log  ------------------------------------
 

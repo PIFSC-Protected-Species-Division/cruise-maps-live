@@ -175,3 +175,63 @@
 [1] 2
 ...run complete 2023-08-15 15:08:44 PDT ...
 [1] "2023-07-23 16:12:40.322"
+
+...run started 2023-08-15 15:32:09 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+ Updating summary table:
+
+...run started 2023-08-15 15:32:44 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 0 new das files:
+ Updating summary table:
+Called from: format(et$mDateTime, format = "%m%d")
+debug at #2: shipCode = "OES"
+debug at #2: if (dir.exists(locations[i])) {
+    dir_wd <- locations[i]
+    locCode <- locationCodes[i]
+    break
+}
+debug at #2: if (!dir.exists(dir_data)) {
+    dir.create(dir_data)
+}
+
+...run started 2023-08-15 15:38:11 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+debug at #2: if (data_source == "test") {
+    load(file.path(dir_wd, "data", "OES2303", "compiledEffortPoints_OES2303.Rda"))
+    load(file.path(dir_wd, "data", "OES2303", "snapshots", "newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-09.Rda"))
+    load(file.path(dir_wd, "data", "OES2303", "compiledEffortTracks_OES2303.Rda"))
+    load(file.path(dir_wd, "data", "OES2303", "compiledSightings_OES2303.Rda"))
+    load(file.path(dir_wd, "data", "OES2303", "compiledDetections_OES2303.Rda"))
+    idxNew = integer(0)
+} else if (data_source == "gd") {
+    googledrive::drive_deauth()
+    googledrive::drive_auth()
+    2
+    if (file.exists(file.path(dir_wd, "outputs", paste0("dasList_", 
+        projID, ".Rda")))) {
+        load(file.path(dir_wd, "outputs", paste0("dasList_", 
+            projID, ".Rda")))
+        dasNames_old = dasList$name
+    }
+    else {
+        dasNames_old = character()
+    }
+    dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = "DAS")
+    dasList = dasList[order(dasList$name), ]
+    dasNames_new = dasList$name
+    idxNew = which(!(dasNames_new %in% dasNames_old))
+    if (leg == "0") {
+        idxNew = c(15, 16)
+    }
+}
+
+...run started 2023-08-15 15:38:38 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ No new das files to process. Exiting.
+
+...run started 2023-08-15 15:40:45 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ No new das files to process. Exiting.
+...run complete 2023-08-15 15:40:46 PDT ...
