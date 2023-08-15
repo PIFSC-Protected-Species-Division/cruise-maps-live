@@ -76,7 +76,31 @@ Where the input and output files will be saved: [Google Drive - Restricted acces
 
 When running the `run.R` script for the first time on your local machine, first run the `prep.R` script to ensure the folder structure is set up properly and all necessary packages are installed.
 
+To re-run a day (perhaps the DAS was updated/corrected), just delete that DAS file from the `dasList` data.frame (which keeps track of what has been run). Use the following as a guide:
 
+```
+# dasList filename to be modified
+dasListFile = '~/GitHub/cruise-maps-live/outputs/dasList_OES2303.Rda'
+# das file to be reprocessed
+dasFile = 'DASALL.813'
+
+# load existing dasList - change this filename as needed
+load(dasListFile) 
+# view the list of DAS files that have been processed
+View(dasList)
+# find the index of the one to rerun and remove it
+dasFileIdx = which(dasList$name == dasFile)
+# if it isn't empty, remove that idx and save
+if (length(dasFileIdx) != 0){
+    dasList = dasList[-which(dasList$name == dasFile),]
+}
+# save this new dasList - change filename as needed
+save(dasList, file = dasListFile)
+
+# now re-run whole script 
+```
+
+To re-run all days, just delete the `dasList.Rda` file from the 'outputs' folder. 
 
 ## Plot Examples
 

@@ -4,7 +4,7 @@
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 04 Aug 2023*
+style="width:0.88em;height:1em" /> *Last Update: 15 Aug 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -35,7 +35,20 @@ repository.
 ## Table of contents
 
 > - [*Purpose*](#purpose)
-> - [*Notes*](#notes)
+> - [*Notes*](#notes) \# dasList filename to be
+>   modified*\](#daslist-filename-to-be-modified) \# das file to be
+>   reprocessed*\](#das-file-to-be-reprocessed) \# load existing
+>   dasList - change this filename as
+>   needed*\](#load-existing-daslist—change-this-filename-as-needed) \#
+>   view the list of DAS files that have been
+>   processed*\](#view-the-list-of-das-files-that-have-been-processed)
+>   \# find the index of the one to rerun and remove
+>   it*\](#find-the-index-of-the-one-to-rerun-and-remove-it) \# if it
+>   isn’t empty, remove that idx and
+>   save*\](#if-it-isn’t-empty,-remove-that-idx-and-save) \# save this
+>   new dasList - change filename as
+>   needed*\](#save-this-new-daslist—change-filename-as-needed) \# now
+>   re-run whole script *\](#now-re-run-whole-script-)
 > - [*Plot Examples*](#plot-examples)
 >   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
@@ -72,6 +85,33 @@ access](https://drive.google.com/drive/u/0/folders/1okUHW9LRxXJ8T8Djxu_VUKV3LPmE
 When running the `run.R` script for the first time on your local
 machine, first run the `prep.R` script to ensure the folder structure is
 set up properly and all necessary packages are installed.
+
+To re-run a day (perhaps the DAS was updated/corrected), just delete
+that DAS file from the `dasList` data.frame (which keeps track of what
+has been run). Use the following as a guide:
+
+    # dasList filename to be modified
+    dasListFile = '~/GitHub/cruise-maps-live/outputs/dasList_OES2303.Rda'
+    # das file to be reprocessed
+    dasFile = 'DASALL.813'
+
+    # load existing dasList - change this filename as needed
+    load(dasListFile) 
+    # view the list of DAS files that have been processed
+    View(dasList)
+    # find the index of the one to rerun and remove it
+    dasFileIdx = which(dasList$name == dasFile)
+    # if it isn't empty, remove that idx and save
+    if (length(dasFileIdx) != 0){
+        dasList = dasList[-which(dasList$name == dasFile),]
+    }
+    # save this new dasList - change filename as needed
+    save(dasList, file = dasListFile)
+
+    # now re-run whole script 
+
+To re-run all days, just delete the `dasList.Rda` file from the
+‘outputs’ folder.
 
 ## Plot Examples
 
