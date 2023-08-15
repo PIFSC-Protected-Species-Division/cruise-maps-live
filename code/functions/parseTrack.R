@@ -32,12 +32,6 @@ parseTrack <- function(df_proc){
   # effort types can be 'N' non-standard, 'S' standard', and 'F' fine-scale
   # could further trim by this. 
   
-  # apply correct timezone to datetime cols
-  et$DateTime1 = lubridate::force_tz(et$DateTime1, tzone = 'HST')
-  et$DateTime2 = lubridate::force_tz(et$DateTime2, tzone = 'HST')
-  et$mDateTime = lubridate::force_tz(et$mDateTime, tzone = 'HST')
-  # View(et)
-  
   return(et)
   
 }

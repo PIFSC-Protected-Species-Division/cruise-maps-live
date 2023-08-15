@@ -51,14 +51,8 @@ trackToGPX = function(et, outGPX){
   # reorder by segnum, and rearrange columns
   etLong = etLong[order(etLong$date, etLong$segnum), c(1, 5, 4, 2, 5:9, 3)]
   
-  # # apply correct timezone to datetimes
-  # etLong$DateTime = lubridate::force_tz(etLong$DateTime, tzone = 'HST')
   # create datetime col with proper formatting for gpx
-  if (lubridate::tz(etLong$DateTime[1]) == 'HST'){
-    etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S-10:00")
-  } else {
-    stop('Timezone is NOT HST...figure this out! Exiting.')
-  }
+  etLong$dt = format(etLong$DateTime, format = "%Y-%m-%dT%H:%M:%S%z")
   
   # get info about segments for populating the GPX
   uidList = unique(etLong$uid)
@@ -116,7 +110,7 @@ trackToGPX = function(et, outGPX){
       )
       
       # parse the lat/lon/datetime info as track points
-
+      
       for (j in 1:2){
         o = c(o, 
               paste0('    <trkpt lat="', etLong$lat[dtIdx][segIdx][j], 

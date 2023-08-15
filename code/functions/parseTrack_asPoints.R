@@ -50,9 +50,6 @@ parseTrack_asPoints <- function(df_proc){
   # remove comments
   ep = subset(ep, Event != 'C')
   
-  # apply correct timezone to datetime cols
-  ep$DateTime = lubridate::force_tz(ep$DateTime, tzone = 'HST')
-  
   return(ep)
   
 }

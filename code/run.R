@@ -9,9 +9,9 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-data_source = 'gd' # google drive
+# data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
-# data_source = 'test' # work with test data set. 
+data_source = 'test' # work with test data set.
 
 # yr = 2023
 crNum = 2303
@@ -135,7 +135,7 @@ if (data_source == 'blank'){
 } else if (data_source == 'test'){
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
-                 'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
+                 'newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-09.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortTracks_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
@@ -174,8 +174,8 @@ if (data_source == 'blank'){
   ### FOR TESTING ###
   # test reading in new das
   if (leg == '0'){
-    idxNew = 11
-    # idxNew = c(1,2)
+    # idxNew = 16
+    idxNew = c(15, 16)
   }
   ### ### ### ### ###  
 } # end data source check
@@ -202,9 +202,13 @@ if (length(idxNew) != 0){
     # read and process
     df_read = swfscDAS::das_read(dasFile, skip = 0)
     df_proc = swfscDAS::das_process(dasFile)
+    
     # update time zone
-    # NB! This will be a problem when at Midway
-    df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, 'HST')
+    source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
+    df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
+                                                          'TimeZones.csv'))
+    # If looking at compiled data.frames (tracks, points, etc) all timezones 
+    # will be just a single one (HST), but they will have been adjusted for SST
     # View(df_proc)
     
     # correct cruise number (only need on first few days of Leg 1)
