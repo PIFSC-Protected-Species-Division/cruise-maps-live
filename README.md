@@ -35,20 +35,7 @@ repository.
 ## Table of contents
 
 > - [*Purpose*](#purpose)
-> - [*Notes*](#notes) \# dasList filename to be
->   modified*\](#daslist-filename-to-be-modified) \# das file to be
->   reprocessed*\](#das-file-to-be-reprocessed) \# load existing
->   dasList - change this filename as
->   needed*\](#load-existing-daslist—change-this-filename-as-needed) \#
->   view the list of DAS files that have been
->   processed*\](#view-the-list-of-das-files-that-have-been-processed)
->   \# find the index of the one to rerun and remove
->   it*\](#find-the-index-of-the-one-to-rerun-and-remove-it) \# if it
->   isn’t empty, remove that idx and
->   save*\](#if-it-isn’t-empty,-remove-that-idx-and-save) \# save this
->   new dasList - change filename as
->   needed*\](#save-this-new-daslist—change-filename-as-needed) \# now
->   re-run whole script *\](#now-re-run-whole-script-)
+> - [*Notes*](#notes)
 > - [*Plot Examples*](#plot-examples)
 >   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
@@ -86,32 +73,16 @@ When running the `run.R` script for the first time on your local
 machine, first run the `prep.R` script to ensure the folder structure is
 set up properly and all necessary packages are installed.
 
-To re-run a day (perhaps the DAS was updated/corrected), just delete
-that DAS file from the `dasList` data.frame (which keeps track of what
-has been run). Use the following as a guide:
+To re-run a day (perhaps the DAS was updated/corrected), use the
+`das_reRunPrep.R` script. This will remove previous entries for this
+date from the compiled data outputs and the `dasList` record of which
+das have been successfully processed. After cleaning those up, the full
+`run.R` script can be re-run and the latest copy of those DAS files will
+be downloaded and processed.
 
-    # dasList filename to be modified
-    dasListFile = '~/GitHub/cruise-maps-live/outputs/dasList_OES2303.Rda'
-    # das file to be reprocessed
-    dasFile = 'DASALL.813'
-
-    # load existing dasList - change this filename as needed
-    load(dasListFile) 
-    # view the list of DAS files that have been processed
-    View(dasList)
-    # find the index of the one to rerun and remove it
-    dasFileIdx = which(dasList$name == dasFile)
-    # if it isn't empty, remove that idx and save
-    if (length(dasFileIdx) != 0){
-        dasList = dasList[-which(dasList$name == dasFile),]
-    }
-    # save this new dasList - change filename as needed
-    save(dasList, file = dasListFile)
-
-    # now re-run whole script 
-
-To re-run all days, just delete the `dasList.Rda` file from the
-‘outputs’ folder.
+To re-run all days, delete the `dasList*.Rda` file from the ‘outputs’
+folder and all the `compiled*.Rda` files from the ‘data’ folder (e.g.,
+`compiledDetections_OES2303.Rda`).
 
 ## Plot Examples
 
