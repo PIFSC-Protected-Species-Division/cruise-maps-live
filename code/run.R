@@ -9,9 +9,9 @@
 
 # ------ USER SPECIFIED INPUTS --------------------------------------------
 
-# data_source = 'gd' # google drive
+data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
-data_source = 'test' # work with test data set.
+# data_source = 'test' # work with test data set.
 
 # yr = 2023
 crNum = 2303
