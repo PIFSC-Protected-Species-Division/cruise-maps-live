@@ -478,12 +478,19 @@ source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
 base_map_V = mapOutV$base_map
 vsMap = mapOutV$ceMap
+numCols = mapOutV$numCols
+
+# ------ Set plot save sizes ----------------------------------------------
+
+height = 5
+# printed width needs to vary by number of legend items
+if (numCols == 1){width = 9.35
+} elseif (numCols == 2){width = 11
+} elseif (numCols == 3){width = 12.65}
+# resolution
+res = 400
 
 # ------ Save visuals map figures ---------------------------------------
-# then save daily update plot as .png and .pdf
-height = 5
-width = 10
-res = 400
 
 # save the latest - as .png and .pdf
 if (data_source == 'gd'){ # only save if actual run, not test or blank
@@ -553,14 +560,18 @@ ad$SpCode = as.integer(ad$sp_map)
 mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
 base_map_A = mapOutA$base_map
 adMap = mapOutA$ceMap
+numCols = mapOutA$numCols
 
-# ------ Save acoustics map figures -------------------------------------
-# then save daily update plot as .png and .pdf
+# ------ Set plot save sizes ----------------------------------------------
 height = 5
-width = 10
+# printed width needs to vary by number of legend items
+if (numCols == 1){width = 9.35
+} elseif (numCols == 2){width = 11
+} elseif (numCols == 3){width = 12.65}
+# resolution
 res = 400
 
-
+# ------ Save acoustics map figures -------------------------------------
 # save the latest - as .png and .pdf
 if (data_source == 'gd'){ # only save if actual run, not test or blank
   outStr = paste0('dailyMap_acoustics')

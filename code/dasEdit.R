@@ -89,7 +89,7 @@ editedDayStr = as.character(editedDay)
 df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
 df_read = swfscDAS::das_read(dasFile, skip = 0)
 df_proc = swfscDAS::das_process(dasFile)
-# update time zone
+
 # update time zone
 source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
 df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
@@ -130,13 +130,20 @@ save(df_proc, file = file.path(dir_snaps, outName))
 # save(ep, file = "~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
 
 
-# ------ RE-RUN WHAT NEEDS TO BE RE-RUN -----------------------------------
-
+# ------ RELOAD DATA IF JUST PLOTTING -------------------------------------
 # load any data.frames that don't need to be re-run
+# effort as points, compiled and the 'lastest'
+load("~/GitHub/cruise-maps-live/data/OES2303/compiledEffortPoints_OES2303.Rda")
+load("~/GitHub/cruise-maps-live/data/OES2303/snapshots/newEffortPoints_OES2303_leg2_DASALL.813_ran2023-08-14.Rda")
+# effort as tracks
+load("~/GitHub/cruise-maps-live/data/OES2303/compiledEffortTracks_OES2303.Rda")
 # visual sightings
 load("~/GitHub/cruise-maps-live/data/OES2303/compiledSightings_OES2303.Rda")
 # acoustic detections
 load("~/GitHub/cruise-maps-live/data/OES2303/compiledDetections_OES2303.Rda")
+
+
+# ------ RE-RUN WHAT NEEDS TO BE RE-RUN -----------------------------------
 
 # ------ Parse track data from das ----------------------------------------
 # parse on-effort segments as straight lines from Begin/Resume to End 
@@ -285,16 +292,22 @@ flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
 # ------ Plot visual sightings map --------------------------------------
 source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
 
-mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, test_code = FALSE)
+mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
 base_map_V = mapOutV$base_map
 vsMap = mapOutV$ceMap
+numCols = mapOutV$numCols
 
-# ------ Save visuals map figures ---------------------------------------
-# then save daily update plot as .png and .pdf
+# ------ Set plot save sizes ----------------------------------------------
+
 height = 5
-width = 10
+# printed width needs to vary by number of legend items
+if (numCols == 1){width = 9.35
+} else if (numCols == 2){width = 11
+} else if (numCols == 3){width = 12.65}
+# resolution
 res = 400
 
+# ------ Save visuals map figures ---------------------------------------
 # save the latest - as .png and .pdf
 outStr = paste0('dailyMap_visuals')
 ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
@@ -350,16 +363,22 @@ googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
 # add correctly formated SpCode col
 ad$SpCode = as.integer(ad$sp_map)
 
-mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, test_code = FALSE)
+mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
 base_map_A = mapOutA$base_map
 adMap = mapOutA$ceMap
+numCols = mapOutA$numCols
 
-# ------ Save acoustics map figures -------------------------------------
-# then save daily update plot as .png and .pdf
+# ------ Set plot save sizes ----------------------------------------------
+
 height = 5
-width = 10
+# printed width needs to vary by number of legend items
+if (numCols == 1){width = 9.35
+} else if (numCols == 2){width = 11
+} else if (numCols == 3){width = 12.65}
+# resolution
 res = 400
 
+# ------ Save acoustics map figures -------------------------------------
 # save the latest - as .png and .pdf
 outStr = paste0('dailyMap_acoustics')
 ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
