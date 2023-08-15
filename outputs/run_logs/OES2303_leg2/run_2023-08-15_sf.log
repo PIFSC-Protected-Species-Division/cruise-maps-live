@@ -1,0 +1,177 @@
+
+...run started 2023-08-15 14:38:32 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 11 new das files:
+[1] 11
+# A dribble: 17 × 3
+   name       id       drive_resource   
+   <chr>      <drv_id> <list>           
+ 1 DASALL.723 1A4Biik… <named list [40]>
+ 2 DASALL.724 1f2T4a9… <named list [40]>
+ 3 DASALL.725 1P_V96m… <named list [40]>
+ 4 DASALL.726 1HiP7mv… <named list [40]>
+ 5 DASALL.727 1he2sdi… <named list [40]>
+ 6 DASALL.728 1YFD5yS… <named list [40]>
+ 7 DASALL.804 1NoWZWn… <named list [40]>
+ 8 DASALL.805 1_0txFh… <named list [40]>
+ 9 DASALL.806 1g4kauv… <named list [40]>
+10 DASALL.807 14EiDjs… <named list [40]>
+11 DASALL.808 1oG7e0Y… <named list [40]>
+12 DASALL.809 1JWXTOu… <named list [40]>
+13 DASALL.810 1nvVPFc… <named list [40]>
+14 DASALL.811 12dg9cU… <named list [40]>
+15 DASALL.812 1AYQ6VU… <named list [40]>
+16 DASALL.813 16-AzGz… <named list [40]>
+17 DASALL.814 1KN6m-H… <named list [40]>
+[1] 7
+
+...run started 2023-08-15 14:39:42 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 11 new das files:
+  DASALL.804 
+   saved newEffortTracks_OES2303_leg2_DASALL.804_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.804.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.804_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.804_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.805 
+   saved newEffortTracks_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.805.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.806 
+   saved newEffortTracks_OES2303_leg2_DASALL.806_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.806.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.806_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.806_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.807 
+   saved newEffortTracks_OES2303_leg2_DASALL.807_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.807.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.807_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.807_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.808 
+   saved newEffortTracks_OES2303_leg2_DASALL.808_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.808.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.808_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.809 
+   saved newEffortTracks_OES2303_leg2_DASALL.809_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.809.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.809_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.809_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.810 
+   saved newEffortTracks_OES2303_leg2_DASALL.810_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.810.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.810_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.810_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.811 
+   saved newEffortTracks_OES2303_leg2_DASALL.811_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.811.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.811_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.811_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.812 
+   saved newEffortTracks_OES2303_leg2_DASALL.812_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.812.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.812_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.813 
+   saved newEffortTracks_OES2303_leg2_DASALL.813_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.813.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.813_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.813_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.814 
+   saved newEffortTracks_OES2303_leg2_DASALL.814_ran2023-08-15.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.814.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.814_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.814_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+   saved acousticDetections_OES2303_leg2_ran2023-08-15.Rda 
+   saved compiledDetections_OES2303.Rda and as .csv
+ Updating summary table:
+  DASALL.805 
+   saved newEffortTracks_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+[1] TRUE
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg2_DASALL.805.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg2_DASALL.805_ran2023-08-15.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg2_ran2023-08-15.png 
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg2_ran2023-08-15.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg2_ran2023-08-15 as .png and .pdf
+ Generating latest map of acoustic detections:
+   saved dailyMap_acoustics as .png and .pdf
+   saved dailyMap_acoustics_OES2303_leg2_ran2023-08-15 as .png and .pdf
+# A dribble: 17 × 3
+   name       id       drive_resource   
+   <chr>      <drv_id> <list>           
+ 1 DASALL.723 1A4Biik… <named list [40]>
+ 2 DASALL.724 1f2T4a9… <named list [40]>
+ 3 DASALL.725 1P_V96m… <named list [40]>
+ 4 DASALL.726 1HiP7mv… <named list [40]>
+ 5 DASALL.727 1he2sdi… <named list [40]>
+ 6 DASALL.728 1YFD5yS… <named list [40]>
+ 7 DASALL.804 1NoWZWn… <named list [40]>
+ 8 DASALL.805 1_0txFh… <named list [40]>
+ 9 DASALL.806 1g4kauv… <named list [40]>
+10 DASALL.807 14EiDjs… <named list [40]>
+11 DASALL.808 1oG7e0Y… <named list [40]>
+12 DASALL.809 1JWXTOu… <named list [40]>
+13 DASALL.810 1nvVPFc… <named list [40]>
+14 DASALL.811 12dg9cU… <named list [40]>
+15 DASALL.812 1AYQ6VU… <named list [40]>
+16 DASALL.813 16-AzGz… <named list [40]>
+17 DASALL.814 1KN6m-H… <named list [40]>
+[1] 2
+...run complete 2023-08-15 15:08:44 PDT ...
+[1] "2023-07-23 16:12:40.322"
