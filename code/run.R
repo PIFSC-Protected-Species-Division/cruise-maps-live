@@ -484,8 +484,8 @@ numCols = mapOutV$numCols
 height = 5
 # printed width needs to vary by number of legend items
 if (numCols == 1){width = 9.35
-} elseif (numCols == 2){width = 11
-} elseif (numCols == 3){width = 12.65}
+} else if (numCols == 2){width = 11
+} else if (numCols == 3){width = 12.65}
 # resolution
 res = 400
 
@@ -565,8 +565,8 @@ numCols = mapOutA$numCols
 height = 5
 # printed width needs to vary by number of legend items
 if (numCols == 1){width = 9.35
-} elseif (numCols == 2){width = 11
-} elseif (numCols == 3){width = 12.65}
+} else if (numCols == 2){width = 11
+} else if (numCols == 3){width = 12.65}
 # resolution
 res = 400
 
