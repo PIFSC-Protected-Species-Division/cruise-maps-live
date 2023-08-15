@@ -193,7 +193,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
                    y.max = max(lines$Latitude)) +
     ggtitle(plotTitle) +
     theme(plot.title = element_text(hjust = 0.5)) + 
-      guides(colour = guide_legend(nrow = 13))
+      guides(colour = guide_legend(nrow = 13, ncol = 2))#, byrow = TRUE))
   
   
   # rather than print and save within function going to have it as output
