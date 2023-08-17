@@ -134,7 +134,7 @@ if (data_source == 'blank'){
 } else if (data_source == 'test'){
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
-                 'newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-09.Rda'))
+                 'newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-15.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortTracks_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
@@ -469,10 +469,10 @@ if (data_source == 'gd'){ # only save if actual run, not test or blank
   # save ft (formatted flexttable) as image
   outName = paste0('summaryTable.png')
   flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
-                           res = 300)
+                           res = 180)
   cat('   saved', outName, '\n')
   outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-  flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 300)
+  flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
   cat('   saved', outName, '\n')
 }
 
@@ -494,7 +494,7 @@ if (numCols == 1){width = 9.35
 } else if (numCols == 2){width = 11
 } else if (numCols == 3){width = 12.65}
 # resolution
-res = 400
+res = 200
 
 # ------ Save visuals map figures ---------------------------------------
 
@@ -575,7 +575,7 @@ if (numCols == 1){width = 9.35
 } else if (numCols == 2){width = 11
 } else if (numCols == 3){width = 12.65}
 # resolution
-res = 400
+res = 200
 
 # ------ Save acoustics map figures -------------------------------------
 # save the latest - as .png and .pdf
