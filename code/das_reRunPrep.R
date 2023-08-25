@@ -14,7 +14,7 @@
 # dasList filename to be modified
 dasListFile = '~/GitHub/cruise-maps-live/outputs/dasList_OES2303.Rda'
 # das file to be reprocessed
-dasFile = 'DASALL.812'
+dasFile = 'DASALL.824'
 # modDateStr = '2023-08-12'
 
 # compiled file names
@@ -44,11 +44,15 @@ save(dasList, file = dasListFile)
 # --------- Effort as points ----------------------------------------------
 load(epFile)
 # edit out the bad row
-ep$dateStr = format(lubridate::date(ep$DateTime), '%Y-%m-%d')
+# ep$dateStr = format(lubridate::date(ep$DateTime), '%Y-%m-%d')
 fileIdx = which(ep$file_das == dasFile)
 if (length(fileIdx) != 0){
   ep = ep[-fileIdx,]
 }
+
+# remove temporary dateStr col
+# ep = ep[,-which(names(ep) %in% 'dateStr')]
+
 # save corrected file
 save(ep, file = epFile)
 
@@ -56,7 +60,7 @@ save(ep, file = epFile)
 # --------- Effort as tracks ----------------------------------------------
 load(etFile)
 # edit out the bad row
-et$dateStr = format(lubridate::date(et$DateTime1), '%Y-%m-%d')
+# et$dateStr = format(lubridate::date(et$DateTime1), '%Y-%m-%d')
 fileIdx = which(et$file_das == dasFile)
 if (length(fileIdx) != 0){
   et = et[-fileIdx,]
@@ -68,7 +72,7 @@ save(et, file = etFile)
 # --------- Visual sightings ----------------------------------------------
 load(vsFile)
 # edit out the bad row
-vs$dateStr = format(lubridate::date(vs$DateTime), '%Y-%m-%d')
+# vs$dateStr = format(lubridate::date(vs$DateTime), '%Y-%m-%d')
 fileIdx = which(vs$file_das == dasFile)
 if (length(fileIdx) != 0){
   vs = vs[-fileIdx,]
