@@ -4,7 +4,7 @@
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 15 Aug 2023*
+style="width:0.88em;height:1em" /> *Last Update: 29 Aug 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -38,6 +38,7 @@ repository.
 > - [*Notes*](#notes)
 > - [*Plot Examples*](#plot-examples)
 >   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
+>   - [*Leg 1*](#leg-1)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
 > - [*R Version Metadata*](#r-version-metadata)
 > - [*NOAA Disclaimer and License*](#noaa-disclaimer-and-license)
@@ -56,6 +57,38 @@ website.
 
 - [HICEAS 2023 is
   Underway!](https://storymaps.arcgis.com/stories/b3bbf0e90d0141f7bf47edc5339ccb7a)
+
+##### Latest map
+
+(click to enlarge)
+
+<figure>
+<img src="./outputs/dailyMap_visuals.png" style="width:48.0%"
+alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." />
+<figcaption aria-hidden="true">HICEAS 2023 Map - Latest Map. This map
+shows the most up-to-date completed survey tracklines (pink) and
+cetacean sightings (colored symbols). The map creation date is above the
+scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the
+Hawaiian archipelago (study area) is marked with a white boundary line
+and planned transect lines are in thin black lines. The
+Papahānaumokuākea Marine National Monument area and Main Hawaiian
+Islands are labeled in white text. The transect lines run lengthwise
+from northwest to southeast, covering the entire EEZ.</figcaption>
+</figure>
+
+<figure>
+<img src="./outputs/dailyMap_acoustics.png" style="width:48.0%"
+alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." />
+<figcaption aria-hidden="true">HICEAS 2023 Map - Latest Map. This map
+shows the most up-to-date completed survey tracklines (pink) and
+acoustic detections of cetaceans (colored symbols). The map creation
+date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ)
+surrounding the Hawaiian archipelago (study area) is marked with a white
+boundary line and planned transect lines are in thin black lines. The
+Papahānaumokuākea Marine National Monument area and Main Hawaiian
+Islands are labeled in white text. The transect lines run lengthwise
+from northwest to southeast, covering the entire EEZ.</figcaption>
+</figure>
 
 ## Notes
 
@@ -102,6 +135,34 @@ does not show any completed survey tracklines or cetacaen sightings but
 serves as the basemap that will be populated with this information as
 the survey gets underway.](./outputs/blank/dailyMap_blankCopy.png)
 
+### Leg 1
+
+##### Visual sightings
+
+![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey
+tracklines (pink) and cetacean sightings (colored symbols) that occured
+during HICEAS 2023 Leg 1 on the R/V Oscar Elton Sette from 23 to 28 July
+2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian
+archipelago (study area) is marked with a white boundary line and
+planned transect lines are in thin black lines. The Papahānaumokuākea
+Marine National Monument area and Main Hawaiian Islands are labeled in
+white text. The transect lines run lengthwise from northwest to
+southeast, covering the entire
+EEZ.](./outputs/map_archive/OES2303_leg1/dailyMap_visuals_OES2303_leg1_ran2023-08-15.png)
+
+##### Acoustic detections
+
+![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey
+tracklines (pink) and acoustic detections of cetaceans (colored symbols)
+that occured during HICEAS 2023 Leg 1 on the R/V Oscar Elton Sette from
+23 to 28 July 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding
+the Hawaiian archipelago (study area) is marked with a white boundary
+line and planned transect lines are in thin black lines. The
+Papahānaumokuākea Marine National Monument area and Main Hawaiian
+Islands are labeled in white text. The transect lines run lengthwise
+from northwest to southeast, covering the entire
+EEZ.](./outputs/map_archive/OES2303_leg1/dailyMap_acoustics_OES2303_leg1_ran2023-08-15.png)
+
 ## Suggestions and Comments
 
 If you see that the data, product, or metadata can be improved, you are
@@ -109,6 +170,12 @@ invited to create a [pull
 request](https://github.com/PIFSC-Protected-Species-Division/cruise-maps-live/pulls),
 or [submit an issue to this
 repository](https://github.com/PIFSC-Protected-Species-Division/cruise-maps-live/issues)
+
+If you notice the map has not been updated in a few days, please [submit
+an
+issue](https://github.com/PIFSC-Protected-Species-Division/cruise-maps-live/issues).
+Sometimes that can happen if our processing computer reboots or there is
+an authentication issue. We will see the issue and check it out!
 
 ## R Version Metadata
 
