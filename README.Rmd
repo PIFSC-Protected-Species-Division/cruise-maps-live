@@ -77,9 +77,12 @@ The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolp
 
 (click to enlarge)
 
-![HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/dailyMap_visuals.png){width=48%}
+```{r latest-maps, fig.alt = c("HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ.", "HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ."), out.width = "25%"}
 
-![HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/dailyMap_acoustics.png){width=48%}
+knitr::include_graphics('./outputs/dailyMap_visuals.png')
+knitr::include_graphics('./outputs/dailyMap_acoustics.png')
+
+```
 
 ## Notes
 

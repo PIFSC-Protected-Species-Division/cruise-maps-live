@@ -62,33 +62,7 @@ website.
 
 (click to enlarge)
 
-<figure>
-<img src="./outputs/dailyMap_visuals.png" style="width:48.0%"
-alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." />
-<figcaption aria-hidden="true">HICEAS 2023 Map - Latest Map. This map
-shows the most up-to-date completed survey tracklines (pink) and
-cetacean sightings (colored symbols). The map creation date is above the
-scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the
-Hawaiian archipelago (study area) is marked with a white boundary line
-and planned transect lines are in thin black lines. The
-Papahānaumokuākea Marine National Monument area and Main Hawaiian
-Islands are labeled in white text. The transect lines run lengthwise
-from northwest to southeast, covering the entire EEZ.</figcaption>
-</figure>
-
-<figure>
-<img src="./outputs/dailyMap_acoustics.png" style="width:48.0%"
-alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." />
-<figcaption aria-hidden="true">HICEAS 2023 Map - Latest Map. This map
-shows the most up-to-date completed survey tracklines (pink) and
-acoustic detections of cetaceans (colored symbols). The map creation
-date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ)
-surrounding the Hawaiian archipelago (study area) is marked with a white
-boundary line and planned transect lines are in thin black lines. The
-Papahānaumokuākea Marine National Monument area and Main Hawaiian
-Islands are labeled in white text. The transect lines run lengthwise
-from northwest to southeast, covering the entire EEZ.</figcaption>
-</figure>
+<img src="./outputs/dailyMap_visuals.png" alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." width="25%" /><img src="./outputs/dailyMap_acoustics.png" alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." width="25%" />
 
 ## Notes
 
@@ -207,9 +181,9 @@ an authentication issue. We will see the issue and check it out!
     FALSE  [5] xfun_0.39         glue_1.6.2        rsvg_2.4.0        knitr_1.43       
     FALSE  [9] htmltools_0.5.5   rmarkdown_2.22    lifecycle_1.0.3   cli_3.6.1        
     FALSE [13] fansi_1.0.4       readtext_0.90     vctrs_0.6.2       data.table_1.14.8
-    FALSE [17] compiler_4.3.0    httr_1.4.6        rstudioapi_0.14   tools_4.3.0      
-    FALSE [21] pillar_1.9.0      evaluate_0.21     yaml_2.3.7        rlang_1.1.1      
-    FALSE [25] stringi_1.7.12
+    FALSE [17] compiler_4.3.0    highr_0.10        httr_1.4.6        rstudioapi_0.14  
+    FALSE [21] tools_4.3.0       pillar_1.9.0      evaluate_0.21     yaml_2.3.7       
+    FALSE [25] rlang_1.1.1       stringi_1.7.12
 
 ## NOAA Disclaimer and License
 
