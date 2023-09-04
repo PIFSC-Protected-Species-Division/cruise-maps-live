@@ -145,6 +145,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
     scale_fill_distiller(guide= "none")+
     
     ## add bathymetry layer, depth contours, & tracklines
+    ggnewscale::new_scale_color() +
     ggspatial::layer_spatial(bathy)+ 
     geom_sf(data=p_x1, fill = "white", alpha=0.1, color=NA)+
     geom_sf(data=pmnm_shifted, fill="white", alpha = 0.1, color=NA)+
@@ -157,6 +158,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
     ggspatial::layer_spatial(tmp, alpha=ta, size=tw, aes(color=colors_lines[1]))+
     scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                        labels = labels_lines)+
+    guides(colour = guide_legend(order = 1)) +
     
     
     ggnewscale::new_scale_color() +
@@ -166,7 +168,9 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
                        labels = rev(labels_enc))+
     scale_shape_manual(name = legendName, values = rev(shapes_enc), 
                        labels = rev(labels_enc))+
-    guides(colour = guide_legend(override.aes = list(size = 3)))+
+    guides(shape = guide_legend(nrow = 13, order = 2),
+           colour = guide_legend(override.aes = list(size = 3), nrow = 13, 
+                                 order = 2))+
     
     
     annotate("text", x=-168, y=29.5, 
@@ -192,9 +196,10 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
                    y.min = min(lines$Latitude),
                    y.max = max(lines$Latitude)) +
     ggtitle(plotTitle) +
-    theme(plot.title = element_text(hjust = 0.5)) + 
-      guides(colour = guide_legend(nrow = 13, ncol = 2))#, byrow = TRUE))
-  
+    theme(plot.title = element_text(hjust = 0.5)) #+ 
+      # guides(colour = guide_legend(nrow = 13), ##, byrow = TRUE))
+      #        )
+      # 
   
   # rather than print and save within function going to have it as output
   # so easier to map where it needs to be saved and modify name with each leg, etc. 
