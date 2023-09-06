@@ -15,7 +15,7 @@ data_source = 'gd' # google drive
 # yr = 2023
 crNum = 2303
 # ship = 'OES' # 'LSK'
-leg = '2'
+leg = '3'
 
 if (length(crNum) > 1){
   stop("We're not ready for two boats yet!! Bug Janelle and Selene.")
@@ -194,11 +194,13 @@ if (data_source == 'blank'){
   # read in the file for this ship and leg - pamList should be length 1
   pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
   if (nrow(pamList) == 0){
-    cat('No PAM file!! Skipping any new acoustic detections.')
+    cat('No PAM file present!! Skipping any acoustic processing/plotting...\n')
+    newPam = FALSE
     # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
     
   } else if (nrow(pamList) > 1 && nrow(pamList) != 1){
     cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
+    newPam = FALSE
     stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
     
   } else if (nrow(pamList) == 1){
