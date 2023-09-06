@@ -177,6 +177,12 @@ if (data_source == 'blank'){
   }
   ### ### ### ### ###  
   
+  if (length(idxNew) > 0){
+    newDas = TRUE
+  } else {
+    newDas = FALSE
+  }
+  
   # ------ Check for new acoustics file -----------------------------------
   # acoustics file is single sql file that is updated/appended each day
   # file is large so slow to download
@@ -204,19 +210,22 @@ if (data_source == 'blank'){
     modTime = pamList$drive_resource[[1]]$modifiedTime
     
     # only download if it is newly updated
-    if (lastTime <= modTime){
+    if (is.na(lastTime) || (lastTime <= modTime)){
       googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                                   overwrite = TRUE, path = pamFile)
+      newPam = TRUE
+    } else {
+      newPam = FALSE
     }
   }
 } # end data source check
 
 
 # if there are new das OR acoustics to process/not test or blank run
-if (length(idxNew) != 0 || lastTime <= modTime){
+if (newDas == TRUE || newPam == TRUE){
   
   # ------ Download, read and process new das files -------------------------
-  if (length(idxNew) != 0){
+  if (newDas == TRUE){
     cat(' Processing', length(idxNew), 'new das files:\n')
     # loop through all idxNew
     for (i in 1:length(idxNew)){
@@ -403,8 +412,8 @@ if (length(idxNew) != 0 || lastTime <= modTime){
   
   # ------ Extract acoustic detections --------------------------------------
   
-  if (lastTime <= modTime){
-    cat(' Processing updated acoustic database:\n')
+  if (newPam == TRUE){
+    cat(' Processing updated acoustic database.\n')
     
     # acoustics file is single sql file that is updated/appended every few days
     # file is large so slow to download
@@ -523,6 +532,7 @@ if (genPlots == TRUE){
   }
   
   # ------ Plot visual sightings map --------------------------------------
+  if (newDas == TRUE){
   cat(' Generating latest map of visual sightings:\n')
   
   source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
@@ -601,9 +611,12 @@ if (genPlots == TRUE){
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
-  
+  } else {
+    cat(' No new das files, skipping visual sightings map...\n')
+  }
   
   # ------ Plot acoustic detections map -----------------------------------
+  if (newPam == TRUE){
   cat(' Generating latest map of acoustic detections:\n')
   
   # add correctly formated SpCode col
@@ -664,11 +677,12 @@ if (genPlots == TRUE){
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
-  
+  } else {
+    cat(' No new acoustic file, skipping acoustic detections map...\n')
+  }
 } # end genPlots TF trigger
 
 # ------ Save dasList and close log  ------------------------------------
-
 
 # if all ran ok, save updated dasList so these files won't be run again
 if (data_source == 'gd'){ # only save if actual run, not test or blank

@@ -47,3 +47,52 @@ integer(0)
 
 ...run started 2023-09-06 07:17:16 PDT ...
  dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-09-06 07:23:32 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-09-06 07:23:54 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+[1] NA
+# A dribble: 1 × 3
+  name                              id       drive_resource
+  <chr>                             <drv_id> <list>        
+1 PAM20207b_HICEAS_Recording_Sette… 1k6xLBv… <named list>  
+[1] "SetteLeg2"
+[1] FALSE
+[1] FALSE
+[1] TRUE
+[1] NA
+[1] "2023-09-06T03:03:07.979Z"
+[1] NA
+[1] TRUE
+
+...run started 2023-09-06 07:26:39 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+[1] FALSE
+[1] FALSE
+[1] TRUE
+[1] FALSE
+[1] "2023-09-06 07:27:36 PDT"
+[1] FALSE
+[1] 0
+[1] FALSE
+
+...run started 2023-09-06 07:32:10 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+
+...run started 2023-09-06 07:33:50 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ No new das or acoustic files to process. Exiting.
+...run complete 2023-09-06 07:33:54 PDT ...
+
+...run started 2023-09-06 07:34:49 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ No new das files to process. Proceeding to acoustics...
+ Processing updated acoustic database:
+   saved acousticDetections_OES2303_leg2_ran2023-09-06.Rda 
+
+...run started 2023-09-06 08:06:27 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ No new das or acoustic files to process. Exiting.
+...run complete 2023-09-06 08:06:31 PDT ...
