@@ -176,195 +176,8 @@ if (data_source == 'blank'){
     idxNew = c(15, 16)
   }
   ### ### ### ### ###  
-} # end data source check
-
-
-# ------ Download, read and process new das files -------------------------
-
-# if there are new das to process/not test or blank run
-if (length(idxNew) != 0){
-  cat(' Processing', length(idxNew), 'new das files:\n')
-  # loop through all idxNew
-  for (i in 1:length(idxNew)){
-    # i = 1 # for testing
-    d = dasList[idxNew[i],]
-    
-    dasFile = file.path(dir_gd_dwnl, d$name)
-    cat(' ', d$name, '\n')
-    
-    # download and save locally
-    googledrive::drive_download(file = googledrive::as_id(d$id), 
-                                overwrite = TRUE, path = dasFile)
-    
-    # basic data checks
-    df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
-    # read and process
-    df_read = swfscDAS::das_read(dasFile, skip = 0)
-    df_proc = swfscDAS::das_process(dasFile)
-    
-    # update time zone
-    source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
-    df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
-                                                          'TimeZones.csv'))
-    # If looking at compiled data.frames (tracks, points, etc) all timezones 
-    # will be just a single one (HST), but they will have been adjusted for SST
-    # View(df_proc)
-    
-    # correct cruise number (only need on first few days of Leg 1)
-    if (crNum == 2303 && leg == 1){
-      df_proc$Cruise = 2303
-    }
-    
-    # save copy of df_proc
-    outName = paste0('processedDAS_', legID, '_', d$name, '_ran', 
-                     Sys.Date(), '.Rda')
-    save(df_proc, file = file.path(dir_snaps, outName))
-    
-    
-    # ------ Parse track data from das ----------------------------------------
-    
-    # parse on-effort segments as straight lines from Begin/Resume to End 
-    source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
-    etNew = parseTrack(df_proc)
-    
-    # add on some ship info
-    etNew$shipCode = shipCode
-    etNew$shipName = shipName
-    etNew$projID = projID
-    etNew$leg = leg
-    
-    # save a 'snapshot' of the data for this das file with date it was run
-    outName = paste0('newEffortTracks_', legID, '_', d$name, '_ran', 
-                     Sys.Date(), '.Rda')
-    save(etNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
-    cat('   saved', outName, '\n')
-    
-    # combine the old vs dataframe with the new one
-    outName = paste0('compiledEffortTracks_', projID, '.Rda')
-    if (file.exists(file.path(dir_data, outName))){
-      # load old if it exists
-      load(file.path(dir_data, outName))
-      # combine
-      et = rbind(et, etNew)
-      et = unique(et)                 # remove duplicates (in case ran already)
-      et = et[order(et$DateTime1),]   # sort in case out of order
-    } else {
-      et = etNew
-    }
-    
-    save(et, file = file.path(dir_data, outName))
-    googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-    outNameCSV = paste0('compiledEffortTracks_', projID, '.csv')
-    write.csv(et, file = file.path(dir_data, outNameCSV))
-    googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
-    cat('   saved', outName, 'and as .csv\n')
-    
-    
-    # ------ Create GPX from track data ---------------------------------------
-    
-    source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
-    
-    # by day/das tracks
-    outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, 
-                                       '.gpx'))
-    trackToGPX(etNew, outGPX)
-    googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
-    cat('   saved', basename(outGPX), '\n')
-    
-    # compiled tracks
-    outGPX = file.path(dir_gpx, paste0('compiledEffortTracks_', projID, '.gpx'))
-    trackToGPX(et, outGPX)
-    googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
-    cat('   saved', basename(outGPX), '\n')
-    
-    # ------ Parse track data as points ---------------------------------------
-    # alternatively, can parse individual lines to get the segments out as points
-    
-    source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
-    epNew = parseTrack_asPoints(df_proc)
-    
-    # add on some ship info
-    epNew$shipCode = shipCode
-    epNew$shipName = shipName
-    epNew$projID = projID
-    epNew$leg = leg
-    
-    # save a 'snapshot' of the data for this run
-    outName = paste0('newEffortPoints_', legID, '_', d$name, '_ran', 
-                     Sys.Date(), '.Rda')
-    save(epNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
-    cat('   saved', outName, '\n')
-    
-    # combine the old vs dataframe with the new one
-    outName = paste0('compiledEffortPoints_', projID, '.Rda')
-    if (file.exists(file.path(dir_data, outName))){
-      # load old if it exists
-      load(file.path(dir_data, outName))
-      # combine, remove dupes, sort by date
-      ep = rbind(ep, epNew)
-      ep = unique(ep)
-      ep = ep[order(ep$DateTime),]
-    } else {
-      ep = epNew
-    }
-    
-    save(ep, file = file.path(dir_data, outName))
-    googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-    outNameCSV = paste0('compiledEffortPoints_', projID, '.csv')
-    write.csv(ep, file = file.path(dir_data, outNameCSV))
-    googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
-    cat('   saved', outName, 'and as .csv\n')
-    
-    # ------ Extract visual sighting data -------------------------------------
-    
-    # do some stuff here to extract visual sighting data for the day from das
-    source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
-    vsNew = extractVisualSightings(df_proc)
-    
-    if (nrow(vsNew) > 0){
-      # add on some ship info
-      vsNew$shipCode = shipCode
-      vsNew$shipName = shipName
-      vsNew$projID = projID
-      vsNew$leg = leg
-    }
-    
-    # confirm all species codes are numeric and delete rows that aren't
-    vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
-    vsNew = vsNew_clean
-    
-    # save a 'snapshot' of the data for this run
-    outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), 
-                     '.Rda')
-    save(vsNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
-    cat('   saved', outName, '\n')
-    
-    # combine the old vs dataframe with the new one
-    outName = paste0('compiledSightings_', projID, '.Rda')
-    if (file.exists(file.path(dir_data, outName))){
-      # load old if it exists
-      load(file.path(dir_data, outName))
-      # combine, remove dupes, sort by date
-      vs = rbind(vs, vsNew)
-      vs = unique(vs)
-      vs = vs[order(vs$DateTime),]
-    } else { # if no previous sightings file exists
-      vs = vsNew
-    }
-    
-    save(vs, file = file.path(dir_data, outName))
-    googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-    outNameCSV = paste0('compiledSightings_', projID, '.csv')
-    write.csv(vs, file = file.path(dir_data, outNameCSV))
-    googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
-    cat('   saved', outName, 'and as .csv\n')
-    
-  } # end loop through all idxNew for download and processing of DAS
   
-  # ------ Extract acoustic detections --------------------------------------
+  # ------ Check for new acoustics file -----------------------------------
   # acoustics file is single sql file that is updated/appended each day
   # file is large so slow to download
   # only do this if there is also new DAS that were processed 
@@ -385,132 +198,402 @@ if (length(idxNew) != 0){
   } else if (nrow(pamList) == 1){
     
     pamFile = file.path(dir_gd_dwnl, pamList$name[1])
-    googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-                                overwrite = TRUE, path = pamFile)
     
-    # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
-    # ad file will contain all detections from previous legs
-    # will still save a 'snapshot' of each day (but it will be cumulative)
+    # check modified datetime vs last download datetime
+    lastTime = file.info(pamFile)$mtime
+    modTime = pamList$drive_resource[[1]]$modifiedTime
     
-    # process new file
-    source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
-    adNew = extractAcousticDetections(pamFile)
-    
-    if (nrow(adNew) > 0){
+    # only download if it is newly updated
+    if (lastTime <= modTime){
+      googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
+                                  overwrite = TRUE, path = pamFile)
+    }
+  }
+} # end data source check
+
+
+# if there are new das OR acoustics to process/not test or blank run
+if (length(idxNew) != 0 || lastTime <= modTime){
+  
+  # ------ Download, read and process new das files -------------------------
+  if (length(idxNew) != 0){
+    cat(' Processing', length(idxNew), 'new das files:\n')
+    # loop through all idxNew
+    for (i in 1:length(idxNew)){
+      # i = 1 # for testing
+      d = dasList[idxNew[i],]
+      
+      dasFile = file.path(dir_gd_dwnl, d$name)
+      cat(' ', d$name, '\n')
+      
+      # download and save locally
+      googledrive::drive_download(file = googledrive::as_id(d$id), 
+                                  overwrite = TRUE, path = dasFile)
+      
+      # basic data checks
+      df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+      # read and process
+      df_read = swfscDAS::das_read(dasFile, skip = 0)
+      df_proc = swfscDAS::das_process(dasFile)
+      
+      # update time zone
+      source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
+      df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
+                                                            'TimeZones.csv'))
+      # If looking at compiled data.frames (tracks, points, etc) all timezones 
+      # will be just a single one (HST), but they will have been adjusted for SST
+      # View(df_proc)
+      
+      # correct cruise number (only need on first few days of Leg 1)
+      if (crNum == 2303 && leg == 1){
+        df_proc$Cruise = 2303
+      }
+      
+      # save copy of df_proc
+      outName = paste0('processedDAS_', legID, '_', d$name, '_ran', 
+                       Sys.Date(), '.Rda')
+      save(df_proc, file = file.path(dir_snaps, outName))
+      
+      
+      # ------ Parse track data from das ----------------------------------------
+      
+      # parse on-effort segments as straight lines from Begin/Resume to End 
+      source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
+      etNew = parseTrack(df_proc)
+      
       # add on some ship info
-      adNew$shipCode = shipCode
-      adNew$shipName = shipName
-      adNew$projID = projID
-      adNew$leg = leg
+      etNew$shipCode = shipCode
+      etNew$shipName = shipName
+      etNew$projID = projID
+      etNew$leg = leg
+      
+      # save a 'snapshot' of the data for this das file with date it was run
+      outName = paste0('newEffortTracks_', legID, '_', d$name, '_ran', 
+                       Sys.Date(), '.Rda')
+      save(etNew, file = file.path(dir_snaps, outName))
+      googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+      cat('   saved', outName, '\n')
+      
+      # combine the old vs dataframe with the new one
+      outName = paste0('compiledEffortTracks_', projID, '.Rda')
+      if (file.exists(file.path(dir_data, outName))){
+        # load old if it exists
+        load(file.path(dir_data, outName))
+        # combine
+        et = rbind(et, etNew)
+        et = unique(et)                 # remove duplicates (in case ran already)
+        et = et[order(et$DateTime1),]   # sort in case out of order
+      } else {
+        et = etNew
+      }
+      
+      save(et, file = file.path(dir_data, outName))
+      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+      outNameCSV = paste0('compiledEffortTracks_', projID, '.csv')
+      write.csv(et, file = file.path(dir_data, outNameCSV))
+      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+      cat('   saved', outName, 'and as .csv\n')
+      
+      
+      # ------ Create GPX from track data ---------------------------------------
+      
+      source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
+      
+      # by day/das tracks
+      outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, 
+                                         '.gpx'))
+      trackToGPX(etNew, outGPX)
+      googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+      cat('   saved', basename(outGPX), '\n')
+      
+      # compiled tracks
+      outGPX = file.path(dir_gpx, paste0('compiledEffortTracks_', projID, '.gpx'))
+      trackToGPX(et, outGPX)
+      googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+      cat('   saved', basename(outGPX), '\n')
+      
+      # ------ Parse track data as points ---------------------------------------
+      # alternatively, can parse individual lines to get the segments out as points
+      
+      source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
+      epNew = parseTrack_asPoints(df_proc)
+      
+      # add on some ship info
+      epNew$shipCode = shipCode
+      epNew$shipName = shipName
+      epNew$projID = projID
+      epNew$leg = leg
+      
+      # save a 'snapshot' of the data for this run
+      outName = paste0('newEffortPoints_', legID, '_', d$name, '_ran', 
+                       Sys.Date(), '.Rda')
+      save(epNew, file = file.path(dir_snaps, outName))
+      googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+      cat('   saved', outName, '\n')
+      
+      # combine the old vs dataframe with the new one
+      outName = paste0('compiledEffortPoints_', projID, '.Rda')
+      if (file.exists(file.path(dir_data, outName))){
+        # load old if it exists
+        load(file.path(dir_data, outName))
+        # combine, remove dupes, sort by date
+        ep = rbind(ep, epNew)
+        ep = unique(ep)
+        ep = ep[order(ep$DateTime),]
+      } else {
+        ep = epNew
+      }
+      
+      save(ep, file = file.path(dir_data, outName))
+      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+      outNameCSV = paste0('compiledEffortPoints_', projID, '.csv')
+      write.csv(ep, file = file.path(dir_data, outNameCSV))
+      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+      cat('   saved', outName, 'and as .csv\n')
+      
+      # ------ Extract visual sighting data -------------------------------------
+      
+      # do some stuff here to extract visual sighting data for the day from das
+      source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
+      vsNew = extractVisualSightings(df_proc)
+      
+      if (nrow(vsNew) > 0){
+        # add on some ship info
+        vsNew$shipCode = shipCode
+        vsNew$shipName = shipName
+        vsNew$projID = projID
+        vsNew$leg = leg
+      }
+      
+      # confirm all species codes are numeric and delete rows that aren't
+      vsNew_clean <- vsNew[!is.na(as.numeric(vsNew$SpCode)), ] 
+      vsNew = vsNew_clean
+      
+      # save a 'snapshot' of the data for this run
+      outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), 
+                       '.Rda')
+      save(vsNew, file = file.path(dir_snaps, outName))
+      googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+      cat('   saved', outName, '\n')
+      
+      # combine the old vs dataframe with the new one
+      outName = paste0('compiledSightings_', projID, '.Rda')
+      if (file.exists(file.path(dir_data, outName))){
+        # load old if it exists
+        load(file.path(dir_data, outName))
+        # combine, remove dupes, sort by date
+        vs = rbind(vs, vsNew)
+        vs = unique(vs)
+        vs = vs[order(vs$DateTime),]
+      } else { # if no previous sightings file exists
+        vs = vsNew
+      }
+      
+      save(vs, file = file.path(dir_data, outName))
+      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+      outNameCSV = paste0('compiledSightings_', projID, '.csv')
+      write.csv(vs, file = file.path(dir_data, outNameCSV))
+      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+      cat('   saved', outName, 'and as .csv\n')
+      
+    } # end loop through all idxNew for download and processing of DAS
+  } else {
+    cat(' No new das files to process. Proceeding to acoustics...\n')
+  }# end idx == 0 catch
+  
+  # ------ Extract acoustic detections --------------------------------------
+  
+  if (lastTime <= modTime){
+    cat(' Processing updated acoustic database:\n')
+    
+    # acoustics file is single sql file that is updated/appended every few days
+    # file is large so slow to download
+    # only do this if there is also new DAS that were processed (bc DAS needed
+    # for tracklines for plotting) 
+    
+    # assemble search pattern
+    pat = paste0(shipName, 'Leg', leg)
+    
+    # read in the file for this ship and leg - pamList should be length 1
+    pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
+    if (nrow(pamList) == 0){
+      cat('No PAM file!! Skipping any new acoustic detections.')
+      # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
+      
+    } else if (nrow(pamList) > 1 && nrow(pamList) != 1){
+      cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
+      stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
+      
+    } else if (nrow(pamList) == 1){
+      
+      pamFile = file.path(dir_gd_dwnl, pamList$name[1])
+      googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
+                                  overwrite = TRUE, path = pamFile)
+      
+      # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
+      # ad file will contain all detections from previous legs
+      # will still save a 'snapshot' of each day (but it will be cumulative)
+      
+      # process new file
+      source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
+      adNew = extractAcousticDetections(pamFile)
+      
+      if (nrow(adNew) > 0){
+        # add on some ship info
+        adNew$shipCode = shipCode
+        adNew$shipName = shipName
+        adNew$projID = projID
+        adNew$leg = leg
+      }
+      
+      # save a 'snapshot' of the data for this run
+      outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
+      save(adNew, file = file.path(dir_snaps, outName))
+      googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+      cat('   saved', outName, '\n')
     }
     
-    # save a 'snapshot' of the data for this run
-    outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
-    save(adNew, file = file.path(dir_snaps, outName))
-    googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
-    cat('   saved', outName, '\n')
-  }
+    # combine the old ad dataframe with the new one
+    outName = paste0('compiledDetections_', projID, '.Rda')
+    if (file.exists(file.path(dir_data, outName))){
+      # load old if it exists
+      load(file.path(dir_data, outName))
+      # combine, if new data loaded
+      if (exists('adNew')){ad = rbind(ad, adNew)}
+      # remove dupes, sort by date
+      ad = unique(ad)
+      ad = ad[order(ad$UTC),]
+    } else if (exists('adNew')){ # if no previous sightings file exists, but new does
+      ad = adNew
+    }
+    
+    # save the primary compiled version
+    save(ad, file = file.path(dir_data, outName))
+    googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
+    outNameCSV = paste0('compiledDetections_', projID, '.csv')
+    write.csv(vs, file = file.path(dir_data, outNameCSV))
+    googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+    cat('   saved', outName, 'and as .csv\n')
+    
+  } else {
+    cat(' No new acoustic file to process.\n')
+  }# end lastTime/modTime catch
   
-  # combine the old ad dataframe with the new one
-  outName = paste0('compiledDetections_', projID, '.Rda')
-  if (file.exists(file.path(dir_data, outName))){
-    # load old if it exists
-    load(file.path(dir_data, outName))
-    # combine, if new data loaded
-    if (exists('adNew')){ad = rbind(ad, adNew)}
-    # remove dupes, sort by date
-    ad = unique(ad)
-    ad = ad[order(ad$UTC),]
-  } else if (exists('adNew')){ # if no previous sightings file exists, but new does
-    ad = adNew
-  }
-  
-  # save the primary compiled version
-  save(ad, file = file.path(dir_data, outName))
-  googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-  outNameCSV = paste0('compiledDetections_', projID, '.csv')
-  write.csv(vs, file = file.path(dir_data, outNameCSV))
-  googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
-  cat('   saved', outName, 'and as .csv\n')
-  
-  # turn on plotting bc we have new data
+  # turn on plotting bc we have new data (either visual, acoustic, or both)
   genPlots = TRUE
 } else {
   genPlots = FALSE
-  cat(' No new das files to process. Exiting.\n')
+  cat(' No new das or acoustic files to process. Exiting.\n')
 }
 
 
 # **Would end loop through multiple vessels here. 
 
 if (genPlots == TRUE){
-# ------ Make summary table -----------------------------------------------
-cat(' Updating summary table:\n')
-
-# load previously created summary table if it exists
-stName = paste0('summaryTable.Rda')
-if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
-  load(file.path(dir_wd, 'outputs', stName))
-} else {
-  st = data.frame()
-}
-
-source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
-# break out pieces of returned list
-st = lt$st
-ft = lt$ft
-
-# save st .rda as combined for the whole year (bc loaded on later legs)
-if (data_source == 'gd'){ # only save if actual run, not test or blank
-  save(st, file = file.path(dir_wd, 'outputs', stName))
-  cat('   saved', stName, '\n')
+  # ------ Make summary table -----------------------------------------------
+  cat(' Updating summary table:\n')
   
-  # save ft (formatted flexttable) as image
-  outName = paste0('summaryTable.png')
-  flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
-                           res = 180)
-  cat('   saved', outName, '\n')
-  outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-  flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
-  cat('   saved', outName, '\n')
-}
-
-# ------ Plot visual sightings map --------------------------------------
-cat(' Generating latest map of visual sightings:\n')
-
-source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
-
-mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
-base_map_V = mapOutV$base_map
-vsMap = mapOutV$ceMap
-numCols = mapOutV$numCols
-
-# ------ Set plot save sizes ----------------------------------------------
-
-height = 5
-# printed width needs to vary by number of legend items
-if (numCols == 1){width = 9.35
-} else if (numCols == 2){width = 11
-} else if (numCols == 3){width = 12.65}
-# resolution
-res = 200
-
-# ------ Save visuals map figures ---------------------------------------
-
-# save the latest - as .png and .pdf
-if (data_source == 'gd'){ # only save if actual run, not test or blank
-  outStr = paste0('dailyMap_visuals')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+  # load previously created summary table if it exists
+  stName = paste0('summaryTable.Rda')
+  if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
+    load(file.path(dir_wd, 'outputs', stName))
+  } else {
+    st = data.frame()
+  }
+  
+  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+  lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
+  # break out pieces of returned list
+  st = lt$st
+  ft = lt$ft
+  
+  # save st .rda as combined for the whole year (bc loaded on later legs)
+  if (data_source == 'gd'){ # only save if actual run, not test or blank
+    save(st, file = file.path(dir_wd, 'outputs', stName))
+    cat('   saved', stName, '\n')
+    
+    # save ft (formatted flexttable) as image
+    outName = paste0('summaryTable.png')
+    flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
+                             res = 180)
+    cat('   saved', outName, '\n')
+    outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
+    flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
+    cat('   saved', outName, '\n')
+  }
+  
+  # ------ Plot visual sightings map --------------------------------------
+  cat(' Generating latest map of visual sightings:\n')
+  
+  source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
+  
+  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
+  base_map_V = mapOutV$base_map
+  vsMap = mapOutV$ceMap
+  numCols = mapOutV$numCols
+  
+  # ------ Set plot save sizes ----------------------------------------------
+  
+  height = 5
+  # printed width needs to vary by number of legend items
+  if (numCols == 1){width = 9.35
+  } else if (numCols == 2){width = 11
+  } else if (numCols == 3){width = 12.65}
+  # resolution
+  res = 200
+  
+  # ------ Save visuals map figures ---------------------------------------
+  
+  # save the latest - as .png and .pdf
+  if (data_source == 'gd'){ # only save if actual run, not test or blank
+    outStr = paste0('dailyMap_visuals')
+    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+           height = height,
+           width = width,
+           units = 'in', 
+           plot = base_map_V,
+           dpi = res,
+           bg = 'white',
+           device = 'png')
+    
+    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+           height = height,
+           width = width,
+           plot = base_map_V,
+           dpi = res,
+           bg = 'white',
+           device = 'pdf')
+    cat('   saved', outStr, 'as .png and .pdf\n')
+    
+    # save a large copy for CLs as PDF
+    outStr = paste0('dailyMap_visuals_CL')
+    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+           height = 10,
+           width = 20,
+           plot = base_map_V,
+           # dpi = 1200,
+           bg = 'white',
+           device = 'pdf')
+    googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                           path = dir_gd_proc)
+    googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                           path = dir_gd_gpx)
+    cat('   saved', outName, 'and as .csv\n')
+    cat('   saved', outStr, 'as .png and .pdf\n')
+    
+  }
+  
+  # save a copy of today's run - as .png and .pdf
+  outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
          height = height,
          width = width,
-         units = 'in', 
          plot = base_map_V,
          dpi = res,
          bg = 'white',
          device = 'png')
   
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
          height = height,
          width = width,
          plot = base_map_V,
@@ -519,78 +602,61 @@ if (data_source == 'gd'){ # only save if actual run, not test or blank
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
   
-  # save a large copy for CLs as PDF
-  outStr = paste0('dailyMap_visuals_CL')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-         height = 10,
-         width = 20,
-         plot = base_map_V,
-         # dpi = 1200,
-         bg = 'white',
-         device = 'pdf')
-  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                         path = dir_gd_proc)
-  googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                         path = dir_gd_gpx)
-  cat('   saved', outName, 'and as .csv\n')
-  cat('   saved', outStr, 'as .png and .pdf\n')
   
-}
-
-# save a copy of today's run - as .png and .pdf
-outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-       height = height,
-       width = width,
-       plot = base_map_V,
-       dpi = res,
-       bg = 'white',
-       device = 'png')
-
-ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-       height = height,
-       width = width,
-       plot = base_map_V,
-       dpi = res,
-       bg = 'white',
-       device = 'pdf')
-cat('   saved', outStr, 'as .png and .pdf\n')
-
-
-# ------ Plot acoustic detections map -----------------------------------
-cat(' Generating latest map of acoustic detections:\n')
-
-# add correctly formated SpCode col
-ad$SpCode = as.integer(ad$sp_map)
-
-mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
-base_map_A = mapOutA$base_map
-adMap = mapOutA$ceMap
-numCols = mapOutA$numCols
-
-# ------ Set plot save sizes ----------------------------------------------
-height = 5
-# printed width needs to vary by number of legend items
-if (numCols == 1){width = 9.35
-} else if (numCols == 2){width = 11
-} else if (numCols == 3){width = 12.65}
-# resolution
-res = 200
-
-# ------ Save acoustics map figures -------------------------------------
-# save the latest - as .png and .pdf
-if (data_source == 'gd'){ # only save if actual run, not test or blank
-  outStr = paste0('dailyMap_acoustics')
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+  # ------ Plot acoustic detections map -----------------------------------
+  cat(' Generating latest map of acoustic detections:\n')
+  
+  # add correctly formated SpCode col
+  ad$SpCode = as.integer(ad$sp_map)
+  
+  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
+  base_map_A = mapOutA$base_map
+  adMap = mapOutA$ceMap
+  numCols = mapOutA$numCols
+  
+  # ------ Set plot save sizes ----------------------------------------------
+  height = 5
+  # printed width needs to vary by number of legend items
+  if (numCols == 1){width = 9.35
+  } else if (numCols == 2){width = 11
+  } else if (numCols == 3){width = 12.65}
+  # resolution
+  res = 200
+  
+  # ------ Save acoustics map figures -------------------------------------
+  # save the latest - as .png and .pdf
+  if (data_source == 'gd'){ # only save if actual run, not test or blank
+    outStr = paste0('dailyMap_acoustics')
+    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+           height = height,
+           width = width,
+           units = 'in', 
+           plot = base_map_A,
+           dpi = res,
+           bg = 'white',
+           device = 'png')
+    
+    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+           height = height,
+           width = width,
+           plot = base_map_A,
+           dpi = res,
+           bg = 'white',
+           device = 'pdf')
+    cat('   saved', outStr, 'as .png and .pdf\n')
+  }
+  
+  # save a copy of today's run - as .png and .pdf
+  outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
          height = height,
          width = width,
-         units = 'in', 
          plot = base_map_A,
          dpi = res,
          bg = 'white',
          device = 'png')
   
-  ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
          height = height,
          width = width,
          plot = base_map_A,
@@ -598,27 +664,7 @@ if (data_source == 'gd'){ # only save if actual run, not test or blank
          bg = 'white',
          device = 'pdf')
   cat('   saved', outStr, 'as .png and .pdf\n')
-}
-
-# save a copy of today's run - as .png and .pdf
-outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-       height = height,
-       width = width,
-       plot = base_map_A,
-       dpi = res,
-       bg = 'white',
-       device = 'png')
-
-ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-       height = height,
-       width = width,
-       plot = base_map_A,
-       dpi = res,
-       bg = 'white',
-       device = 'pdf')
-cat('   saved', outStr, 'as .png and .pdf\n')
-
+  
 } # end genPlots TF trigger
 
 # ------ Save dasList and close log  ------------------------------------
