@@ -112,6 +112,14 @@ As each survey leg completes we will share some example plots and gifs here!
 ##### Acoustic detections
 ![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols) that occured during HICEAS 2023 Leg 1 on the R/V Oscar Elton Sette from 23 to 28 July 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg1/dailyMap_acoustics_OES2303_leg1_ran2023-08-15.png)
 
+### Leg 2
+
+##### Visual sightings
+![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey tracklines (pink) and cetacean sightings (colored symbols) that occured during HICEAS 2023 through the end of Leg 2 on the R/V Oscar Elton Sette from 23 July to 31 August 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg2/dailyMap_visuals_OES2303_leg2_ran2023-09-06.png)
+
+##### Acoustic detections
+![HICEAS 2023 Map - End of Leg 2. This map shows the completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols) that occured during HICEAS 2023 through the end of Leg 2 on the R/V Oscar Elton Sette from 23 July to 31 August 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg2/dailyMap_acoustics_OES2303_leg2_ran2023-09-06.png)
+
 ## Suggestions and Comments
 
 If you see that the data, product, or metadata can be improved, you are invited to create a 
