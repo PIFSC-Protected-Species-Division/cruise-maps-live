@@ -1,0 +1,109 @@
+
+...run started 2023-09-10 19:12:06 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+No PAM file present!! Skipping any acoustic processing/plotting...
+ Processing 2 new das files:
+  DASALL.908 
+
+...run started 2023-09-10 19:23:21 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+No PAM file present!! Skipping any acoustic processing/plotting...
+ Processing 2 new das files:
+  DASALL.908 
+   saved newEffortTracks_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.908.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.909 
+   saved newEffortTracks_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.909.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ No new acoustic file to process.
+ Updating summary table:
+
+...run started 2023-09-10 19:37:52 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+No PAM file present!! Skipping any acoustic processing/plotting...
+[1] TRUE
+ Processing 2 new das files:
+  DASALL.908 
+   saved newEffortTracks_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.908.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.909 
+   saved newEffortTracks_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.909.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ No new acoustic file to process.
+ Updating summary table:
+[1] TRUE
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved compiledSightings_OES2303.Rda and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg3_ran2023-09-10 as .png and .pdf
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved compiledSightings_OES2303.Rda and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg3_ran2023-09-10 as .png and .pdf
+[1] TRUE
+[1] FALSE
+ Missing some variable, skipping summary table...
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved compiledSightings_OES2303.Rda and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg3_ran2023-09-10 as .png and .pdf
+ No new acoustic file, skipping acoustic detections map...
+
+...run started 2023-09-10 19:45:42 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+No PAM file present!! Skipping any acoustic processing/plotting...
+ Processing 2 new das files:
+  DASALL.908 
+   saved newEffortTracks_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.908.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.908_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+  DASALL.909 
+   saved newEffortTracks_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.909.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.909_ran2023-09-10.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ No new acoustic file to process.
+ Missing some variable, skipping summary table...
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved compiledSightings_OES2303.Rda and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg3_ran2023-09-10 as .png and .pdf
+ No new acoustic file, skipping acoustic detections map...
+...run complete 2023-09-10 19:47:09 PDT ...
