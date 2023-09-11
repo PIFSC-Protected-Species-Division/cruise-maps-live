@@ -501,74 +501,116 @@ if (newDas == TRUE || newPam == TRUE){
 # **Would end loop through multiple vessels here. 
 
 if (genPlots == TRUE){
+  
   # ------ Make summary table -----------------------------------------------
-  cat(' Updating summary table:\n')
-  
-  # load previously created summary table if it exists
-  stName = paste0('summaryTable.Rda')
-  if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
-    load(file.path(dir_wd, 'outputs', stName))
-  } else {
-    st = data.frame()
-  }
-  
-  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-  lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
-  # break out pieces of returned list
-  st = lt$st
-  ft = lt$ft
-  
-  # save st .rda as combined for the whole year (bc loaded on later legs)
-  if (data_source == 'gd'){ # only save if actual run, not test or blank
-    save(st, file = file.path(dir_wd, 'outputs', stName))
-    cat('   saved', stName, '\n')
+  if (exists('et') && exists('vs') && exists('ad')){
+    cat(' Updating summary table:\n')
     
-    # save ft (formatted flexttable) as image
-    outName = paste0('summaryTable.png')
-    flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
-                             res = 180)
-    cat('   saved', outName, '\n')
-    outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-    flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
-    cat('   saved', outName, '\n')
+    # load previously created summary table if it exists
+    stName = paste0('summaryTable.Rda')
+    if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
+      load(file.path(dir_wd, 'outputs', stName))
+    } else {
+      st = data.frame()
+    }
+    
+    source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+    lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
+    # break out pieces of returned list
+    st = lt$st
+    ft = lt$ft
+    
+    # save st .rda as combined for the whole year (bc loaded on later legs)
+    if (data_source == 'gd'){ # only save if actual run, not test or blank
+      save(st, file = file.path(dir_wd, 'outputs', stName))
+      cat('   saved', stName, '\n')
+      
+      # save ft (formatted flexttable) as image
+      outName = paste0('summaryTable.png')
+      flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
+                               res = 180)
+      cat('   saved', outName, '\n')
+      outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
+      flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
+      cat('   saved', outName, '\n')
+    }
+  } else {
+    cat(' Missing some variable, skipping summary table...\n')
   }
   
   # ------ Plot visual sightings map --------------------------------------
   if (newDas == TRUE){
-  cat(' Generating latest map of visual sightings:\n')
-  
-  source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
-  
-  mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
-  base_map_V = mapOutV$base_map
-  vsMap = mapOutV$ceMap
-  numCols = mapOutV$numCols
-  
-  # ------ Set plot save sizes ----------------------------------------------
-  
-  height = 5
-  # printed width needs to vary by number of legend items
-  if (numCols == 1){width = 9.35
-  } else if (numCols == 2){width = 11
-  } else if (numCols == 3){width = 12.65}
-  # resolution
-  res = 200
-  
-  # ------ Save visuals map figures ---------------------------------------
-  
-  # save the latest - as .png and .pdf
-  if (data_source == 'gd'){ # only save if actual run, not test or blank
-    outStr = paste0('dailyMap_visuals')
-    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+    cat(' Generating latest map of visual sightings:\n')
+    
+    source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
+    
+    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
+    base_map_V = mapOutV$base_map
+    vsMap = mapOutV$ceMap
+    numCols = mapOutV$numCols
+    
+    # ------ Set plot save sizes ----------------------------------------------
+    
+    height = 5
+    # printed width needs to vary by number of legend items
+    if (numCols == 1){width = 9.35
+    } else if (numCols == 2){width = 11
+    } else if (numCols == 3){width = 12.65}
+    # resolution
+    res = 200
+    
+    # ------ Save visuals map figures ---------------------------------------
+    
+    # save the latest - as .png and .pdf
+    if (data_source == 'gd'){ # only save if actual run, not test or blank
+      outStr = paste0('dailyMap_visuals')
+      ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+             height = height,
+             width = width,
+             units = 'in', 
+             plot = base_map_V,
+             dpi = res,
+             bg = 'white',
+             device = 'png')
+      
+      ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+             height = height,
+             width = width,
+             plot = base_map_V,
+             dpi = res,
+             bg = 'white',
+             device = 'pdf')
+      cat('   saved', outStr, 'as .png and .pdf\n')
+      
+      # save a large copy for CLs as PDF
+      outStr = paste0('dailyMap_visuals_CL')
+      ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+             height = 10,
+             width = 20,
+             plot = base_map_V,
+             # dpi = 1200,
+             bg = 'white',
+             device = 'pdf')
+      googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                             path = dir_gd_proc)
+      googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+                             path = dir_gd_gpx)
+      cat('   saved', outName, 'and as .csv\n')
+      cat('   saved', outStr, 'as .png and .pdf\n')
+      
+    }
+    
+    # save a copy of today's run - as .png and .pdf
+    outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
            height = height,
            width = width,
-           units = 'in', 
            plot = base_map_V,
            dpi = res,
            bg = 'white',
            device = 'png')
     
-    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
            height = height,
            width = width,
            plot = base_map_V,
@@ -576,82 +618,65 @@ if (genPlots == TRUE){
            bg = 'white',
            device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
-    
-    # save a large copy for CLs as PDF
-    outStr = paste0('dailyMap_visuals_CL')
-    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-           height = 10,
-           width = 20,
-           plot = base_map_V,
-           # dpi = 1200,
-           bg = 'white',
-           device = 'pdf')
-    googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                           path = dir_gd_proc)
-    googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                           path = dir_gd_gpx)
-    cat('   saved', outName, 'and as .csv\n')
-    cat('   saved', outStr, 'as .png and .pdf\n')
-    
-  }
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_V,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new das files, skipping visual sightings map...\n')
   }
   
   # ------ Plot acoustic detections map -----------------------------------
   if (newPam == TRUE){
-  cat(' Generating latest map of acoustic detections:\n')
-  
-  # add correctly formated SpCode col
-  ad$SpCode = as.integer(ad$sp_map)
-  
-  mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
-  base_map_A = mapOutA$base_map
-  adMap = mapOutA$ceMap
-  numCols = mapOutA$numCols
-  
-  # ------ Set plot save sizes ----------------------------------------------
-  height = 5
-  # printed width needs to vary by number of legend items
-  if (numCols == 1){width = 9.35
-  } else if (numCols == 2){width = 11
-  } else if (numCols == 3){width = 12.65}
-  # resolution
-  res = 200
-  
-  # ------ Save acoustics map figures -------------------------------------
-  # save the latest - as .png and .pdf
-  if (data_source == 'gd'){ # only save if actual run, not test or blank
-    outStr = paste0('dailyMap_acoustics')
-    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+    cat(' Generating latest map of acoustic detections:\n')
+    
+    # add correctly formated SpCode col
+    ad$SpCode = as.integer(ad$sp_map)
+    
+    mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
+    base_map_A = mapOutA$base_map
+    adMap = mapOutA$ceMap
+    numCols = mapOutA$numCols
+    
+    # ------ Set plot save sizes ----------------------------------------------
+    height = 5
+    # printed width needs to vary by number of legend items
+    if (numCols == 1){width = 9.35
+    } else if (numCols == 2){width = 11
+    } else if (numCols == 3){width = 12.65}
+    # resolution
+    res = 200
+    
+    # ------ Save acoustics map figures -------------------------------------
+    # save the latest - as .png and .pdf
+    if (data_source == 'gd'){ # only save if actual run, not test or blank
+      outStr = paste0('dailyMap_acoustics')
+      ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
+             height = height,
+             width = width,
+             units = 'in', 
+             plot = base_map_A,
+             dpi = res,
+             bg = 'white',
+             device = 'png')
+      
+      ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+             height = height,
+             width = width,
+             plot = base_map_A,
+             dpi = res,
+             bg = 'white',
+             device = 'pdf')
+      cat('   saved', outStr, 'as .png and .pdf\n')
+    }
+    
+    # save a copy of today's run - as .png and .pdf
+    outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
            height = height,
            width = width,
-           units = 'in', 
            plot = base_map_A,
            dpi = res,
            bg = 'white',
            device = 'png')
     
-    ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
            height = height,
            width = width,
            plot = base_map_A,
@@ -659,26 +684,6 @@ if (genPlots == TRUE){
            bg = 'white',
            device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
-  }
-  
-  # save a copy of today's run - as .png and .pdf
-  outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'png')
-  
-  ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-         height = height,
-         width = width,
-         plot = base_map_A,
-         dpi = res,
-         bg = 'white',
-         device = 'pdf')
-  cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new acoustic file, skipping acoustic detections map...\n')
   }
