@@ -15,7 +15,7 @@ extractTrack_asPoints <- function(df_proc){
   #'
   #' @examples
   #' # extract all new tracks from a given das file, d$name
-  #' et = parseTrack(here('inputs', d$name))
+  #' et = extractTrack_asPoints(here('inputs', d$name))
   #' 
   #' ######################################################################
   
