@@ -1,6 +1,6 @@
-parseTrack_asPoints <- function(df_proc){
+extractTrack_asPoints <- function(df_proc){
   
-  #' parseTrack_asPoints
+  #' extractTrack_asPoints
   #' 
   #' @description Pull effort tracks from a relatively raw daily .das file 
   #' generated during HICEAS 2023. Utilizes the package 'swfscDAS' and then 
