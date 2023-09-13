@@ -37,7 +37,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
                     dist = integer(length(legList)), 
                     spVis = integer(length(legList)), 
                     spPam = integer(length(legList))
-                    )
+    )
     st[st == 0] <- NA
   }
   
@@ -67,15 +67,9 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist[which(et$leg == leg)])
   st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg)])
-  st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg)])
-  
-  # # zero everything if this is a blank table (for start of each leg)
-  # if (blank_table == TRUE){
-  #   st$days[idx] = 0
-  #   st$dist[idx] = 0
-  #   st$spVis[idx] = 0
-  #   st$spPam[idx] = 0
-  # }
+  if (!is.null(ad)){
+    st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg)])
+  }
   
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
@@ -94,7 +88,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
                                     segments = 'Segments', dist = 'Distance [km]', 
                                     spVis = 'Visual Sightings', 
                                     spPam = 'Acoustic Detections'
-                                    )
+  )
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
   
   # limit significant digits
@@ -128,17 +122,19 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   ft = flextable::hline_bottom(ft, part = 'header', border = bd_thick)
   ft = flextable::hline_bottom(ft, part = 'body', border = bd_thick)
   # totals border
- bd_med = officer::fp_border(color = purp, width = 1)
- ft = flextable::hline(ft, i = 7, border = bd_med)
- 
- # text colors
- ft = flextable::color(ft, color = ltgry, part = 'body')
- ft = flextable::color(ft, i = 8, color = purp) # Totals row
- ft = flextable::bold(ft, i = 8) # totals row
- ft = flextable::color(ft, color = teal, part = 'header')
- # ft = flextable::bg(ft, bg = bg, part = 'all')
- # ft
-
+  bd_med = officer::fp_border(color = purp, width = 1)
+  ft = flextable::hline(ft, i = 7, border = bd_med)
+  
+  # text colors
+  ft = flextable::color(ft, color = ltgry, part = 'body')
+  ft = flextable::color(ft, i = 8, color = purp) # Totals row
+  ft = flextable::bold(ft, i = 8) # totals row
+  ft = flextable::color(ft, color = teal, part = 'header')
+  # ft = flextable::bg(ft, bg = bg, part = 'all')
+  
+  ft = flextable::add_footer_lines(ft, values = paste0('Last Updated: ', Sys.Date()))
+  ft = flextable::color(ft, color = ltgry, part = 'footer')
+  # ft
   
   lt = list(st = st, ft = ft)
   

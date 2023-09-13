@@ -140,7 +140,7 @@ if (data_source == 'blank'){
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
   idxNew = integer(0) # no new files to download/process
   
-
+  
 } else if (data_source == 'gd'){
   # --------- Sign in to google drive -------------------------------------
   # if actually running, log in to Google Drive and download new files
@@ -480,9 +480,14 @@ if (newDas == TRUE || newPam == TRUE){
 if (genPlots == TRUE){
   
   # --------- Make summary table ------------------------------------------
-  if (exists('et') && exists('vs') && exists('ad')){
-    cat(' Updating summary table:\n')
+  # check for acoustics - they might not be updated daily
+  if (!exists('ad')){ad = NULL}
+  
+  #source and create table
+  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+  if (exists('et') && exists('vs') && exists('ad')){ #all vars present
     
+    cat(' Updating summary table:\n')
     # load previously created summary table if it exists
     stName = paste0('summaryTable.Rda')
     if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
@@ -491,8 +496,8 @@ if (genPlots == TRUE){
       st = data.frame()
     }
     
-    source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
     lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
+    
     # break out pieces of returned list
     st = lt$st
     ft = lt$ft
@@ -512,7 +517,7 @@ if (genPlots == TRUE){
       cat('   saved', outName, '\n')
     }
   } else {
-    cat(' Missing some variable, skipping summary table...\n')
+    cat('   Missing some variable, skipping summary table...\n')
   }
   
   # --------- Plot visual sightings map -----------------------------------
