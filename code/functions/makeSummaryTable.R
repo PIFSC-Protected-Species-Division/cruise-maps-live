@@ -134,6 +134,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   
   ft = flextable::add_footer_lines(ft, values = paste0('Last Updated: ', Sys.Date()))
   ft = flextable::color(ft, color = ltgry, part = 'footer')
+  ft = flextable::fontsize(ft, size = 8, part = 'footer')
   # ft
   
   lt = list(st = st, ft = ft)
