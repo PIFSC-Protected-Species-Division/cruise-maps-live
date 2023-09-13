@@ -140,15 +140,16 @@ if (data_source == 'blank'){
   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
   idxNew = integer(0) # no new files to download/process
   
-  # ------ Sign in to google drive ------------------------------------------
-  # if actually running, log in to Google Drive and download new files
+
 } else if (data_source == 'gd'){
+  # --------- Sign in to google drive -------------------------------------
+  # if actually running, log in to Google Drive and download new files
   googledrive::drive_deauth()
   googledrive::drive_auth()
   # push through authorization approval
   2 # this may need to change??
   
-  # ------ Identify new das files -------------------------------------------
+  # ------------ Check for/identify new das files -------------------------
   
   # open up list of previously checked das files
   # to re-run all, delete dasList_yr.Rda file from your local outputs folder
@@ -183,7 +184,7 @@ if (data_source == 'blank'){
     newDas = FALSE
   }
   
-  # ------ Check for new acoustics file -----------------------------------
+  # ------------ Check for/download new acoustics file --------------------
   # acoustics file is single sql file that is updated/appended each day
   # file is large so slow to download
   # only do this if there is also new DAS that were processed 
@@ -222,11 +223,11 @@ if (data_source == 'blank'){
   }
 } # end data source check
 
-
+# ------ Process everything! ----------------------------------------------
 # if there are new das OR acoustics to process/not test or blank run
 if (newDas == TRUE || newPam == TRUE){
   
-  # ------ Download, read and process new das files -------------------------
+  # --------- Download, read, process new das files -----------------------
   if (newDas == TRUE){
     cat(' Processing', length(idxNew), 'new das files:\n')
     # loop through all idxNew
@@ -266,11 +267,11 @@ if (newDas == TRUE || newPam == TRUE){
       save(df_proc, file = file.path(dir_snaps, outName))
       
       
-      # ------ Parse track data from das ----------------------------------------
+      # ------------ Extract track data from das --------------------------
       
       # parse on-effort segments as straight lines from Begin/Resume to End 
-      source(file.path(dir_wd, 'code', 'functions', 'parseTrack.R'))
-      etNew = parseTrack(df_proc)
+      source(file.path(dir_wd, 'code', 'functions', 'extractTrack.R'))
+      etNew = extractTrack(df_proc)
       
       # add on some ship info
       etNew$shipCode = shipCode
@@ -306,7 +307,7 @@ if (newDas == TRUE || newPam == TRUE){
       cat('   saved', outName, 'and as .csv\n')
       
       
-      # ------ Create GPX from track data ---------------------------------------
+      # ------------ Create GPX from track data ---------------------------
       
       source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
       
@@ -323,11 +324,11 @@ if (newDas == TRUE || newPam == TRUE){
       googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
       cat('   saved', basename(outGPX), '\n')
       
-      # ------ Parse track data as points ---------------------------------------
+      # ------------ Extract track data as points -------------------------
       # alternatively, can parse individual lines to get the segments out as points
       
-      source(file.path(dir_wd, 'code', 'functions', 'parseTrack_asPoints.R'))
-      epNew = parseTrack_asPoints(df_proc)
+      source(file.path(dir_wd, 'code', 'functions', 'extractTrack_asPoints.R'))
+      epNew = extractTrack_asPoints(df_proc)
       
       # add on some ship info
       epNew$shipCode = shipCode
@@ -362,7 +363,7 @@ if (newDas == TRUE || newPam == TRUE){
       googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
       cat('   saved', outName, 'and as .csv\n')
       
-      # ------ Extract visual sighting data -------------------------------------
+      # ------------ Extract visual sighting data -------------------------
       
       # do some stuff here to extract visual sighting data for the day from das
       source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
@@ -408,54 +409,29 @@ if (newDas == TRUE || newPam == TRUE){
       cat('   saved', outName, 'and as .csv\n')
       
     } # end loop through all idxNew for download and processing of DAS
+    # turn on plotting bc we have new data (either visual, acoustic, or both)
+    genPlots = TRUE
   } else {
     cat(' No new das files to process. Proceeding to acoustics...\n')
   }# end idx == 0 catch
   
-  # ------ Extract acoustic detections --------------------------------------
-  
+  # --------- Extract acoustic detections ---------------------------------
   if (newPam == TRUE){
     cat(' Processing updated acoustic database.\n')
+    # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
+    # ad file will contain all detections from previous legs
+    # will still save a 'snapshot' of each day (but it will be cumulative)
     
-    # acoustics file is single sql file that is updated/appended every few days
-    # file is large so slow to download
-    # only do this if there is also new DAS that were processed (bc DAS needed
-    # for tracklines for plotting) 
+    # process new file
+    source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
+    adNew = extractAcousticDetections(pamFile)
     
-    # assemble search pattern
-    pat = paste0(shipName, 'Leg', leg)
-    
-    # read in the file for this ship and leg - pamList should be length 1
-    pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
-    if (nrow(pamList) == 0){
-      cat('No PAM file!! Skipping any new acoustic detections.')
-      # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
-      
-    } else if (nrow(pamList) > 1 && nrow(pamList) != 1){
-      cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
-      stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
-      
-    } else if (nrow(pamList) == 1){
-      
-      pamFile = file.path(dir_gd_dwnl, pamList$name[1])
-      googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
-                                  overwrite = TRUE, path = pamFile)
-      
-      # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
-      # ad file will contain all detections from previous legs
-      # will still save a 'snapshot' of each day (but it will be cumulative)
-      
-      # process new file
-      source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
-      adNew = extractAcousticDetections(pamFile)
-      
-      if (nrow(adNew) > 0){
-        # add on some ship info
-        adNew$shipCode = shipCode
-        adNew$shipName = shipName
-        adNew$projID = projID
-        adNew$leg = leg
-      }
+    if (nrow(adNew) > 0){
+      # add on some ship info
+      adNew$shipCode = shipCode
+      adNew$shipName = shipName
+      adNew$projID = projID
+      adNew$leg = leg
       
       # save a 'snapshot' of the data for this run
       outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
@@ -488,7 +464,7 @@ if (newDas == TRUE || newPam == TRUE){
     
   } else {
     cat(' No new acoustic file to process.\n')
-  }# end lastTime/modTime catch
+  }# end newPam catch
   
   # turn on plotting bc we have new data (either visual, acoustic, or both)
   genPlots = TRUE
@@ -500,9 +476,10 @@ if (newDas == TRUE || newPam == TRUE){
 
 # **Would end loop through multiple vessels here. 
 
+# ------ Plot everything! -------------------------------------------------
 if (genPlots == TRUE){
   
-  # ------ Make summary table -----------------------------------------------
+  # --------- Make summary table ------------------------------------------
   if (exists('et') && exists('vs') && exists('ad')){
     cat(' Updating summary table:\n')
     
@@ -538,7 +515,7 @@ if (genPlots == TRUE){
     cat(' Missing some variable, skipping summary table...\n')
   }
   
-  # ------ Plot visual sightings map --------------------------------------
+  # --------- Plot visual sightings map -----------------------------------
   if (newDas == TRUE){
     cat(' Generating latest map of visual sightings:\n')
     
@@ -549,7 +526,7 @@ if (genPlots == TRUE){
     vsMap = mapOutV$ceMap
     numCols = mapOutV$numCols
     
-    # ------ Set plot save sizes ----------------------------------------------
+    # ------------ Set plot save sizes ------------------------------------
     
     height = 5
     # printed width needs to vary by number of legend items
@@ -559,7 +536,7 @@ if (genPlots == TRUE){
     # resolution
     res = 200
     
-    # ------ Save visuals map figures ---------------------------------------
+    # ------------ Save visuals map figures -------------------------------
     
     # save the latest - as .png and .pdf
     if (data_source == 'gd'){ # only save if actual run, not test or blank
@@ -622,7 +599,7 @@ if (genPlots == TRUE){
     cat(' No new das files, skipping visual sightings map...\n')
   }
   
-  # ------ Plot acoustic detections map -----------------------------------
+  # --------- Plot acoustic detections map --------------------------------
   if (newPam == TRUE){
     cat(' Generating latest map of acoustic detections:\n')
     
@@ -634,7 +611,7 @@ if (genPlots == TRUE){
     adMap = mapOutA$ceMap
     numCols = mapOutA$numCols
     
-    # ------ Set plot save sizes ----------------------------------------------
+    # ------------ Set plot save sizes ------------------------------------
     height = 5
     # printed width needs to vary by number of legend items
     if (numCols == 1){width = 9.35
@@ -643,7 +620,7 @@ if (genPlots == TRUE){
     # resolution
     res = 200
     
-    # ------ Save acoustics map figures -------------------------------------
+    # ------------ Save acoustics map figures -----------------------------
     # save the latest - as .png and .pdf
     if (data_source == 'gd'){ # only save if actual run, not test or blank
       outStr = paste0('dailyMap_acoustics')
@@ -689,7 +666,7 @@ if (genPlots == TRUE){
   }
 } # end genPlots TF trigger
 
-# ------ Save dasList and close log  ------------------------------------
+# ------ Save dasList and close log  --------------------------------------
 
 # if all ran ok, save updated dasList so these files won't be run again
 if (data_source == 'gd'){ # only save if actual run, not test or blank
