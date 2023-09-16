@@ -162,7 +162,7 @@ if (data_source == 'blank'){
   }
   
   # look for current list of .das files on Google Drive
-  dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DAS')
+  dasList = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DASALL')
   # sort by day 
   dasList = dasList[order(dasList$name),]
   dasNames_new = dasList$name
