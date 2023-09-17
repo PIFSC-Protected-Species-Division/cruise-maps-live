@@ -1,0 +1,29 @@
+
+...run started 2023-09-17 08:02:08 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 1 new das files:
+  DASALL.916 
+   saved newEffortTracks_OES2303_leg3_DASALL.916_ran2023-09-17.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg3_DASALL.916.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg3_DASALL.916_ran2023-09-17.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg3_DASALL.916_ran2023-09-17.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ Processing updated acoustic database.
+   saved acousticDetections_OES2303_leg3_ran2023-09-17.Rda 
+   saved compiledDetections_OES2303.Rda and as .csv
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg3_ran2023-09-17.png 
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg3_ran2023-09-17.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg3_ran2023-09-17 as .png and .pdf
+ Generating latest map of acoustic detections:
+   saved dailyMap_acoustics as .png and .pdf
+   saved dailyMap_acoustics_OES2303_leg3_ran2023-09-17 as .png and .pdf
+...run complete 2023-09-17 08:03:46 PDT ...
