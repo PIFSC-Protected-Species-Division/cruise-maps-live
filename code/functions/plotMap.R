@@ -1,4 +1,4 @@
-plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
+plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   #' plotMap
   #' 
@@ -24,14 +24,13 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   #' or from acoustic detections, cumulative over a HICEAS leg
   #' @param shipCode character string with code for ship (either 'OES' or 'LSK',
   #'  or in the future, both as c('OES', 'LSK'))
-  #' @param leg character string with leg number (e.g., '1')
   #' @param dataType character string of either 'visual' or 'acoustic' to set
   #' legend, title, and symbol size
   #' 
   #' @return base_map map figure 
   #'
   #' @examples
-  #'  plotMap(dir, leg, ep, epNew, vs, leg, ship, test_code=TRUE)
+  #'    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, dataType = 'visual')
   #'
   #' ######################################################################
   
@@ -44,20 +43,6 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
   
   if(length(shipCode) > 1){stop("We're not ready for two boats yet!! 
                                 Bug Janelle and Selene.")}
-  
-  # if (test_code==TRUE){ # TEST DATA
-  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
-  #   load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
-  #                  'newEffortPoints_OES2303_leg2_DASALL.808_ran2023-08-09.Rda'))
-  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledSightings_OES2303.Rda'))
-  #   load(file.path(dir_wd, 'data', 'OES2303', 'compiledDetections_OES2303.Rda'))
-  #   if (dataType == 'visual'){
-  #     ce = vs
-  #   } else if (dataType == 'acoustic'){
-  #     ad$SpCode = as.integer(ad$sp_map)
-  #     ce = ad
-  #   }
-  # }
   
   
   #######################################
@@ -200,16 +185,6 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, leg, dataType){
       # guides(colour = guide_legend(nrow = 13), ##, byrow = TRUE))
       #        )
       # 
-  
-  # rather than print and save within function going to have it as output
-  # so easier to map where it needs to be saved and modify name with each leg, etc. 
-  # print(base_map)
-  # 
-  # png(file = file.path(dir, "HICEAS_map.png"), 
-  #     width = 10, height = 5, res = 400, units = "in")
-  # 
-  # print(base_map)
-  # dev.off()
   
   numCols = ceiling(length(unique(ceMap$SpName))/13)
   # need two outputs to make a list
