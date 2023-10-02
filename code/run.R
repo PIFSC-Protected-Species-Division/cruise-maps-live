@@ -49,13 +49,13 @@ cat(' dir_wd =', dir_wd, '\n')
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
-# set up empty epC, epNewC, etC, etNewC, adC, and vsC outputs - 'combined'
-etC = list()
-etNewC = list()
-epC = list()
-epNewC = list()
-adC = list()
-vsC = list()
+# set up empty epL, epNewL, etL, etNewL, adL, and vsL outputs - 'combined'
+etL = list()
+etNewL = list()
+epL = list()
+epNewL = list()
+adL = list()
+vsL = list()
 
 for (cr in 1:length(crNum)){
   # crNumTmp = crNum[cr]
@@ -320,9 +320,9 @@ for (cr in 1:length(crNum)){
         
         # add newly processed data to the combined/multivessel lists
         # just new tracks
-        etNewC[[projID]] = etNew
+        etNewL[[projID]] = etNew
         # compiled for this cruise number
-        etC[[projID]] = et
+        etL[[projID]] = et
         
         # ------------ Create GPX from track data ---------------------------
         
@@ -382,9 +382,9 @@ for (cr in 1:length(crNum)){
         
         # add newly processed data to the combined/multivessel lists
         # just new points
-        epNewC[[projID]] = epNew
+        epNewL[[projID]] = epNew
         # compiled for this cruise number
-        epC[[projID]] = ep
+        epL[[projID]] = ep
         
         
         # ------------ Extract visual sighting data -------------------------
@@ -433,7 +433,7 @@ for (cr in 1:length(crNum)){
         cat('   saved', outName, 'and as .csv\n')
         
         # add newly processed data to the combined/multivessel lists
-        vsC[[projID]] = vs
+        vsL[[projID]] = vs
         
         
       } # end loop through all idxNew for download and processing of DAS
@@ -491,8 +491,7 @@ for (cr in 1:length(crNum)){
       cat('   saved', outName, 'and as .csv\n')
       
       # add newly processed data to the combined/multivessel lists
-      adC[[projID]] = ad
-      
+      adL[[projID]] = ad
       
     } else {
       cat(' No new acoustic file to process.\n')
@@ -509,20 +508,17 @@ for (cr in 1:length(crNum)){
 
 
 # --- Combine vessels for plotting ----------------------------------------
-# combine the old vs dataframe with the new one
-outName = paste0('compiledEffortTracks_', projID, '.Rda')
-if (file.exists(file.path(dir_data, outName))){
-  # load old if it exists
-  load(file.path(dir_data, outName))
-  # combine
-  et = rbind(et, etNew)
-  et = unique(et)                 # remove duplicates (in case ran already)
-  et = et[order(et$DateTime1),]   # sort in case out of order
-} else {
-  et = etNew
-}
+# combined lists generated within the loop need to be 'collapsed' into dfs 
+etL
+etNewL
+epL
+epNewL
+vsL
+adL
 
-save(et, file = file.path(dir_data, outName))
+epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
+# will need to have some checks for if one vessel does have new data and other doesnt?
+# do we want to save the combined .rda as well?
 
 
 # ------ Plot everything! -------------------------------------------------
