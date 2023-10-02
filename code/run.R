@@ -526,7 +526,7 @@ if (genPlots == TRUE){
     
     source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
     
-    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, leg, dataType = 'visual')
+    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, dataType = 'visual')
     base_map_V = mapOutV$base_map
     vsMap = mapOutV$ceMap
     numCols = mapOutV$numCols
@@ -611,7 +611,7 @@ if (genPlots == TRUE){
     # add correctly formated SpCode col
     ad$SpCode = as.integer(ad$sp_map)
     
-    mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, leg, dataType = 'acoustic')
+    mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, dataType = 'acoustic')
     base_map_A = mapOutA$base_map
     adMap = mapOutA$ceMap
     numCols = mapOutA$numCols
