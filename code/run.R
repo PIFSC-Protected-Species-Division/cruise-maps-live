@@ -9,16 +9,32 @@
 # --- USER SPECIFIED INPUTS -----------------------------------------------
 # these inputs will change/need updating within a SURVEY (e.g., within HICEAS)
 
-data_source = 'gd' # google drive
+# data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
-# data_source = 'test' # work with test data set.
+data_source = 'test' # work with test data set.
 
 # yr = 2023
 crNum = c(2303, 2401) #2303
 # ship = 'OES' # 'LSK'
 leg = c('3', '1')
 
-# I envision a for loop here looping through both cruise numbers??!
+# set working directory
+# will search through list of possible and select first one
+# add initials and path to run on your local machine
+locationCodes <- c('sf', 'yb', 'vm')
+locations <- c(
+  'C:/users/selene.fregosi/documents/github/cruise-maps-live',
+  'C:/users/yvonne.barkley/Github/cruise-maps-live',
+  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live' # server for vms?
+) 
+for (i in 1:length(locations)){
+  if (dir.exists(locations[i])) {
+    dir_wd  <- locations[i]
+    locCode <- locationCodes[i]
+    break # take first available valid location
+  }
+}
+
 
 # --- Libraries -----------------------------------------------------------
 
@@ -26,6 +42,7 @@ leg = c('3', '1')
 # have to load a few for using %>% pipeline
 library(raster)
 library(tidyverse)
+
 
 # --- Make a log file -----------------------------------------------------
 # define directory to save log file and create if doesn't exist
@@ -48,7 +65,6 @@ cat(' dir_wd =', dir_wd, '\n')
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
 if (length(crNum) > 1){
-  
   multiVessel = TRUE
   
   # set up empty epL, epNewL, etL, etNewL, adL, and vsL outputs for combining vessels
@@ -58,9 +74,6 @@ if (length(crNum) > 1){
   epNewL = list()
   adL = list()
   vsL = list()
-  
-  # manually set the 'combined' projID
-  projIDC = 'OES2303_LSK2401'
   
 }
 
@@ -100,21 +113,9 @@ for (cr in 1:length(crNum)){
   # and set 'outer' folder paths for data for two vessels
   dir_gd_gpx_up = googledrive::as_id('1O8H8zII_q-4cuGsvi61ETVUojUOxwmN3')
   
-  # set working directory
-  # will search through list of possible and select first one
-  # add initials and path to run on your local machine
-  locationCodes <- c('sf', 'yb', 'vm')
-  locations <- c(
-    'C:/users/selene.fregosi/documents/github/cruise-maps-live',
-    'C:/users/yvonne.barkley/Github/cruise-maps-live',
-    '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live' # server for vms?
-  ) 
-  for (i in 1:length(locations)){
-    if (dir.exists(locations[i])) {
-      dir_wd  <- locations[i]
-      locCode <- locationCodes[i]
-      break # take first available valid location
-    }
+  # manually set the 'combined' projID
+  if (multiVessel == TRUE){
+    projIDC = 'OES2303_LSK2401'
   }
   
   # build string with leg num used throughout for filename generation
@@ -126,6 +127,7 @@ for (cr in 1:length(crNum)){
     projID = paste0(projID, '_test')
   }
   
+
   # ------ Set up folder structure ------------------------------------------
   # define the local output paths (so don't have to be changed below)
   # these are projID and legID specific! 
@@ -160,7 +162,7 @@ for (cr in 1:length(crNum)){
     idxNew = integer(0) # no new files to download/process
     
     # if testing, load test data.frames
-  } else if (data_source == 'test'){
+  } else if (data_source == 'testPlots'){
     load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
     load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
                    'newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-15.Rda'))
@@ -284,7 +286,7 @@ for (cr in 1:length(crNum)){
         # View(df_proc)
         
         # correct cruise number (only need on first few days of Leg 1)
-        if (crNum == 2303 && leg[cr] == 1){
+        if (crNum[cr] == 2303 && leg[cr] == 1){
           df_proc$Cruise = 2303
         }
         
