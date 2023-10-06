@@ -7,6 +7,7 @@
 #' ---------------------------
 
 # --- USER SPECIFIED INPUTS -----------------------------------------------
+# these inputs will change/need updating within a SURVEY (e.g., within HICEAS)
 
 data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
@@ -17,9 +18,6 @@ crNum = c(2303, 2401) #2303
 # ship = 'OES' # 'LSK'
 leg = c('3', '1')
 
-# if (length(crNum) > 1){
-#   stop("We're not ready for two boats yet!! Bug Janelle and Selene.")
-# }
 # I envision a for loop here looping through both cruise numbers??!
 
 # --- Libraries -----------------------------------------------------------
@@ -49,17 +47,32 @@ cat(' dir_wd =', dir_wd, '\n')
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
-# set up empty epL, epNewL, etL, etNewL, adL, and vsL outputs - 'combined'
-etL = list()
-etNewL = list()
-epL = list()
-epNewL = list()
-adL = list()
-vsL = list()
+if (length(crNum) > 1){
+  
+  multiVessel = TRUE
+  
+  # set up empty epL, epNewL, etL, etNewL, adL, and vsL outputs for combining vessels
+  etL = list()
+  etNewL = list()
+  epL = list()
+  epNewL = list()
+  adL = list()
+  vsL = list()
+  
+  # manually set the 'combined' projID
+  projIDC = 'OES2303_LSK2401'
+  
+}
 
 for (cr in 1:length(crNum)){
   # crNumTmp = crNum[cr]
   cat(' -- Cruise number', crNum[cr], '--\n')
+  
+  
+  # ------ MORE USER SPECIFIED INPUTS ---------------------------------------
+  # these inputs will only need to be set at the START of a SURVEY or when 
+  # code is set up to run on new person's machine
+  
   # specify ship info and google drive paths for each cruise num/ship
   if (crNum[cr] == 2303){
     shipCode = 'OES'
@@ -84,6 +97,8 @@ for (cr in 1:length(crNum)){
   
   # all pam data is in a single folder
   dir_gd_raw_pam <- googledrive::as_id('1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
+  # and set 'outer' folder paths for data for two vessels
+  dir_gd_gpx_up = googledrive::as_id('1O8H8zII_q-4cuGsvi61ETVUojUOxwmN3')
   
   # set working directory
   # will search through list of possible and select first one
@@ -318,11 +333,13 @@ for (cr in 1:length(crNum)){
         googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
         cat('   saved', outName, 'and as .csv\n')
         
+        if (multiVessel == TRUE){
         # add newly processed data to the combined/multivessel lists
         # just new tracks
         etNewL[[projID]] = etNew
         # compiled for this cruise number
         etL[[projID]] = et
+        }
         
         # ------------ Create GPX from track data ---------------------------
         
@@ -380,12 +397,13 @@ for (cr in 1:length(crNum)){
         googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
         cat('   saved', outName, 'and as .csv\n')
         
+        if (multiVessel == TRUE){
         # add newly processed data to the combined/multivessel lists
         # just new points
         epNewL[[projID]] = epNew
         # compiled for this cruise number
         epL[[projID]] = ep
-        
+        }
         
         # ------------ Extract visual sighting data -------------------------
         
@@ -432,9 +450,10 @@ for (cr in 1:length(crNum)){
         googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
         cat('   saved', outName, 'and as .csv\n')
         
+        if (multiVessel == TRUE){
         # add newly processed data to the combined/multivessel lists
         vsL[[projID]] = vs
-        
+        }
         
       } # end loop through all idxNew for download and processing of DAS
       # turn on plotting bc we have new data (either visual, acoustic, or both)
@@ -490,8 +509,10 @@ for (cr in 1:length(crNum)){
       googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
       cat('   saved', outName, 'and as .csv\n')
       
+      if (multiVessel == TRUE){
       # add newly processed data to the combined/multivessel lists
       adL[[projID]] = ad
+      }
       
     } else {
       cat(' No new acoustic file to process.\n')
@@ -508,18 +529,40 @@ for (cr in 1:length(crNum)){
 
 
 # --- Combine vessels for plotting ----------------------------------------
-# combined lists generated within the loop need to be 'collapsed' into dfs 
-etL
-etNewL
-epL
-epNewL
-vsL
-adL
 
-epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
-# will need to have some checks for if one vessel does have new data and other doesnt?
-# do we want to save the combined .rda as well?
-
+if (multiVessel == TRUE){
+    # combined lists generated within the loop need to be 'collapsed' into dfs 
+    epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
+  epC = dplyr::bind_rows(epL, .id = 'projID')
+  etC = dplyr::bind_rows(etL, .id = 'projID')
+  vsC = dplyr::bind_rows(vsL, .id = 'projID')
+  adC = dplyr::bind_rows(adL, .id = 'projID')
+  
+  # ### NEEDS UPDATING/DECISIONS ##############
+  # will need to have some checks for if one vessel does have new data and other doesnt?
+  # do we want to save the combined .rda as well?
+  # if so, just save in file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, '_combined.rda')) ????
+  
+  # ------ Create GPX from combined track data ----------------------------
+  
+  source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
+  
+  # two-vessel combined compiled tracks
+  outGPX = file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, 
+                                            '_combined.gpx'))
+  trackToGPX(etC, outGPX)
+  googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_up)
+  cat('   saved', basename(outGPX), '\n')
+  
+} else{
+  multiVessel = FALSE
+  # just rename things with C so same function calls can be used below
+  epNewC = epNew
+  epC = ep
+  etC = et
+  vsC = vs
+  adC = ad
+}# multiple crNum steps
 
 # ------ Plot everything! -------------------------------------------------
 if (genPlots == TRUE){
@@ -530,7 +573,7 @@ if (genPlots == TRUE){
   
   #source and create table
   source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
-  if (exists('et') && exists('vs') && exists('ad')){ #all vars present
+  if (exists('etC') && exists('vsC') && exists('adC')){ #all vars present
     
     cat(' Updating summary table:\n')
     # load previously created summary table if it exists
@@ -541,7 +584,7 @@ if (genPlots == TRUE){
       st = data.frame()
     }
     
-    lt = makeSummaryTable(st, et, vs, ad, shipCode, leg)
+    lt = makeSummaryTable(st, etC, vsC, adC, shipCode, leg)
     
     # break out pieces of returned list
     st = lt$st
@@ -557,9 +600,11 @@ if (genPlots == TRUE){
       flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
                                res = 180)
       cat('   saved', outName, '\n')
-      outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-      flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
-      cat('   saved', outName, '\n')
+      # #####THIS NEEDS UPDATING - SAVE PATH #####
+      # outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
+      # flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
+      # cat('   saved', outName, '\n')
+      
     }
   } else {
     cat('   Missing some variable, skipping summary table...\n')
@@ -571,7 +616,7 @@ if (genPlots == TRUE){
     
     source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
     
-    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, dataType = 'visual')
+    mapOutV = plotMap(dir_wd, epC, epNewC, vsC, shipCode, dataType = 'visual')
     base_map_V = mapOutV$base_map
     vsMap = mapOutV$ceMap
     numCols = mapOutV$numCols
@@ -618,32 +663,33 @@ if (genPlots == TRUE){
              # dpi = 1200,
              bg = 'white',
              device = 'pdf')
+      # googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+      #                        path = dir_gd_proc)
       googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                             path = dir_gd_proc)
-      googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                             path = dir_gd_gpx)
+                             path = dir_gd_gpx_up)
       cat('   saved', outName, 'and as .csv\n')
       cat('   saved', outStr, 'as .png and .pdf\n')
       
     }
     
     # save a copy of today's run - as .png and .pdf
-    outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-           height = height,
-           width = width,
-           plot = base_map_V,
-           dpi = res,
-           bg = 'white',
-           device = 'png')
-    
-    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-           height = height,
-           width = width,
-           plot = base_map_V,
-           dpi = res,
-           bg = 'white',
-           device = 'pdf')
+    # ### NEEDS UPDATING - SAVE PATH #####################################
+    # outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
+    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+    #        height = height,
+    #        width = width,
+    #        plot = base_map_V,
+    #        dpi = res,
+    #        bg = 'white',
+    #        device = 'png')
+    # 
+    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+    #        height = height,
+    #        width = width,
+    #        plot = base_map_V,
+    #        dpi = res,
+    #        bg = 'white',
+    #        device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new das files, skipping visual sightings map...\n')
@@ -656,7 +702,7 @@ if (genPlots == TRUE){
     # add correctly formated SpCode col
     ad$SpCode = as.integer(ad$sp_map)
     
-    mapOutA = plotMap(dir_wd, ep, epNew, ad, shipCode, dataType = 'acoustic')
+    mapOutA = plotMap(dir_wd, epC, epNewC, adC, shipCode, dataType = 'acoustic')
     base_map_A = mapOutA$base_map
     adMap = mapOutA$ceMap
     numCols = mapOutA$numCols
@@ -694,22 +740,23 @@ if (genPlots == TRUE){
     }
     
     # save a copy of today's run - as .png and .pdf
-    outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-           height = height,
-           width = width,
-           plot = base_map_A,
-           dpi = res,
-           bg = 'white',
-           device = 'png')
-    
-    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-           height = height,
-           width = width,
-           plot = base_map_A,
-           dpi = res,
-           bg = 'white',
-           device = 'pdf')
+    # ### NEEDS UPDATING - SAVE PATH #####################################
+    # outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
+    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+    #        height = height,
+    #        width = width,
+    #        plot = base_map_A,
+    #        dpi = res,
+    #        bg = 'white',
+    #        device = 'png')
+    # 
+    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+    #        height = height,
+    #        width = width,
+    #        plot = base_map_A,
+    #        dpi = res,
+    #        bg = 'white',
+    #        device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new acoustic file, skipping acoustic detections map...\n')
@@ -719,10 +766,11 @@ if (genPlots == TRUE){
 # ------ Save dasList and close log  --------------------------------------
 
 # if all ran ok, save updated dasList so these files won't be run again
-if (data_source == 'gd'){ # only save if actual run, not test or blank
-  save(dasList, file = file.path(dir_wd, 'outputs', 
-                                 paste0('dasList_', projID, '.Rda')))
-}
+# ### NEEDS UPDATING - DEAL WITH TWO DASLISTS ##############################
+# if (data_source == 'gd'){ # only save if actual run, not test or blank
+#   save(dasList, file = file.path(dir_wd, 'outputs', 
+#                                  paste0('dasList_', projID, '.Rda')))
+# }
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink()
