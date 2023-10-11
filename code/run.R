@@ -35,7 +35,6 @@ for (i in 1:length(locations)){
   }
 }
 
-
 # --- Libraries -----------------------------------------------------------
 
 # most functions are called with :: so don't have to load all libraries, but do 
@@ -47,6 +46,7 @@ library(tidyverse)
 # --- Make a log file -----------------------------------------------------
 # define directory to save log file and create if doesn't exist
 # now with two boats, putting all logs in a single folder
+subStr = paste0(crNum, 'leg', leg)
 dir_log = file.path(dir_wd, 'outputs', 'run_logs', 'twoBoats')
 if (!dir.exists(dir_log)){
   dir.create(dir_log)}
@@ -92,20 +92,33 @@ for (cr in 1:length(crNum)){
     shipName = 'Sette'
     projID = 'OES2303'
     
-    dir_gd_raw_das <- googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
-    dir_gd_proc <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
-    dir_gd_snaps <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
-    dir_gd_gpx <- googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
-    
+    if (data_source == 'gd'){
+      dir_gd_raw_das <- googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
+      dir_gd_proc <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
+      dir_gd_snaps <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
+      dir_gd_gpx <- googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
+    } else if (data_source == 'test'){
+      dir_gd_raw_das <- googledrive::as_id('1ivy3JzfYV7B5tQaGllhomqcyZh0c18U4')
+      dir_gd_proc <- googledrive::as_id('12P03T2frWuCBsDZcN2ZSYzAr9lxRZ0Iq')
+      dir_gd_snaps <- googledrive::as_id('1ubIn5fO3xH5hfwk256fDbh0dQ0n8FmVz')
+      dir_gd_gpx <- googledrive::as_id('1vU_LsU5zSOdgDA8hh2aVWYBIUO12rdSa')
+    }
   } else if (crNum[cr] == 2401){
     shipCode = 'LSK'
     shipName = 'Lasker'
     projID = 'LSK2401'
     
-    dir_gd_raw_das <- googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
-    dir_gd_proc <- googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
-    dir_gd_snaps <- googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
-    dir_gd_gpx <- googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
+    if (data_source == 'gd'){
+      dir_gd_raw_das <- googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
+      dir_gd_proc <- googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
+      dir_gd_snaps <- googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
+      dir_gd_gpx <- googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
+    } else if (data_source == 'test'){
+      dir_gd_raw_das <- googledrive::as_id('1AHhZ8vi0p5z3v-u1PBchJII7muB8jlUJ')
+      dir_gd_proc <- googledrive::as_id('1w3rD9v3fRdm79rnPYVitHmqoD8gHxZW1')
+      dir_gd_snaps <- googledrive::as_id('1jeqYIqjWkcD6W9vWvZdbQIiIWnslMsyY')
+      dir_gd_gpx <- googledrive::as_id('1WsmVdMMGFkKv-pfumFGRldSk5-xulNrQ')
+    }
   }
   
   # all pam data is in a single folder
@@ -127,7 +140,7 @@ for (cr in 1:length(crNum)){
     projID = paste0(projID, '_test')
   }
   
-
+  
   # ------ Set up folder structure ------------------------------------------
   # define the local output paths (so don't have to be changed below)
   # these are projID and legID specific! 
@@ -336,11 +349,11 @@ for (cr in 1:length(crNum)){
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
-        # add newly processed data to the combined/multivessel lists
-        # just new tracks
-        etNewL[[projID]] = etNew
-        # compiled for this cruise number
-        etL[[projID]] = et
+          # add newly processed data to the combined/multivessel lists
+          # just new tracks
+          etNewL[[projID]] = etNew
+          # compiled for this cruise number
+          etL[[projID]] = et
         }
         
         # ------------ Create GPX from track data ---------------------------
@@ -400,11 +413,11 @@ for (cr in 1:length(crNum)){
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
-        # add newly processed data to the combined/multivessel lists
-        # just new points
-        epNewL[[projID]] = epNew
-        # compiled for this cruise number
-        epL[[projID]] = ep
+          # add newly processed data to the combined/multivessel lists
+          # just new points
+          epNewL[[projID]] = epNew
+          # compiled for this cruise number
+          epL[[projID]] = ep
         }
         
         # ------------ Extract visual sighting data -------------------------
@@ -453,8 +466,8 @@ for (cr in 1:length(crNum)){
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
-        # add newly processed data to the combined/multivessel lists
-        vsL[[projID]] = vs
+          # add newly processed data to the combined/multivessel lists
+          vsL[[projID]] = vs
         }
         
       } # end loop through all idxNew for download and processing of DAS
@@ -512,8 +525,8 @@ for (cr in 1:length(crNum)){
       cat('   saved', outName, 'and as .csv\n')
       
       if (multiVessel == TRUE){
-      # add newly processed data to the combined/multivessel lists
-      adL[[projID]] = ad
+        # add newly processed data to the combined/multivessel lists
+        adL[[projID]] = ad
       }
       
     } else {
@@ -533,8 +546,8 @@ for (cr in 1:length(crNum)){
 # --- Combine vessels for plotting ----------------------------------------
 
 if (multiVessel == TRUE){
-    # combined lists generated within the loop need to be 'collapsed' into dfs 
-    epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
+  # combined lists generated within the loop need to be 'collapsed' into dfs 
+  epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
   epC = dplyr::bind_rows(epL, .id = 'projID')
   etC = dplyr::bind_rows(etL, .id = 'projID')
   vsC = dplyr::bind_rows(vsL, .id = 'projID')
