@@ -90,7 +90,7 @@ cat('\n... run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
 
 
-# --- Loop through each cruise/vessel -------------------------------------
+# --- LOOP through each cruise/vessel -------------------------------------
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
@@ -561,13 +561,13 @@ if (multiVessel == TRUE){
   
   # ------ Create GPX from combined track data ----------------------------
   
-  source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
+  source(file.path(dir_code, 'functions', 'trackToGPX.R'))
   
   # two-vessel combined compiled tracks
   outGPX = file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, 
                                             '_combined.gpx'))
   trackToGPX(etC, outGPX)
-  googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_up)
+  googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
   cat('   saved', basename(outGPX), '\n')
   
 } else{
