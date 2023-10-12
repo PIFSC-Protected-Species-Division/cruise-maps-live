@@ -6,17 +6,40 @@
 #' map with the most recent survey effort and sightings
 #' ---------------------------
 
+
+# --- Libraries -----------------------------------------------------------
+
+# most functions are called with :: so don't have to load all libraries, but do 
+# have to load a few for using %>% pipeline
+library(raster)
+library(tidyverse)
+
+
 # --- USER SPECIFIED INPUTS -----------------------------------------------
 # these inputs will change/need updating within a SURVEY (e.g., within HICEAS)
 
 # data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
-data_source = 'test' # work with test data set.
+# data_source = 'test_local' # work with local test data set.
+data_source = 'test_gd' # work with gd  test data set.
 
-# yr = 2023
-crNum = c(2303, 2401) #2303
-# ship = 'OES' # 'LSK'
-leg = c('3', '1')
+# SET CRUISE NUMBER, SHIP CODE, LEG
+crNum = c(2303, 2401)           #2303
+shipCode = c('OES', 'LSK')      # OES
+shipName = c('Sette', 'Lasker') # Sette
+leg = c('4', '1')               # '1' # as string
+
+# define a projID/legID strings to be used later
+projID = stringr::str_c(shipCode, crNum)
+legID = stringr::str_c(projID, '_leg', leg)
+if (length(crNum) > 1){
+  multiVessel == TRUE
+  projIDC = stringr::str_c(projID, collapse = '_')
+  legIDC = stringr::str_c(legID, collapse = '_')
+} else { # single vessel
+  projIDC = projID
+  legIDC = legID
+}
 
 # set working directory
 # will search through list of possible and select first one
@@ -31,29 +54,36 @@ for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
     locCode <- locationCodes[i]
+    dir_code = file.path(dir_wd, 'code')
     break # take first available valid location
   }
 }
+# if testing - specify within 'testing' folder
+if (data_source == 'test_local' || data_source == 'test_gd'){
+  dir_wd = file.path(dir_wd, 'testing')
+}
 
-# --- Libraries -----------------------------------------------------------
-
-# most functions are called with :: so don't have to load all libraries, but do 
-# have to load a few for using %>% pipeline
-library(raster)
-library(tidyverse)
-
+# sign in to google drive
+if (data_source == 'gd' || data_source == 'test_gd'){
+  # Sign in to Google Drive
+  googledrive::drive_deauth()
+  googledrive::drive_auth()
+  # push through authorization approval
+  2 # this may need to change??
+}
 
 # --- Make a log file -----------------------------------------------------
 # define directory to save log file and create if doesn't exist
 # now with two boats, putting all logs in a single folder
-subStr = paste0(crNum, 'leg', leg)
-dir_log = file.path(dir_wd, 'outputs', 'run_logs', 'twoBoats')
+dir_log = file.path(dir_wd, 'outputs', 'run_logs', legIDC)
 if (!dir.exists(dir_log)){
   dir.create(dir_log)}
 
 # start log
 logFile = file.path(dir_log, paste0('run_', Sys.Date(), '_', locCode, '.log'))
-sink(logFile, append = TRUE)
+try(logOpen = file(logFile, open = 'at'))
+sink(logOpen, type = 'message')
+sink(logOpen, type = 'output')
 
 # first entries
 cat('\n... run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
@@ -64,9 +94,7 @@ cat(' dir_wd =', dir_wd, '\n')
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
-if (length(crNum) > 1){
-  multiVessel = TRUE
-  
+if (multiVessel == TRUE){
   # set up empty epL, epNewL, etL, etNewL, adL, and vsL outputs for combining vessels
   etL = list()
   etNewL = list()
@@ -74,90 +102,58 @@ if (length(crNum) > 1){
   epNewL = list()
   adL = list()
   vsL = list()
-  
 }
 
 for (cr in 1:length(crNum)){
   # crNumTmp = crNum[cr]
-  cat(' -- Cruise number', crNum[cr], '--\n')
+  cat(' ---', projID[cr], 'Leg', leg[cr], '---\n')
   
   
-  # ------ MORE USER SPECIFIED INPUTS ---------------------------------------
-  # these inputs will only need to be set at the START of a SURVEY or when 
-  # code is set up to run on new person's machine
+# ------ Define Google Drive directory paths ------------------------------
   
-  # specify ship info and google drive paths for each cruise num/ship
-  if (crNum[cr] == 2303){
-    shipCode = 'OES'
-    shipName = 'Sette'
-    projID = 'OES2303'
-    
-    if (data_source == 'gd'){
-      dir_gd_raw_das <- googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
-      dir_gd_proc <- googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
-      dir_gd_snaps <- googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
-      dir_gd_gpx <- googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
-    } else if (data_source == 'test'){
-      dir_gd_raw_das <- googledrive::as_id('1ivy3JzfYV7B5tQaGllhomqcyZh0c18U4')
-      dir_gd_proc <- googledrive::as_id('12P03T2frWuCBsDZcN2ZSYzAr9lxRZ0Iq')
-      dir_gd_snaps <- googledrive::as_id('1ubIn5fO3xH5hfwk256fDbh0dQ0n8FmVz')
-      dir_gd_gpx <- googledrive::as_id('1vU_LsU5zSOdgDA8hh2aVWYBIUO12rdSa')
-    }
-  } else if (crNum[cr] == 2401){
-    shipCode = 'LSK'
-    shipName = 'Lasker'
-    projID = 'LSK2401'
-    
-    if (data_source == 'gd'){
-      dir_gd_raw_das <- googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
-      dir_gd_proc <- googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
-      dir_gd_snaps <- googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
-      dir_gd_gpx <- googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
-    } else if (data_source == 'test'){
-      dir_gd_raw_das <- googledrive::as_id('1AHhZ8vi0p5z3v-u1PBchJII7muB8jlUJ')
-      dir_gd_proc <- googledrive::as_id('1w3rD9v3fRdm79rnPYVitHmqoD8gHxZW1')
-      dir_gd_snaps <- googledrive::as_id('1jeqYIqjWkcD6W9vWvZdbQIiIWnslMsyY')
-      dir_gd_gpx <- googledrive::as_id('1WsmVdMMGFkKv-pfumFGRldSk5-xulNrQ')
-    }
+  # set parent folder for actual run vs testing
+  if (data_source == 'gd'){
+    dir_parent = googledrive::drive_get('cruise-maps-live')
+  } else if (data_source == 'test_gd'){
+    dir_parent = googledrive::drive_get('cruise-maps-live/testing')
   }
-  
-  # all pam data is in a single folder
-  dir_gd_raw_pam <- googledrive::as_id('1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
-  # and set 'outer' folder paths for data for two vessels
-  dir_gd_gpx_up = googledrive::as_id('1O8H8zII_q-4cuGsvi61ETVUojUOxwmN3')
-  
-  # manually set the 'combined' projID
-  if (multiVessel == TRUE){
-    projIDC = 'OES2303_LSK2401'
-  }
-  
-  # build string with leg num used throughout for filename generation
-  legID = paste0(projID, '_leg', leg[cr])
-  
-  # if test data, modify projID and legID
-  if (data_source == 'test'){
-    legID = paste0(projID, '_leg', leg[cr], '_test')
-    projID = paste0(projID, '_test')
-  }
+  # these folders are the same regardless of cruise number/ship
+  dir_gd_raw_pam = googledrive::drive_get(paste0(dir_parent$path,
+                                                 'raw_acoustics_files'))
+  dir_gd_proc = googledrive::drive_get(paste0(dir_parent$path,
+                                              'processed_data_files'))
+  dir_gd_gpx = googledrive::drive_get(paste0(dir_parent$path, 'gpx_files'))
+  # these ship-specific folders could be called directly within processing but it 
+  # can be slow so better to define these directly
+  # alternatively can be set manually using ID copied from URL 
+  # e.g., dir = googledrive::drive_get(id = '1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
+  dir_gd_raw_das = googledrive::drive_get(paste0(dir_parent$path, 
+                                                 'raw_das_files/', projID[cr]))
+  dir_gd_proc_shp = googledrive::drive_get(paste0(dir_gd_proc$path, projID[cr]))
+  dir_gd_snaps = googledrive::drive_get(paste0(dir_gd_proc$path, projID[cr],
+                                               '/snapshots'))
+  dir_gd_gpx_shp = googledrive::drive_get(paste0(dir_gd_gpx$path, projID[cr]))
   
   
-  # ------ Set up folder structure ------------------------------------------
+  # ------ Set up local data folder structure -----------------------------
   # define the local output paths (so don't have to be changed below)
-  # these are projID and legID specific! 
-  dir_data = file.path(dir_wd, 'data', projID)                      # outer 'data' folder
-  dir_gd_dwnl = file.path(dir_wd, 'data', projID, 'gd_downloads')   # gd downloads
-  dir_snaps = file.path(dir_wd, 'data', projID, 'snapshots')        # data snapshots
-  dir_gpx = file.path(dir_wd, 'data', projID, 'gpx')                # gpx files
-  dir_tsnaps = file.path(dir_wd, 'outputs', 'table_archive', legID) # table snapshots - saved by leg
-  dir_msnaps = file.path(dir_wd, 'outputs', 'map_archive', legID)   # map snapshots - saved by leg
+  # data subfolders are single vessel projID specific! 
+  dir_data = file.path(dir_wd, 'data', projID[cr])
+  dir_data_dwnl = file.path(dir_wd, 'data', projID[cr], 'gd_downloads') 
+  dir_data_snaps = file.path(dir_wd, 'data', projID[cr], 'snapshots') 
+  dir_data_gpx = file.path(dir_wd, 'data', projID[cr], 'gpx') 
+
+  # output subfolders are combined proj and legIDC specific 
+  dir_tsnaps = file.path(dir_wd, 'outputs', 'table_archive', legIDC)
+  dir_msnaps = file.path(dir_wd, 'outputs', 'map_archive', legIDC)
   
   # create nested subfolders for this projID or logID if needed
   makeDirs = TRUE # change to FALSE to turn off folder creation
   if (makeDirs){ 
     if (!dir.exists(dir_data)){dir.create(dir_data)}
-    if (!dir.exists(dir_gd_dwnl)){dir.create(dir_gd_dwnl)}
-    if (!dir.exists(dir_snaps)){dir.create(dir_snaps)}
-    if (!dir.exists(dir_gpx)){dir.create(dir_gpx)}
+    if (!dir.exists(dir_data_dwnl)){dir.create(dir_data_dwnl)}
+    if (!dir.exists(dir_data_snaps)){dir.create(dir_data_snaps)}
+    if (!dir.exists(dir_data_gpx)){dir.create(dir_data_gpx)}
     if (!dir.exists(dir_msnaps)){dir.create(dir_msnaps)}
     if (!dir.exists(dir_tsnaps)){dir.create(dir_tsnaps)}
   }
@@ -174,8 +170,8 @@ for (cr in 1:length(crNum)){
     epNew = ep
     idxNew = integer(0) # no new files to download/process
     
-    # if testing, load test data.frames
-  } else if (data_source == 'testPlots'){
+    # if testing plotting, load test data.frames
+  } else if (data_source == 'test_local'){
     load(file.path(dir_wd, 'data', 'OES2303', 'compiledEffortPoints_OES2303.Rda'))
     load(file.path(dir_wd, 'data', 'OES2303', 'snapshots', 
                    'newEffortPoints_OES2303_leg2_DASALL.812_ran2023-08-15.Rda'))
@@ -185,25 +181,8 @@ for (cr in 1:length(crNum)){
     idxNew = integer(0) # no new files to download/process
     
     
-  } else if (data_source == 'gd'){
-    # --------- Sign in to google drive -------------------------------------
-    # if actually running, log in to Google Drive and download new files
-    googledrive::drive_deauth()
-    googledrive::drive_auth()
-    # push through authorization approval
-    2 # this may need to change??
-    
+  } else if (data_source == 'gd' || data_source == 'test_gd'){
     # ------------ Check for/id new das files -------------------------------
-    
-    # open up list of previously checked das files
-    # to re-run all, delete dasList_yr.Rda file from your local outputs folder
-    if (file.exists(file.path(dir_wd, 'outputs', 
-                              paste0('dasList_', projID, '.Rda')))){
-      load(file.path(dir_wd, 'outputs', paste0('dasList_', projID, '.Rda')))
-      dasNames_old = dasList$name
-    } else {
-      dasNames_old = character()
-    }
     
     # look for current list of .das files on Google Drive
     dasList_gd = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DASALL')
@@ -211,16 +190,29 @@ for (cr in 1:length(crNum)){
     dasList_gd = dasList_gd[order(dasList_gd$name),]
     dasNames_gd = dasList_gd$name
     
+    # open up list of previously checked das files
+    # ***to re-run all, delete dasList_projID.Rda file from local outputs folder
+    if (file.exists(file.path(dir_wd, 'outputs', 
+                              paste0('dasList_', projID[cr], '.Rda')))){
+      load(file.path(dir_wd, 'outputs', paste0('dasList_', projID[cr], '.Rda')))
+      dasNames_old = dasList$name
+    } else {
+      dasNames_old = character()
+    }
+    
     # identify which files are new/need to be processed
     idxNew = which(!(dasNames_gd %in% dasNames_old))
     
-    ### FOR TESTING ###
-    # test reading in new das
-    if (leg[cr] == '0'){
-      # idxNew = 16
-      idxNew = c(15, 16)
-    }
-    ### ### ### ### ###  
+    #update dasList to match dasList_gd
+    dasList = dasList_gd # will only get saved below if all runs properly
+    
+    # ### FOR TESTING ###
+    # # test reading in new das
+    # if (leg[cr] == '0'){
+    #   # idxNew = 16
+    #   idxNew = c(15, 16)
+    # }
+    # ### ### ### ### ###  
     
     if (length(idxNew) > 0){
       newDas = TRUE
@@ -233,7 +225,7 @@ for (cr in 1:length(crNum)){
     # file is large so slow to download
     
     # assemble search pattern
-    pat = paste0(shipName, 'Leg', leg[cr])
+    pat = paste0(shipName[cr], 'Leg', leg[cr])
     
     # read in the file for this ship and leg - pamList should be length 1
     pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
@@ -242,13 +234,13 @@ for (cr in 1:length(crNum)){
       newPam = FALSE
       # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
       
-    } else if (nrow(pamList) > 1 && nrow(pamList) != 1){
+    } else if (nrow(pamList) > 1){
       cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
       newPam = FALSE
       stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
       
     } else if (nrow(pamList) == 1){
-      pamFile = file.path(dir_gd_dwnl, pamList$name[1])
+      pamFile = file.path(dir_data_dwnl, pamList$name[1])
       
       # check modified datetime vs last download datetime
       lastTime = file.info(pamFile)$mtime
@@ -277,7 +269,7 @@ for (cr in 1:length(crNum)){
         # i = 1 # for testing
         d = dasList[idxNew[i],]
         
-        dasFile = file.path(dir_gd_dwnl, d$name)
+        dasFile = file.path(dir_data_dwnl, d$name)
         cat(' ', d$name, '\n')
         
         # download and save locally
@@ -291,9 +283,9 @@ for (cr in 1:length(crNum)){
         df_proc = swfscDAS::das_process(dasFile)
         
         # update time zone
-        source(file.path(dir_wd, 'code', 'functions', 'assignTimeZone.R'))
-        df_proc = assignTimeZone(df_proc, shipCode, file.path(dir_wd, 'inputs', 
-                                                              'TimeZones.csv'))
+        source(file.path(dir_code, 'functions', 'assignTimeZone.R'))
+        df_proc = assignTimeZone(df_proc, shipCode[cr], 
+                                 file.path(dir_wd, 'inputs', 'TimeZones.csv'))
         # If looking at compiled data.frames (tracks, points, etc) all timezones 
         # will be just a single one (HST), but they will have been adjusted for SST
         # View(df_proc)
@@ -304,32 +296,33 @@ for (cr in 1:length(crNum)){
         }
         
         # save copy of df_proc
-        outName = paste0('processedDAS_', legID, '_', d$name, '_ran', 
+        outName = paste0('processedDAS_', legID[cr], '_', d$name, '_ran', 
                          Sys.Date(), '.Rda')
-        save(df_proc, file = file.path(dir_snaps, outName))
+        save(df_proc, file = file.path(dir_data_snaps, outName))
         
         
         # ------------ Extract track data from das --------------------------
         
         # parse on-effort segments as straight lines from Begin/Resume to End 
-        source(file.path(dir_wd, 'code', 'functions', 'extractTrack.R'))
+        source(file.path(dir_code, 'functions', 'extractTrack.R'))
         etNew = extractTrack(df_proc)
         
         # add on some ship info
-        etNew$shipCode = shipCode
-        etNew$shipName = shipName
-        etNew$projID = projID
+        etNew$shipCode = shipCode[cr]
+        etNew$shipName = shipName[cr]
+        etNew$projID = projID[cr]
         etNew$leg = leg[cr]
         
         # save a 'snapshot' of the data for this das file with date it was run
-        outName = paste0('newEffortTracks_', legID, '_', d$name, '_ran', 
+        outName = paste0('newEffortTracks_', legID[cr], '_', d$name, '_ran', 
                          Sys.Date(), '.Rda')
-        save(etNew, file = file.path(dir_snaps, outName))
-        googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+        save(etNew, file = file.path(dir_data_snaps, outName))
+        googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                               path = dir_gd_snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
-        outName = paste0('compiledEffortTracks_', projID, '.Rda')
+        outName = paste0('compiledEffortTracks_', projID[cr], '.Rda')
         if (file.exists(file.path(dir_data, outName))){
           # load old if it exists
           load(file.path(dir_data, outName))
@@ -342,58 +335,61 @@ for (cr in 1:length(crNum)){
         }
         
         save(et, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-        outNameCSV = paste0('compiledEffortTracks_', projID, '.csv')
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        outNameCSV = paste0('compiledEffortTracks_', projID[cr], '.csv')
         write.csv(et, file = file.path(dir_data, outNameCSV))
-        googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+        googledrive::drive_put(file.path(dir_data, outNameCSV), 
+                               path = dir_gd_proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
           # add newly processed data to the combined/multivessel lists
           # just new tracks
-          etNewL[[projID]] = etNew
+          etNewL[[projID[cr]]] = etNew
           # compiled for this cruise number
-          etL[[projID]] = et
+          etL[[projID[cr]]] = et
         }
         
         # ------------ Create GPX from track data ---------------------------
         
-        source(file.path(dir_wd, 'code', 'functions', 'trackToGPX.R'))
+        source(file.path(dir_code, 'functions', 'trackToGPX.R'))
         
         # by day/das tracks
-        outGPX = file.path(dir_gpx, paste0('effortTracks_', legID, '_', d$name, 
-                                           '.gpx'))
+        outGPX = file.path(dir_data_gpx, paste0('effortTracks_', legID[cr], '_',
+                                                d$name, '.gpx'))
         trackToGPX(etNew, outGPX)
-        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_shp)
         cat('   saved', basename(outGPX), '\n')
         
         # compiled tracks
-        outGPX = file.path(dir_gpx, paste0('compiledEffortTracks_', projID, '.gpx'))
+        outGPX = file.path(dir_data_gpx, paste0('compiledEffortTracks_', 
+                                                projID[cr], '.gpx'))
         trackToGPX(et, outGPX)
-        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_shp)
         cat('   saved', basename(outGPX), '\n')
         
         # ------------ Extract track data as points -------------------------
         # alternatively, can parse individual lines to get the segments out as points
         
-        source(file.path(dir_wd, 'code', 'functions', 'extractTrack_asPoints.R'))
+        source(file.path(dir_code, 'functions', 'extractTrack_asPoints.R'))
         epNew = extractTrack_asPoints(df_proc)
         
         # add on some ship info
-        epNew$shipCode = shipCode
-        epNew$shipName = shipName
-        epNew$projID = projID
+        epNew$shipCode = shipCode[cr]
+        epNew$shipName = shipName[cr]
+        epNew$projID = projID[cr]
         epNew$leg = leg[cr]
         
         # save a 'snapshot' of the data for this run
-        outName = paste0('newEffortPoints_', legID, '_', d$name, '_ran', 
+        outName = paste0('newEffortPoints_', legID[cr], '_', d$name, '_ran', 
                          Sys.Date(), '.Rda')
-        save(epNew, file = file.path(dir_snaps, outName))
-        googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+        save(epNew, file = file.path(dir_data_snaps, outName))
+        googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                               path = dir_gd_snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
-        outName = paste0('compiledEffortPoints_', projID, '.Rda')
+        outName = paste0('compiledEffortPoints_', projID[cr], '.Rda')
         if (file.exists(file.path(dir_data, outName))){
           # load old if it exists
           load(file.path(dir_data, outName))
@@ -406,32 +402,33 @@ for (cr in 1:length(crNum)){
         }
         
         save(ep, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-        outNameCSV = paste0('compiledEffortPoints_', projID, '.csv')
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        outNameCSV = paste0('compiledEffortPoints_', projID[cr], '.csv')
         write.csv(ep, file = file.path(dir_data, outNameCSV))
-        googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+        googledrive::drive_put(file.path(dir_data, outNameCSV), 
+                               path = dir_gd_proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
           # add newly processed data to the combined/multivessel lists
           # just new points
-          epNewL[[projID]] = epNew
+          epNewL[[projID[cr]]] = epNew
           # compiled for this cruise number
-          epL[[projID]] = ep
+          epL[[projID[cr]]] = ep
         }
         
         # ------------ Extract visual sighting data -------------------------
         
         # do some stuff here to extract visual sighting data for the day from das
-        source(file.path(dir_wd, 'code', 'functions', 'extractVisualSightings.R'))
+        source(file.path(dir_code, 'functions', 'extractVisualSightings.R'))
         vsNew = extractVisualSightings(df_proc)
         
         if (nrow(vsNew) > 0){
           # add on some ship info
-          vsNew$shipCode = shipCode
-          vsNew$shipName = shipName
-          vsNew$projID = projID
-          vsNew$leg = leg
+          vsNew$shipCode = shipCode[cr]
+          vsNew$shipName = shipName[cr]
+          vsNew$projID = projID[cr]
+          vsNew$leg = leg[cr]
         }
         
         # confirm all species codes are numeric and delete rows that aren't
@@ -439,14 +436,15 @@ for (cr in 1:length(crNum)){
         vsNew = vsNew_clean
         
         # save a 'snapshot' of the data for this run
-        outName = paste0('newSightings_', legID, '_', d$name, '_ran', Sys.Date(), 
-                         '.Rda')
-        save(vsNew, file = file.path(dir_snaps, outName))
-        googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+        outName = paste0('newSightings_', legID[cr], '_', d$name, '_ran', 
+                         Sys.Date(), '.Rda')
+        save(vsNew, file = file.path(dir_data_snaps, outName))
+        googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                               path = dir_gd_snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
-        outName = paste0('compiledSightings_', projID, '.Rda')
+        outName = paste0('compiledSightings_', projID[cr], '.Rda')
         if (file.exists(file.path(dir_data, outName))){
           # load old if it exists
           load(file.path(dir_data, outName))
@@ -459,20 +457,21 @@ for (cr in 1:length(crNum)){
         }
         
         save(vs, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-        outNameCSV = paste0('compiledSightings_', projID, '.csv')
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        outNameCSV = paste0('compiledSightings_', projID[cr], '.csv')
         write.csv(vs, file = file.path(dir_data, outNameCSV))
-        googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+        googledrive::drive_put(file.path(dir_data, outNameCSV), 
+                               path = dir_gd_proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
           # add newly processed data to the combined/multivessel lists
-          vsL[[projID]] = vs
+          vsL[[projID[cr]]] = vs
         }
         
       } # end loop through all idxNew for download and processing of DAS
       # turn on plotting bc we have new data (either visual, acoustic, or both)
-      genPlots = TRUE
+      genPlots[cr] = TRUE
     } else {
       cat(' No new das files to process. Proceeding to acoustics...\n')
     }# end idx == 0 catch
@@ -485,25 +484,27 @@ for (cr in 1:length(crNum)){
       # will still save a 'snapshot' of each day (but it will be cumulative)
       
       # process new file
-      source(file.path(dir_wd, 'code', 'functions', 'extractAcousticDetections.R'))
+      source(file.path(dir_code, 'functions', 'extractAcousticDetections.R'))
       adNew = extractAcousticDetections(pamFile)
       
       if (nrow(adNew) > 0){
         # add on some ship info
-        adNew$shipCode = shipCode
-        adNew$shipName = shipName
-        adNew$projID = projID
-        adNew$leg = leg
+        adNew$shipCode = shipCode[cr]
+        adNew$shipName = shipName[cr]
+        adNew$projID = projID[cr]
+        adNew$leg = leg[cr]
         
         # save a 'snapshot' of the data for this run
-        outName = paste0('acousticDetections_', legID, '_ran', Sys.Date(), '.Rda')
-        save(adNew, file = file.path(dir_snaps, outName))
-        googledrive::drive_put(file.path(dir_snaps, outName), path = dir_gd_snaps)
+        outName = paste0('acousticDetections_', legID[cr], '_ran', Sys.Date(), 
+                         '.Rda')
+        save(adNew, file = file.path(dir_data_snaps, outName))
+        googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                               path = dir_gd_snaps)
         cat('   saved', outName, '\n')
       }
       
       # combine the old ad dataframe with the new one
-      outName = paste0('compiledDetections_', projID, '.Rda')
+      outName = paste0('compiledDetections_', projID[cr], '.Rda')
       if (file.exists(file.path(dir_data, outName))){
         # load old if it exists
         load(file.path(dir_data, outName))
@@ -512,21 +513,21 @@ for (cr in 1:length(crNum)){
         # remove dupes, sort by date
         ad = unique(ad)
         ad = ad[order(ad$UTC),]
-      } else if (exists('adNew')){ # if no previous sightings file exists, but new does
+      } else if (exists('adNew')){ # if first run of new acoustic database
         ad = adNew
       }
       
       # save the primary compiled version
       save(ad, file = file.path(dir_data, outName))
-      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc)
-      outNameCSV = paste0('compiledDetections_', projID, '.csv')
+      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+      outNameCSV = paste0('compiledDetections_', projID[cr], '.csv')
       write.csv(vs, file = file.path(dir_data, outNameCSV))
-      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc)
+      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc_shp)
       cat('   saved', outName, 'and as .csv\n')
       
       if (multiVessel == TRUE){
         # add newly processed data to the combined/multivessel lists
-        adL[[projID]] = ad
+        adL[[projID[cr]]] = ad
       }
       
     } else {
@@ -534,9 +535,9 @@ for (cr in 1:length(crNum)){
     }# end newPam catch
     
     # turn on plotting bc we have new data (either visual, acoustic, or both)
-    genPlots = TRUE
+    genPlots[cr] = TRUE
   } else {
-    genPlots = FALSE
+    genPlots[cr] = FALSE
     cat(' No new das or acoustic files to process. Exiting.\n')
   }
   
@@ -679,7 +680,7 @@ if (genPlots == TRUE){
              bg = 'white',
              device = 'pdf')
       # googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-      #                        path = dir_gd_proc)
+      #                        path = dir_gd_proc_shp)
       googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
                              path = dir_gd_gpx_up)
       cat('   saved', outName, 'and as .csv\n')
@@ -788,4 +789,38 @@ if (genPlots == TRUE){
 # }
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
-sink()
+sink(type = 'output')
+sink(type = 'message')
+close(logOpen)
+
+
+
+# --- Google Drive IDs to save --------------------------------------------
+# hard-coded IDs to certain Google Drive folders 
+# faster to load them this way, but more lines of code...
+
+# OES2303
+# if (data_source == 'gd'){
+#   dir_gd_raw_das =    googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
+#   dir_gd_proc_shp =   googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
+#   dir_gd_snaps =  googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
+#   dir_gd_gpx_shp =    googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
+# } else if (data_source == 'test'){
+#   dir_gd_raw_das =    googledrive::as_id('1ivy3JzfYV7B5tQaGllhomqcyZh0c18U4')
+#   dir_gd_proc_shp =   googledrive::as_id('12P03T2frWuCBsDZcN2ZSYzAr9lxRZ0Iq')
+#   dir_gd_snaps =  googledrive::as_id('1ubIn5fO3xH5hfwk256fDbh0dQ0n8FmVz')
+#   dir_gd_gpx_shp =    googledrive::as_id('1vU_LsU5zSOdgDA8hh2aVWYBIUO12rdSa')
+# }
+
+# LSK2401
+# if (data_source == 'gd'){
+#   dir_gd_raw_das = googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
+#   dir_gd_proc_shp =   googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
+#   dir_gd_snaps =  googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
+#   dir_gd_gpx_shp =    googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
+# } else if (data_source == 'test'){
+#   dir_gd_raw_das = googledrive::as_id('1AHhZ8vi0p5z3v-u1PBchJII7muB8jlUJ')
+#   dir_gd_proc_shp =   googledrive::as_id('1w3rD9v3fRdm79rnPYVitHmqoD8gHxZW1')
+#   dir_gd_snaps =  googledrive::as_id('1jeqYIqjWkcD6W9vWvZdbQIiIWnslMsyY')
+#   dir_gd_gpx_shp =    googledrive::as_id('1WsmVdMMGFkKv-pfumFGRldSk5-xulNrQ')
+# }
