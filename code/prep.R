@@ -14,11 +14,10 @@
 # add initials and path to this repo on your local machine
 locationCodes <- c('sf', 'yb', 'vm')
 locations <- c(
-  'C:/users/selene.fregosi/documents/github/cruise-maps-live/',
-  'C:/users/yvonne.barkley/Github/cruise-maps-live/',
-  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live/' # server for vms?
+  'C:/users/selene.fregosi/documents/github/cruise-maps-live',
+  'C:/users/yvonne.barkley/Github/cruise-maps-live',
+  '//piccrpnas/crp4/HICEAS_2023/cruise-maps-live' # server for vms?
 ) 
-
 for (i in 1:length(locations)){
   if (dir.exists(locations[i])) {
     dir_wd  <- locations[i]
