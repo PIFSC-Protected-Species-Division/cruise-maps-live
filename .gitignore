@@ -7,6 +7,7 @@
 /code/automation/
 !autocommit.sh
 /outputs_backup/
+/testing/
 
 #################
 #### R FILES ####
