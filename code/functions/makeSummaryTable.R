@@ -7,7 +7,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   #' previously parsed track and visual sighting data
   #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 01 August 2023
+  #' date: 13 October 2023
   #'
   #' @param st 'summary table' data.frame containing summary data for previous 
   #' days and legs

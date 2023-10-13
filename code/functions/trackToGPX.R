@@ -9,7 +9,7 @@ trackToGPX = function(et, outGPX){
   #' across days are not connected.
   #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 28 July 2023
+  #' date: 13 October 2023
   #'
   #' @param et data.frame of effort as tracks, can be 'et' cumulative over a HICEAS
   #' leg or 'et' for just a single DAS
