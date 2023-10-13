@@ -92,6 +92,7 @@ cat(' dir_wd =', dir_wd, '\n')
 # suppress googledrive messages
 # googledrive::local_drive_quiet(env = parent.frame())
 googledrive::local_drive_quiet()
+
 # --- LOOP through each cruise/vessel -------------------------------------
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
@@ -105,6 +106,8 @@ if (multiVessel == TRUE){
   adL = list()
   vsL = list()
 }
+
+genPlots = c() # initiate vector for T/F about plotting
 
 for (cr in 1:length(crNum)){
   # crNumTmp = crNum[cr]
@@ -559,10 +562,18 @@ if (multiVessel == TRUE){
   vsC = dplyr::bind_rows(vsL, .id = 'projID')
   adC = dplyr::bind_rows(adL, .id = 'projID')
   
+  # save all these 
+  save(epC, file = file.path(dir_data, 
+                            paste0('compiledEffortPoints_', projIDC, '.Rda')))
+  save(etC, file = file.path(dir_data, 
+                            paste0('compiledEffortTracks_', projIDC, '.Rda')))
+  save(vsC, file = file.path(dir_data, 
+                            paste0('compiledSightings_', projIDC, '.Rda')))
+  save(adC, file = file.path(dir_data, 
+                            paste0('compiledDetections_', projIDC, '.Rda')))
+  
   # ### NEEDS UPDATING/DECISIONS ##############
   # will need to have some checks for if one vessel does have new data and other doesnt?
-  # do we want to save the combined .rda as well?
-  # if so, just save in file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, '_combined.rda')) ????
   
   # ------ Create GPX from combined track data ----------------------------
   
@@ -575,7 +586,7 @@ if (multiVessel == TRUE){
   googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
   cat('   saved', basename(outGPX), '\n')
   
-} else{
+} else {
   multiVessel = FALSE
   # just rename things with C so same function calls can be used below
   epNewC = epNew
@@ -586,14 +597,14 @@ if (multiVessel == TRUE){
 }# multiple crNum steps
 
 # ------ Plot everything! -------------------------------------------------
-if (genPlots == TRUE){
+if (all(genPlots) == TRUE){
   
   # --------- Make summary table ------------------------------------------
   # check for acoustics - they might not be updated daily
   if (!exists('ad')){ad = NULL}
   
   #source and create table
-  source(file.path(dir_wd, 'code', 'functions', 'makeSummaryTable.R'))
+  source(file.path(dir_code, 'functions', 'makeSummaryTable.R'))
   if (exists('etC') && exists('vsC') && exists('adC')){ #all vars present
     
     cat(' Updating summary table:\n')
