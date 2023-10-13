@@ -564,13 +564,13 @@ if (multiVessel == TRUE){
   
   # save all these 
   save(epC, file = file.path(dir_data, 
-                            paste0('compiledEffortPoints_', projIDC, '.Rda')))
+                             paste0('compiledEffortPoints_', projIDC, '.Rda')))
   save(etC, file = file.path(dir_data, 
-                            paste0('compiledEffortTracks_', projIDC, '.Rda')))
+                             paste0('compiledEffortTracks_', projIDC, '.Rda')))
   save(vsC, file = file.path(dir_data, 
-                            paste0('compiledSightings_', projIDC, '.Rda')))
+                             paste0('compiledSightings_', projIDC, '.Rda')))
   save(adC, file = file.path(dir_data, 
-                            paste0('compiledDetections_', projIDC, '.Rda')))
+                             paste0('compiledDetections_', projIDC, '.Rda')))
   
   # ### NEEDS UPDATING/DECISIONS ##############
   # will need to have some checks for if one vessel does have new data and other doesnt?
@@ -601,7 +601,7 @@ if (all(genPlots) == TRUE){
   
   # --------- Make summary table ------------------------------------------
   # check for acoustics - they might not be updated daily
-  if (!exists('ad')){ad = NULL}
+  if (!exists('adC')){adC = NULL}
   
   #source and create table
   source(file.path(dir_code, 'functions', 'makeSummaryTable.R'))
@@ -610,7 +610,8 @@ if (all(genPlots) == TRUE){
     cat(' Updating summary table:\n')
     # load previously created summary table if it exists
     stName = paste0('summaryTable.Rda')
-    if (data_source == 'gd' & file.exists(file.path(dir_wd, 'outputs', stName))){
+    if (data_source == 'gd' & 
+        file.exists(file.path(dir_wd, 'outputs', stName))){
       load(file.path(dir_wd, 'outputs', stName))
     } else {
       st = data.frame()
@@ -623,20 +624,21 @@ if (all(genPlots) == TRUE){
     ft = lt$ft
     
     # save st .rda as combined for the whole year (bc loaded on later legs)
-    if (data_source == 'gd'){ # only save if actual run, not test or blank
+    # only save if actual run, not test or blank
+    if (data_source == 'gd' || data_source == 'test_gd'){ 
       save(st, file = file.path(dir_wd, 'outputs', stName))
       cat('   saved', stName, '\n')
       
       # save ft (formatted flexttable) as image
       outName = paste0('summaryTable.png')
-      flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName), 
+      flextable::save_as_image(ft, path = file.path(dir_wd, 'outputs', outName),
                                res = 180)
       cat('   saved', outName, '\n')
-      # #####THIS NEEDS UPDATING - SAVE PATH #####
-      # outName = paste0('summaryTable_', legID, '_ran', Sys.Date(), '.png')
-      # flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), res = 180)
-      # cat('   saved', outName, '\n')
-      
+      # snapshot version for just this day's run
+      outName = paste0('summaryTable_', legIDC, '_ran', Sys.Date(), '.png')
+      flextable::save_as_image(ft, path = file.path(dir_tsnaps, outName), 
+                               res = 180)
+      cat('   saved', outName, '\n')
     }
   } else {
     cat('   Missing some variable, skipping summary table...\n')
