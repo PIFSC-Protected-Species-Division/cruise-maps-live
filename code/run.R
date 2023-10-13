@@ -33,7 +33,7 @@ leg = c('4', '1')               # '1' # as string
 projID = stringr::str_c(shipCode, crNum)
 legID = stringr::str_c(projID, '_leg', leg)
 if (length(crNum) > 1){
-  multiVessel == TRUE
+  multiVessel = TRUE
   projIDC = stringr::str_c(projID, collapse = '_')
   legIDC = stringr::str_c(legID, collapse = '_')
 } else { # single vessel
@@ -81,7 +81,7 @@ if (!dir.exists(dir_log)){
 
 # start log
 logFile = file.path(dir_log, paste0('run_', Sys.Date(), '_', locCode, '.log'))
-try(logOpen = file(logFile, open = 'at'))
+try({logOpen = file(logFile, open = 'at')})
 sink(logOpen, type = 'message')
 sink(logOpen, type = 'output')
 
@@ -89,7 +89,9 @@ sink(logOpen, type = 'output')
 cat('\n... run started', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 cat(' dir_wd =', dir_wd, '\n')
 
-
+# suppress googledrive messages
+# googledrive::local_drive_quiet(env = parent.frame())
+googledrive::local_drive_quiet()
 # --- LOOP through each cruise/vessel -------------------------------------
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
@@ -109,31 +111,34 @@ for (cr in 1:length(crNum)){
   cat(' ---', projID[cr], 'Leg', leg[cr], '---\n')
   
   
-# ------ Define Google Drive directory paths ------------------------------
-  
+  # ------ Define Google Drive directory paths ------------------------------
+  cat(' Setting up Google Drive paths...\n')
   # set parent folder for actual run vs testing
   if (data_source == 'gd'){
-    dir_parent = googledrive::drive_get('cruise-maps-live')
+    dir_parent = googledrive::drive_get('cruise-maps-live/')
   } else if (data_source == 'test_gd'){
-    dir_parent = googledrive::drive_get('cruise-maps-live/testing')
+    dir_parent = googledrive::drive_get('cruise-maps-live/testing/')
   }
   # these folders are the same regardless of cruise number/ship
-  dir_gd_raw_pam = googledrive::drive_get(paste0(dir_parent$path,
-                                                 'raw_acoustics_files'))
-  dir_gd_proc = googledrive::drive_get(paste0(dir_parent$path,
-                                              'processed_data_files'))
-  dir_gd_gpx = googledrive::drive_get(paste0(dir_parent$path, 'gpx_files'))
+  dir_gd_raw_pam = googledrive::drive_get(
+    paste0(dir_parent$path, 'raw_acoustics_files/'))
+  dir_gd_proc = googledrive::drive_get(
+    paste0(dir_parent$path,'processed_data_files/'))
+  dir_gd_gpx = googledrive::drive_get(paste0(dir_parent$path, 'gpx_files/'))
   # these ship-specific folders could be called directly within processing but it 
   # can be slow so better to define these directly
   # alternatively can be set manually using ID copied from URL 
   # e.g., dir = googledrive::drive_get(id = '1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
-  dir_gd_raw_das = googledrive::drive_get(paste0(dir_parent$path, 
-                                                 'raw_das_files/', projID[cr]))
-  dir_gd_proc_shp = googledrive::drive_get(paste0(dir_gd_proc$path, projID[cr]))
-  dir_gd_snaps = googledrive::drive_get(paste0(dir_gd_proc$path, projID[cr],
-                                               '/snapshots'))
-  dir_gd_gpx_shp = googledrive::drive_get(paste0(dir_gd_gpx$path, projID[cr]))
+  dir_gd_raw_das = googledrive::drive_get(
+    paste0(dir_parent$path, 'raw_das_files/', projID[cr], '/'))
+  dir_gd_proc_shp = googledrive::drive_get(
+    paste0(dir_gd_proc$path, projID[cr], '/'))
+  dir_gd_snaps = googledrive::drive_get(
+    paste0(dir_gd_proc$path, projID[cr], '/snapshots/'))
+  dir_gd_gpx_shp = googledrive::drive_get(paste0(dir_gd_gpx$path, projID[cr], '/'))
   
+  # turn on printing of messages to log now (googledrive package msgs excessive)
+  sink(logOpen, type = 'message')
   
   # ------ Set up local data folder structure -----------------------------
   # define the local output paths (so don't have to be changed below)
@@ -142,7 +147,7 @@ for (cr in 1:length(crNum)){
   dir_data_dwnl = file.path(dir_wd, 'data', projID[cr], 'gd_downloads') 
   dir_data_snaps = file.path(dir_wd, 'data', projID[cr], 'snapshots') 
   dir_data_gpx = file.path(dir_wd, 'data', projID[cr], 'gpx') 
-
+  
   # output subfolders are combined proj and legIDC specific 
   dir_tsnaps = file.path(dir_wd, 'outputs', 'table_archive', legIDC)
   dir_msnaps = file.path(dir_wd, 'outputs', 'map_archive', legIDC)
