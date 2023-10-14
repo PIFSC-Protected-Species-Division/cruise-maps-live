@@ -41,18 +41,21 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
+  # to crop the LSK tracks to the correct window
+  crop<-ext(bathy)%>%as.polygons(crs=crs(bathy))%>%st_as_sf(crs=4326)  
   
   #######################################
   ## Load HICEAS points, cumulative #####
   
   # clean up effort locations
   ep$lon <- ifelse(ep$Lon > 0, ep$Lon-360, ep$Lon)    #correct dateline 
-  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326)
+  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326) %>% st_crop(crop)
   
   ## Load HICEAS points, recent (epNew)
   # clean up newest effort locations
   epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
-  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326)
+  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326) %>% 
+    st_crop(crop)
   
   
   #######################################
@@ -61,7 +64,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   # clean up sightings locations and add spNames
   key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
   ce$lon <- ifelse(ce$Lon > 0, ce$Lon-360, ce$Lon)
-  ceMap <- sf::st_as_sf(ce, coords=c("lon","Lat"), crs = 4326)%>%
+  ceMap <- sf::st_as_sf(ce, coords=c("lon","Lat"), crs = 4326) %>% 
+    st_crop(crop) %>% 
     dplyr::left_join(key, by = "SpCode")
   ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
   #sort ce by species name 
@@ -213,19 +217,19 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
                    y.max = max(lines$Latitude)) +
     ggtitle(plotTitle) +
     theme(plot.title = element_text(hjust = 0.5)) 
-
-
-# base_map # display map during testing
-
+  
+  
+  # base_map # display map during testing
+  
   ### Output ############################
-numColsCet = ceiling(length(unique(ceMap$SpName))/13)
-numColsShp = ceiling(length(labels_lines)/3)
-numCols = max(c(numColsCet, numColsShp))
-
-# need two outputs to make a list
-# need updated ceMap that has SpName col
-mapOut = list(base_map = base_map, ceMap = ceMap, numCols = numCols)
-return(mapOut)
-
+  numColsCet = ceiling(length(unique(ceMap$SpName))/13)
+  numColsShp = ceiling(length(labels_lines)/3)
+  numCols = max(c(numColsCet, numColsShp))
+  
+  # need two outputs to make a list
+  # need updated ceMap that has SpName col
+  mapOut = list(base_map = base_map, ceMap = ceMap, numCols = numCols)
+  return(mapOut)
+  
 }
 
