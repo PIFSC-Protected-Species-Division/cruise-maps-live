@@ -82,7 +82,6 @@ if (!dir.exists(dir_log)){
 # start log
 logFile = file.path(dir_log, paste0('run_', Sys.Date(), '_', locCode, '.log'))
 try({logOpen = file(logFile, open = 'at')})
-sink(logOpen, type = 'message')
 sink(logOpen, type = 'output')
 
 # first entries
@@ -92,6 +91,7 @@ cat(' dir_wd =', dir_wd, '\n')
 # suppress googledrive messages
 # googledrive::local_drive_quiet(env = parent.frame())
 googledrive::local_drive_quiet()
+sink(logOpen, type = 'message')
 
 # --- LOOP through each cruise/vessel -------------------------------------
 # loop through each cruise to download/process data streams
@@ -116,32 +116,14 @@ for (cr in 1:length(crNum)){
   
   # ------ Define Google Drive directory paths ----------------------------
   cat(' Setting up Google Drive paths...\n')
-  # set parent folder for actual run vs testing
-  if (data_source == 'gd'){
-    dir_parent = googledrive::drive_get('cruise-maps-live/')
-  } else if (data_source == 'test_gd'){
-    dir_parent = googledrive::drive_get('cruise-maps-live/testing/')
-  }
-  # these folders are the same regardless of cruise number/ship
-  dir_gd_raw_pam = googledrive::drive_get(
-    paste0(dir_parent$path, 'raw_acoustics_files/'))
-  dir_gd_proc = googledrive::drive_get(
-    paste0(dir_parent$path,'processed_data_files/'))
-  dir_gd_gpx = googledrive::drive_get(paste0(dir_parent$path, 'gpx_files/'))
-  # these ship-specific folders could be called directly within processing but it 
-  # can be slow so better to define these directly
-  # alternatively can be set manually using ID copied from URL 
-  # e.g., dir = googledrive::drive_get(id = '1hevcdNvX_EpdYGXmWHQU5W-a04EL4FVX')
-  dir_gd_raw_das = googledrive::drive_get(
-    paste0(dir_parent$path, 'raw_das_files/', projID[cr], '/'))
-  dir_gd_proc_shp = googledrive::drive_get(
-    paste0(dir_gd_proc$path, projID[cr], '/'))
-  dir_gd_snaps = googledrive::drive_get(
-    paste0(dir_gd_proc$path, projID[cr], '/snapshots/'))
-  dir_gd_gpx_shp = googledrive::drive_get(paste0(dir_gd_gpx$path, projID[cr], '/'))
   
-  # turn on printing of messages to log now (googledrive package msgs excessive)
-  sink(logOpen, type = 'message')
+  dir_gdFile = file.path(dir_wd, 'inputs', paste0('dir_gd_', projID[cr], '.rda'))
+  if (file.exists(dir_gdFile)){
+    load(dir_gdFile)
+  } else {
+    source(file.path(dir_code, 'functions', 'mapGDDirs.R'))
+    dir_gd = mapGDDirs(data_source, projID[cr])
+  }
   
   # ------ Set up local data folder structure -----------------------------
   # define the local output paths (so don't have to be changed below)
@@ -193,7 +175,7 @@ for (cr in 1:length(crNum)){
     # ------------ Check for/id new das files -----------------------------
     
     # look for current list of .das files on Google Drive
-    dasList_gd = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DASALL')
+    dasList_gd = googledrive::drive_ls(path = dir_gd$raw_das, pattern = 'DASALL')
     # sort by day 
     dasList_gd = dasList_gd[order(dasList_gd$name),]
     dasNames_gd = dasList_gd$name
@@ -236,7 +218,7 @@ for (cr in 1:length(crNum)){
     pat = paste0(shipName[cr], 'Leg', leg[cr])
     
     # read in the file for this ship and leg - pamList should be length 1
-    pamList = googledrive::drive_ls(path = dir_gd_raw_pam, pattern = pat)
+    pamList = googledrive::drive_ls(path = dir_gd$raw_pam, pattern = pat)
     if (nrow(pamList) == 0){
       cat('No PAM file present!! Skipping any acoustic processing/plotting...\n')
       newPam = FALSE
@@ -326,7 +308,7 @@ for (cr in 1:length(crNum)){
                          Sys.Date(), '.Rda')
         save(etNew, file = file.path(dir_data_snaps, outName))
         googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd_snaps)
+                               path = dir_gd$snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
@@ -343,11 +325,11 @@ for (cr in 1:length(crNum)){
         }
         
         save(et, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
         outNameCSV = paste0('compiledEffortTracks_', projID[cr], '.csv')
         write.csv(et, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
-                               path = dir_gd_proc_shp)
+                               path = dir_gd$proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
@@ -366,14 +348,14 @@ for (cr in 1:length(crNum)){
         outGPX = file.path(dir_data_gpx, paste0('effortTracks_', legID[cr], '_',
                                                 d$name, '.gpx'))
         trackToGPX(etNew, outGPX)
-        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_shp)
+        googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx_shp)
         cat('   saved', basename(outGPX), '\n')
         
         # compiled tracks
         outGPX = file.path(dir_data_gpx, paste0('compiledEffortTracks_', 
                                                 projID[cr], '.gpx'))
         trackToGPX(et, outGPX)
-        googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_shp)
+        googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx_shp)
         cat('   saved', basename(outGPX), '\n')
         
         # ------------ Extract track data as points -----------------------
@@ -393,7 +375,7 @@ for (cr in 1:length(crNum)){
                          Sys.Date(), '.Rda')
         save(epNew, file = file.path(dir_data_snaps, outName))
         googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd_snaps)
+                               path = dir_gd$snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
@@ -410,11 +392,11 @@ for (cr in 1:length(crNum)){
         }
         
         save(ep, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
         outNameCSV = paste0('compiledEffortPoints_', projID[cr], '.csv')
         write.csv(ep, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
-                               path = dir_gd_proc_shp)
+                               path = dir_gd$proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
@@ -448,7 +430,7 @@ for (cr in 1:length(crNum)){
                          Sys.Date(), '.Rda')
         save(vsNew, file = file.path(dir_data_snaps, outName))
         googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd_snaps)
+                               path = dir_gd$snaps)
         cat('   saved', outName, '\n')
         
         # combine the old vs dataframe with the new one
@@ -465,11 +447,11 @@ for (cr in 1:length(crNum)){
         }
         
         save(vs, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
         outNameCSV = paste0('compiledSightings_', projID[cr], '.csv')
         write.csv(vs, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
-                               path = dir_gd_proc_shp)
+                               path = dir_gd$proc_shp)
         cat('   saved', outName, 'and as .csv\n')
         
         if (multiVessel == TRUE){
@@ -482,7 +464,7 @@ for (cr in 1:length(crNum)){
       # ------------ Save dasList -----------------------------------------
       if (data_source == 'gd' || data_source == 'test_gd'){
         save(dasList, file = file.path(dir_wd, 'outputs',
-                                       paste0('dasList_', projID, '.Rda')))
+                                       paste0('dasList_', projID[cr], '.Rda')))
       }
       
       # turn on plotting bc we have new data (either visual, acoustic, or both)
@@ -514,7 +496,7 @@ for (cr in 1:length(crNum)){
                          '.Rda')
         save(adNew, file = file.path(dir_data_snaps, outName))
         googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd_snaps)
+                               path = dir_gd$snaps)
         cat('   saved', outName, '\n')
       }
       
@@ -534,10 +516,10 @@ for (cr in 1:length(crNum)){
       
       # save the primary compiled version
       save(ad, file = file.path(dir_data, outName))
-      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd_proc_shp)
+      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
       outNameCSV = paste0('compiledDetections_', projID[cr], '.csv')
       write.csv(vs, file = file.path(dir_data, outNameCSV))
-      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd_proc_shp)
+      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd$proc_shp)
       cat('   saved', outName, 'and as .csv\n')
       
       if (multiVessel == TRUE){
@@ -590,7 +572,7 @@ if (multiVessel == TRUE){
   outGPX = file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, 
                                             '_combined.gpx'))
   trackToGPX(etC, outGPX)
-  googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx)
+  googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx)
   cat('   saved', basename(outGPX), '\n')
   
 } else {
@@ -705,9 +687,9 @@ if (all(genPlots) == TRUE){
              bg = 'white',
              device = 'pdf')
       # googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-      #                        path = dir_gd_proc_shp)
+      #                        path = dir_gd$proc_shp)
       googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                             path = dir_gd_gpx)
+                             path = dir_gd$gpx)
       cat('   saved', outName, 'and as .csv\n')
       cat('   saved', outStr, 'as .png and .pdf\n')
       
@@ -809,34 +791,3 @@ sink(type = 'output')
 sink(type = 'message')
 close(logOpen)
 
-
-
-# --- Google Drive IDs to save --------------------------------------------
-# hard-coded IDs to certain Google Drive folders 
-# faster to load them this way, but more lines of code...
-
-# OES2303
-# if (data_source == 'gd'){
-#   dir_gd_raw_das =    googledrive::as_id('1a0GjIQs9RUY-eVoe45K7Q4zcgwHh9J2O')
-#   dir_gd_proc_shp =   googledrive::as_id('1URoovHoWbYxO7-QOsnQ6uE9CUvub2hOo')
-#   dir_gd_snaps =  googledrive::as_id('1hl4isf9jn8vwNrXZ-EGwyY0qPjSJqPWd')
-#   dir_gd_gpx_shp =    googledrive::as_id('1yscmHW2cZ_uP5V79MlpWnP2-1ziLWusp')
-# } else if (data_source == 'test'){
-#   dir_gd_raw_das =    googledrive::as_id('1ivy3JzfYV7B5tQaGllhomqcyZh0c18U4')
-#   dir_gd_proc_shp =   googledrive::as_id('12P03T2frWuCBsDZcN2ZSYzAr9lxRZ0Iq')
-#   dir_gd_snaps =  googledrive::as_id('1ubIn5fO3xH5hfwk256fDbh0dQ0n8FmVz')
-#   dir_gd_gpx_shp =    googledrive::as_id('1vU_LsU5zSOdgDA8hh2aVWYBIUO12rdSa')
-# }
-
-# LSK2401
-# if (data_source == 'gd'){
-#   dir_gd_raw_das = googledrive::as_id('1D6vZ9S_tmu_Wn4_NhSBD-y4KxEjCJCYN')
-#   dir_gd_proc_shp =   googledrive::as_id('13r2m9vGpf9CqDeCEvA2WHnxi1vvoLd89')
-#   dir_gd_snaps =  googledrive::as_id('1NtgC_A42XjzNXKNnQGZqwa-7x5P6E6Ca')
-#   dir_gd_gpx_shp =    googledrive::as_id('1hGLdiVwGjAVw34rScjLPyLxwvj8uKftP')
-# } else if (data_source == 'test'){
-#   dir_gd_raw_das = googledrive::as_id('1AHhZ8vi0p5z3v-u1PBchJII7muB8jlUJ')
-#   dir_gd_proc_shp =   googledrive::as_id('1w3rD9v3fRdm79rnPYVitHmqoD8gHxZW1')
-#   dir_gd_snaps =  googledrive::as_id('1jeqYIqjWkcD6W9vWvZdbQIiIWnslMsyY')
-#   dir_gd_gpx_shp =    googledrive::as_id('1WsmVdMMGFkKv-pfumFGRldSk5-xulNrQ')
-# }
