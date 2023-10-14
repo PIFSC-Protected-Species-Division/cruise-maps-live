@@ -114,7 +114,7 @@ for (cr in 1:length(crNum)){
   cat(' ---', projID[cr], 'Leg', leg[cr], '---\n')
   
   
-  # ------ Define Google Drive directory paths ------------------------------
+  # ------ Define Google Drive directory paths ----------------------------
   cat(' Setting up Google Drive paths...\n')
   # set parent folder for actual run vs testing
   if (data_source == 'gd'){
@@ -166,7 +166,7 @@ for (cr in 1:length(crNum)){
     if (!dir.exists(dir_tsnaps)){dir.create(dir_tsnaps)}
   }
   
-  # ------ Prep data source -------------------------------------------------
+  # ------ Prep data source -----------------------------------------------
   
   # if creating blank map, load blank data.frames
   if (data_source == 'blank'){
@@ -190,7 +190,7 @@ for (cr in 1:length(crNum)){
     
     
   } else if (data_source == 'gd' || data_source == 'test_gd'){
-    # ------------ Check for/id new das files -------------------------------
+    # ------------ Check for/id new das files -----------------------------
     
     # look for current list of .das files on Google Drive
     dasList_gd = googledrive::drive_ls(path = dir_gd_raw_das, pattern = 'DASALL')
@@ -228,7 +228,7 @@ for (cr in 1:length(crNum)){
       newDas = FALSE
     }
     
-    # ------------ Check for/download new acoustics file --------------------
+    # ------------ Check for/download new acoustics file ------------------
     # acoustics file is single sql file that is updated/appended each day
     # file is large so slow to download
     
@@ -265,11 +265,11 @@ for (cr in 1:length(crNum)){
     }
   } # end data source check
   
-  # ------ Process everything! ----------------------------------------------
+  # ------ Process everything! --------------------------------------------
   # if there are new das OR acoustics to process/not test or blank run
   if (newDas == TRUE || newPam == TRUE){
     
-    # --------- Download, read, process new das files -----------------------
+    # --------- Download, read, process new das files ---------------------
     if (newDas == TRUE){
       cat(' Processing', length(idxNew), 'new das files:\n')
       # loop through all idxNew
@@ -309,7 +309,7 @@ for (cr in 1:length(crNum)){
         save(df_proc, file = file.path(dir_data_snaps, outName))
         
         
-        # ------------ Extract track data from das --------------------------
+        # ------------ Extract track data from das ------------------------
         
         # parse on-effort segments as straight lines from Begin/Resume to End 
         source(file.path(dir_code, 'functions', 'extractTrack.R'))
@@ -358,7 +358,7 @@ for (cr in 1:length(crNum)){
           etL[[projID[cr]]] = et
         }
         
-        # ------------ Create GPX from track data ---------------------------
+        # ------------ Create GPX from track data -------------------------
         
         source(file.path(dir_code, 'functions', 'trackToGPX.R'))
         
@@ -376,7 +376,7 @@ for (cr in 1:length(crNum)){
         googledrive::drive_put(file.path(outGPX), path = dir_gd_gpx_shp)
         cat('   saved', basename(outGPX), '\n')
         
-        # ------------ Extract track data as points -------------------------
+        # ------------ Extract track data as points -----------------------
         # alternatively, can parse individual lines to get the segments out as points
         
         source(file.path(dir_code, 'functions', 'extractTrack_asPoints.R'))
@@ -425,7 +425,7 @@ for (cr in 1:length(crNum)){
           epL[[projID[cr]]] = ep
         }
         
-        # ------------ Extract visual sighting data -------------------------
+        # ------------ Extract visual sighting data -----------------------
         
         # do some stuff here to extract visual sighting data for the day from das
         source(file.path(dir_code, 'functions', 'extractVisualSightings.R'))
@@ -478,13 +478,20 @@ for (cr in 1:length(crNum)){
         }
         
       } # end loop through all idxNew for download and processing of DAS
+      
+      # ------------ Save dasList -----------------------------------------
+      if (data_source == 'gd' || data_source == 'test_gd'){
+        save(dasList, file = file.path(dir_wd, 'outputs',
+                                       paste0('dasList_', projID, '.Rda')))
+      }
+      
       # turn on plotting bc we have new data (either visual, acoustic, or both)
       genPlots[cr] = TRUE
     } else {
       cat(' No new das files to process. Proceeding to acoustics...\n')
     }# end idx == 0 catch
     
-    # --------- Extract acoustic detections ---------------------------------
+    # --------- Extract acoustic detections -------------------------------
     if (newPam == TRUE){
       cat(' Processing updated acoustic database.\n')
       # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
@@ -795,14 +802,7 @@ if (all(genPlots) == TRUE){
   }
 } # end genPlots TF trigger
 
-# ------ Save dasList and close log  --------------------------------------
-
-# if all ran ok, save updated dasList so these files won't be run again
-# ### NEEDS UPDATING - DEAL WITH TWO DASLISTS ##############################
-if (data_source == 'gd' || data_source == 'test_gd'){
-  save(dasList, file = file.path(dir_wd, 'outputs',
-                                 paste0('dasList_', projID, '.Rda')))
-}
+# --- Close log  ----------------------------------------------------------
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink(type = 'output')
