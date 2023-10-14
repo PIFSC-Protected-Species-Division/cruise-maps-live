@@ -7,7 +7,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   #' previously parsed track and visual sighting data
   #' 
   #' author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 01 August 2023
+  #' date: 13 October 2023
   #'
   #' @param st 'summary table' data.frame containing summary data for previous 
   #' days and legs
@@ -19,7 +19,6 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   #' 'extractAcousticDetections.R'
   #' @param shipCode string for ship set in beginning of run.R
   #' @param leg string for leg number set in beginning of run.R
-  #' @param blank_table logical to create empty placeholder table with 0s
   #' 
   #' @return a list 'lt' with st - a data.frame summary table and ft - a flextable 
   #'
@@ -66,7 +65,11 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   st$days[idx] = length(unique(et$monthdays[which(et$leg == leg)]))
   # st$segments[idx] = length(et$segnum)
   st$dist[idx] = sum(et$dist[which(et$leg == leg)])
-  st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg)])
+  # count by species sightings (mixed sp sightings counted twice)
+  # st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg)])
+  # count by group sightings
+  st$spVis[idx] = length(unique(vs$SightNo[which(vs$leg == leg & 
+                                                   vs$shipCode == shipCode)]))
   if (!is.null(ad)){
     st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg)])
   }
