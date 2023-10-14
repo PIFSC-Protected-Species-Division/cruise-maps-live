@@ -149,8 +149,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     
     # list colors in alphabetical order
     colors_lines <- c("deeppink", "deeppink4", "yellow", "orange", "grey0")
-    # even tho if you called colors_lines[3] at this point it would give you yellow, 
-    # when actually plotting it gives you grey0... don't know why
+    # even tho if you called colors_lines[3] at this point it would give you 
+    #yellow, when actually plotting it gives you grey0... don't know why
     
     # specify labels in actual order they should appear in legend
     labels_lines <- c("Survey effort (recent, Sette)", 
@@ -225,7 +225,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     theme(plot.title = element_text(hjust = 0.5)) 
   
   
-  # base_map # display map during testing
+  base_map # display map during testing
   
   ### Output ############################
   numColsCet = ceiling(length(unique(ceMap$SpName))/13)
