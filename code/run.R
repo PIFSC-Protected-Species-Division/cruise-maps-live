@@ -610,7 +610,7 @@ if (all(genPlots) == TRUE){
     cat(' Updating summary table:\n')
     # load previously created summary table if it exists
     stName = paste0('summaryTable.Rda')
-    if (data_source == 'gd' & 
+    if ((data_source == 'gd' || data_source == 'test_gd') & 
         file.exists(file.path(dir_wd, 'outputs', stName))){
       load(file.path(dir_wd, 'outputs', stName))
     } else {
@@ -733,7 +733,7 @@ if (all(genPlots) == TRUE){
     cat(' Generating latest map of acoustic detections:\n')
     
     # add correctly formated SpCode col
-    ad$SpCode = as.integer(ad$sp_map)
+    adC$SpCode = as.integer(ad$sp_map)
     
     mapOutA = plotMap(dir_wd, epC, epNewC, adC, shipCode, dataType = 'acoustic')
     base_map_A = mapOutA$base_map
@@ -751,7 +751,7 @@ if (all(genPlots) == TRUE){
     
     # ------------ Save acoustics map figures -----------------------------
     # save the latest - as .png and .pdf
-    if (data_source == 'gd'){ # only save if actual run, not test or blank
+    if (data_source == 'gd' || data_source == 'test_gd'){ 
       outStr = paste0('dailyMap_acoustics')
       ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
              height = height,
@@ -773,23 +773,22 @@ if (all(genPlots) == TRUE){
     }
     
     # save a copy of today's run - as .png and .pdf
-    # ### NEEDS UPDATING - SAVE PATH #####################################
-    # outStr = paste0('dailyMap_acoustics_', legID, '_ran', Sys.Date())
-    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-    #        height = height,
-    #        width = width,
-    #        plot = base_map_A,
-    #        dpi = res,
-    #        bg = 'white',
-    #        device = 'png')
-    # 
-    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-    #        height = height,
-    #        width = width,
-    #        plot = base_map_A,
-    #        dpi = res,
-    #        bg = 'white',
-    #        device = 'pdf')
+    outStr = paste0('dailyMap_acoustics_', legIDC, '_ran', Sys.Date())
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+           height = height,
+           width = width,
+           plot = base_map_A,
+           dpi = res,
+           bg = 'white',
+           device = 'png')
+
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+           height = height,
+           width = width,
+           plot = base_map_A,
+           dpi = res,
+           bg = 'white',
+           device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new acoustic file, skipping acoustic detections map...\n')
@@ -800,10 +799,10 @@ if (all(genPlots) == TRUE){
 
 # if all ran ok, save updated dasList so these files won't be run again
 # ### NEEDS UPDATING - DEAL WITH TWO DASLISTS ##############################
-# if (data_source == 'gd'){ # only save if actual run, not test or blank
-#   save(dasList, file = file.path(dir_wd, 'outputs', 
-#                                  paste0('dasList_', projID, '.Rda')))
-# }
+if (data_source == 'gd' || data_source == 'test_gd'){
+  save(dasList, file = file.path(dir_wd, 'outputs',
+                                 paste0('dasList_', projID, '.Rda')))
+}
 
 cat('...run complete', format(Sys.time(), '%Y-%m-%d %H:%M:%S %Z'), '...\n')
 sink(type = 'output')
