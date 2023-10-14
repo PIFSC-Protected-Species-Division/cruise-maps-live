@@ -552,14 +552,15 @@ if (multiVessel == TRUE){
   adC = dplyr::bind_rows(adL, .id = 'projID')
   
   # save all these 
-  save(epC, file = file.path(dir_data, 
+  save(epC, file = file.path(dir_wd, 'data', 
                              paste0('compiledEffortPoints_', projIDC, '.Rda')))
-  save(etC, file = file.path(dir_data, 
+  save(etC, file = file.path(dir_wd, 'data', 
                              paste0('compiledEffortTracks_', projIDC, '.Rda')))
-  save(vsC, file = file.path(dir_data, 
+  save(vsC, file = file.path(dir_wd, 'data', 
                              paste0('compiledSightings_', projIDC, '.Rda')))
-  save(adC, file = file.path(dir_data, 
+  save(adC, file = file.path(dir_wd, 'data', 
                              paste0('compiledDetections_', projIDC, '.Rda')))
+  cat(' Saved combined compiled effort points, tracks, sightings, and detections\n')
   
   # ### NEEDS UPDATING/DECISIONS ##############
   # will need to have some checks for if one vessel does have new data and other doesnt?
