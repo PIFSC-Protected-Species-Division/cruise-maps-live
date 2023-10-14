@@ -278,7 +278,7 @@ for (cr in 1:length(crNum)){
         d = dasList[idxNew[i],]
         
         dasFile = file.path(dir_data_dwnl, d$name)
-        cat(' ', d$name, '\n')
+        cat(' ->', d$name, '\n')
         
         # download and save locally
         googledrive::drive_download(file = googledrive::as_id(d$id), 
@@ -648,7 +648,7 @@ if (all(genPlots) == TRUE){
   if (newDas == TRUE){
     cat(' Generating latest map of visual sightings:\n')
     
-    source(file.path(dir_wd, 'code', 'functions', 'plotMap.R'))
+    source(file.path(dir_code, 'functions', 'plotMap.R'))
     
     mapOutV = plotMap(dir_wd, epC, epNewC, vsC, shipCode, dataType = 'visual')
     base_map_V = mapOutV$base_map
@@ -668,7 +668,7 @@ if (all(genPlots) == TRUE){
     # ------------ Save visuals map figures -------------------------------
     
     # save the latest - as .png and .pdf
-    if (data_source == 'gd'){ # only save if actual run, not test or blank
+    if (data_source == 'gd' || data_source == 'test_gd'){ 
       outStr = paste0('dailyMap_visuals')
       ggsave(filename = file.path(dir_wd, 'outputs', paste0(outStr, '.png')),
              height = height,
@@ -700,30 +700,29 @@ if (all(genPlots) == TRUE){
       # googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
       #                        path = dir_gd_proc_shp)
       googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-                             path = dir_gd_gpx_up)
+                             path = dir_gd_gpx)
       cat('   saved', outName, 'and as .csv\n')
       cat('   saved', outStr, 'as .png and .pdf\n')
       
     }
     
     # save a copy of today's run - as .png and .pdf
-    # ### NEEDS UPDATING - SAVE PATH #####################################
-    # outStr = paste0('dailyMap_visuals_', legID, '_ran', Sys.Date())
-    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
-    #        height = height,
-    #        width = width,
-    #        plot = base_map_V,
-    #        dpi = res,
-    #        bg = 'white',
-    #        device = 'png')
-    # 
-    # ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
-    #        height = height,
-    #        width = width,
-    #        plot = base_map_V,
-    #        dpi = res,
-    #        bg = 'white',
-    #        device = 'pdf')
+    outStr = paste0('dailyMap_visuals_', legIDC, '_ran', Sys.Date())
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.png')),
+           height = height,
+           width = width,
+           plot = base_map_V,
+           dpi = res,
+           bg = 'white',
+           device = 'png')
+
+    ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
+           height = height,
+           width = width,
+           plot = base_map_V,
+           dpi = res,
+           bg = 'white',
+           device = 'pdf')
     cat('   saved', outStr, 'as .png and .pdf\n')
   } else {
     cat(' No new das files, skipping visual sightings map...\n')
