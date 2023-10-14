@@ -42,20 +42,22 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     terra::rast()
   
   # to crop the LSK tracks to the correct window
-  crop<-ext(bathy)%>%as.polygons(crs=crs(bathy))%>%st_as_sf(crs=4326)  
+  crop<-terra::ext(bathy) %>% 
+    terra::as.polygons(crs=crs(bathy)) %>% 
+    sf::st_as_sf(crs=4326)  
   
   #######################################
   ## Load HICEAS points, cumulative #####
   
   # clean up effort locations
   ep$lon <- ifelse(ep$Lon > 0, ep$Lon-360, ep$Lon)    #correct dateline 
-  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326) %>% st_crop(crop)
+  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326) %>% sf::st_crop(crop)
   
   ## Load HICEAS points, recent (epNew)
   # clean up newest effort locations
   epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
   epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326) %>% 
-    st_crop(crop)
+    sf::st_crop(crop)
   
   
   #######################################
@@ -64,12 +66,14 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   # clean up sightings locations and add spNames
   key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
   ce$lon <- ifelse(ce$Lon > 0, ce$Lon-360, ce$Lon)
-  ceMap <- sf::st_as_sf(ce, coords=c("lon","Lat"), crs = 4326) %>% 
-    st_crop(crop) %>% 
-    dplyr::left_join(key, by = "SpCode")
+  ceMap = dplyr::left_join(ce, key, by = 'SpCode')
+  ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) #%>% 
+    # dplyr::left_join(key, by = "SpCode")
+  ceMap = sf::st_crop(ceMap, crop)
+  # sf::st_crop(crop) %>% 
   ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
   #sort ce by species name 
-  ceMap = ceMap[rev(order(ceMap$SpName)),]
+  # ceMap = ceMap[rev(order(ceMap$SpName)),]
   
   
   #######################################
@@ -125,14 +129,16 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
                        "Pre-determined transect lines")
     
     base_map = base_map +
-      geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
+      geom_line(data=lines, aes(x=Longitude, y=Latitude, group=Line, 
                                 color=colors_lines[3]), alpha=0.5, linewidth=0.5) +
       ggspatial::layer_spatial(eez, fill=NA, color = "white")+
       geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
       geom_sf(data=nwhi, fill= "white", color = "white")+
       
-      ggspatial::layer_spatial(effort, alpha=ta, size=tw, aes(color=colors_lines[2]))+
-      ggspatial::layer_spatial(tmp, alpha=ta, size=tw, aes(color=colors_lines[1]))+
+      ggspatial::layer_spatial(ep, alpha=ta, size=tw, 
+                               aes(color=colors_lines[2]))+
+      ggspatial::layer_spatial(tmp, alpha=ta, size=tw, 
+                               aes(color=colors_lines[1]))+
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
       guides(colour = guide_legend(order = 1))
@@ -168,10 +174,10 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
                                aes(color=colors_lines[4]))+
       
-      ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta, size=tw,
-                               aes(color=colors_lines[1]))+
-      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, size=tw,
-                               aes(color=colors_lines[5]))+
+      ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
+                               size=tw, aes(color=colors_lines[1]))+
+      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
+                               size=tw, aes(color=colors_lines[5]))+
       
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
