@@ -69,11 +69,11 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   ceMap = dplyr::left_join(ce, key, by = 'SpCode')
   ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) #%>% 
     # dplyr::left_join(key, by = "SpCode")
-  ceMap = sf::st_crop(ceMap, crop)
+  # ceMap = sf::st_crop(ceMap, crop)
   # sf::st_crop(crop) %>% 
   ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
   #sort ce by species name 
-  # ceMap = ceMap[rev(order(ceMap$SpName)),]
+  ceMap = ceMap[rev(order(ceMap$SpName)),]
   
   
   #######################################
