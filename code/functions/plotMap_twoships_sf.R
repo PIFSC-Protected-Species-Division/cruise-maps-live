@@ -1,5 +1,5 @@
 dir<-"~/Dropbox/work/HICEAS" #jb machie
-dir<-'~/testing/inputs' #sf machine
+dir<-'~/github/cruise-maps-live/testing/inputs' #sf machine
 
 library(tidyverse)
 library(sf)
@@ -26,17 +26,17 @@ epNewC <- st_as_sf(epNewC, coords=c("lon","Lat"), crs = 4326)%>%st_crop(crop)
 ######################
 ##Now for THE MAP ####
 
-colors_lines <- c("Survey effort (recent, Sette)" = "deeppink",
-                  "Survey effort (to date, Sette)" = "deeppink4",
-                  "Survey effort (recent, Lasker)" = "yellow",
-                  "Survey effort (to date, Lasker)"= "orange",
-                  "Pre-determined transect lines" = "grey0")
+# list colors in alphabetical order
+colors_lines <- c("deeppink", "deeppink4", "yellow", "orange", "grey0")
+# even tho if you called colors_lines[3] at this point it would give you yellow, 
+# when actually plotting it gives you grey0... don't know why
 
+# specify labels in actual order they should appear in legend
 labels_lines <- c("Survey effort (recent, Sette)", 
                   "Survey effort (to date, Sette)", 
                   "Survey effort (recent, Lasker)", 
                   "Survey effort (to date, Lasker)", 
-                   "Pre-determined transect lines")
+                  "Pre-determined transect lines")
 
 
   plotTitle = 'What cetaceans have we seen during HICEAS 2023?'
@@ -66,15 +66,19 @@ base_map <- ggplot() +
   geom_sf(data=p_x1, fill = "white", alpha=0.1, color=NA)+
   geom_sf(data=pmnm_shifted, fill="white", alpha = 0.1, color=NA)+
   geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
-                            color="Pre-determined transect lines"), alpha=0.5, linewidth=0.5)+
+                            color=colors_lines[3]), alpha=0.5, linewidth=0.5)+
   ggspatial::layer_spatial(eez, fill=NA, color = "white")+
   geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
   geom_sf(data=nwhi, fill= "white", color = "white")+
-  ggspatial::layer_spatial(epC[epC$shipCode=="LSK",], alpha=ta, size=tw, aes(color="Survey effort (to date, Lasker)"))+
-  ggspatial::layer_spatial(epC[epC$shipCode=="OES",], alpha=ta, size=tw, aes(color="Survey effort (to date, Sette)"))+
+  ggspatial::layer_spatial(epC[epC$shipCode == 'OES',], alpha=ta, size=tw,
+                           aes(color=colors_lines[2]))+
+  ggspatial::layer_spatial(epC[epC$shipCode == 'LSK',], alpha=ta, size=tw,
+                           aes(color=colors_lines[4]))+
   
-  ggspatial::layer_spatial(epNewC[epNewC$shipCode=="LSK",], alpha=ta, size=tw, aes(color="Survey effort (recent, Lasker)"))+
-  ggspatial::layer_spatial(epNewC[epNewC$shipCode=="OES",], alpha=ta, size=tw, aes(color="Survey effort (recent, Sette)"))+
+  ggspatial::layer_spatial(epNewC[epNewC$shipCode == 'OES',], alpha=ta,
+                           size=tw, aes(color=colors_lines[1]))+
+  ggspatial::layer_spatial(epNewC[epNewC$shipCode == 'LSK',], alpha=ta, 
+                           size=tw, aes(color=colors_lines[5]))+
   
     scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                      labels = labels_lines)+
