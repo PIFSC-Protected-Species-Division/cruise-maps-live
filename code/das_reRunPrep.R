@@ -14,7 +14,7 @@
 # dasList filename to be modified
 dasListFile = '~/GitHub/cruise-maps-live/outputs/dasList_OES2303.Rda'
 # das file to be reprocessed
-dasFile = 'DASALL.A18'
+dasFile = 'DASALL.A12'
 # modDateStr = '2023-08-12'
 
 # compiled file names
