@@ -33,6 +33,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   #'    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, dataType = 'visual')
   #'
   #' ######################################################################
+  library(ggtext)
   
   ## Load map layers & helpers
   key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), 
@@ -107,7 +108,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
           axis.text.x = element_blank(),
           panel.grid = element_blank(),
           panel.border = element_blank(), 
-          plot.margin = unit(c(0,0,0,0), "cm"))+
+          plot.margin = unit(c(0,0,0,0), "cm"),
+          legend.text = element_markdown())+
     
     scale_fill_distiller(guide= "none")+
     
@@ -146,22 +148,22 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     ### TWO SHIPS #######################
   } else if (length(shipCode) == 2){
     
-    # list colors in alphabetical order
-    colors_lines <- c("deeppink", "deeppink4", "yellow", "orange", "grey0")
-    # even tho if you called colors_lines[3] at this point it would give you 
-    #yellow, when actually plotting it gives you grey0... don't know why
+    # colors will be treated as though in alphabetical order
+    colors_lines <- c("deeppink", "deeppink4", "gold", "darkorange2", "grey0")
+    # even though a call to colors_lines[3] at this point would give you gold, 
+    # when plotting it would give deeppink4
     
     # specify labels in actual order they should appear in legend
-    labels_lines <- c("Survey effort (recent, Sette)", 
-                      "Survey effort (to date, Sette)", 
-                      "Survey effort (recent, Lasker)", 
-                      "Survey effort (to date, Lasker)", 
+    labels_lines <- c('Survey effort (recent, *Sette*)', 
+                      "Survey effort (to date, *Sette*)", 
+                      "Survey effort (recent, *Lasker*)", 
+                      "Survey effort (to date, *Lasker*)", 
                       "Pre-determined transect lines")
     
     
     base_map = base_map +
       geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
-                                color = colors_lines[3]),
+                                color = colors_lines[5]),
                 alpha=0.5, linewidth=0.5)+
       ggspatial::layer_spatial(eez, fill=NA, color = "white")+
       geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
@@ -169,14 +171,14 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       
       
       ggspatial::layer_spatial(ep[ep$shipCode == 'OES',], alpha=ta, size=tw,
-                               aes(color=colors_lines[2]))+
+                               aes(color=colors_lines[3]))+
       ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
-                               aes(color=colors_lines[4]))+
+                               aes(color=colors_lines[1]))+
       
       ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
-                               size=tw, aes(color=colors_lines[1]))+
+                               size=tw, aes(color=colors_lines[2]))+
       ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
-                               size=tw, aes(color=colors_lines[5]))+
+                               size=tw, aes(color=colors_lines[4]))+
       
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
