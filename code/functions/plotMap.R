@@ -2,7 +2,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   #' plotMap
   #' 
-  #' @description create an overview map of HICEAS 2023 survey effort
+  #' @description create an overview map of HICEAS 2023 survey ep
   #' 
   #' The general survey area is outlined and proposed tracklines are plotted in 
   #' dark grey. Realized effort tracklines are in pink - dark pink for previous
@@ -15,7 +15,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   #' 
   #' author: Janelle Badger janelle.badger [at] noaa.gov
   #' co-author: Selene Fregosi selene.fregosi [at] noaa.gov
-  #' date: 01 August 2023
+  #' date: 13 October 2023
   #'
   #' @param dir_wd character string to the cruise-maps-live working directory
   #' @param ep data.frame of effort as points, cumulative over a HICEAS leg
@@ -33,6 +33,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   #'    mapOutV = plotMap(dir_wd, ep, epNew, vs, shipCode, dataType = 'visual')
   #'
   #' ######################################################################
+  library(ggtext)
   
   ## Load map layers & helpers
   key <- read.csv(file.path(dir_wd, 'inputs', "SpeciesCodestoNames.csv"), 
@@ -41,66 +42,47 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
-  if(length(shipCode) > 1){stop("We're not ready for two boats yet!! 
-                                Bug Janelle and Selene.")}
-  
+  # # to crop the LSK tracks to the correct window
+  # crop<-terra::ext(bathy) %>% 
+  #   terra::as.polygons(crs=crs(bathy)) %>% 
+  #   sf::st_as_sf(crs=4326)  
   
   #######################################
   ## Load HICEAS points, cumulative #####
-  # if working from files, define and load
-  # file.name.effort<-paste0("compiledEffortPoints_2023_leg",leg,"_",ship,".csv")
-  # effort<-read.csv(file.path(dir, file.name.effort))  #read in file
-  effort = ep  # if running within run.R, just rename input 
   
   # clean up effort locations
-  effort$lon <- ifelse(effort$Lon > 0, effort$Lon-360, effort$Lon)    #correct dateline 
-  effort <- sf::st_as_sf(effort, coords=c("lon","Lat"), crs = 4326)
+  ep$lon <- ifelse(ep$Lon > 0, ep$Lon-360, ep$Lon)    #correct dateline 
+  ep<-ep[ep$lon<(-150),] # filter to only points west of map extent
+  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326)
   
-  ## Load HICEAS points, recent (etNew) #
-  # file.name.recent<-paste0("epNew_2023_leg",leg,"_",ship,".csv")
-  # tmp<-read.csv(file.path(dir, file.name.recent))
-  tmp = epNew # if running within run.R, just rename input
-  
-  # clean up tmp locations
-  tmp$lon <- ifelse(tmp$Lon > 0, tmp$Lon-360, tmp$Lon)
-  tmp <- sf::st_as_sf(tmp, coords=c("lon","Lat"), crs = 4326)
+  ## Load HICEAS points, recent (epNew)
+  # clean up newest effort locations
+  epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
+  epNew<-epNew[epNew$lon<(-150),]
+  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326)
   
   
   #######################################
   ## Load cetacean encounter data #######
-  # if working from files, define and load
-  # file.name.sightings<-paste0("compiledSightings_2023_leg",leg,"_",ship,".Rda")
-  # load(file.path(dir, file.name.sightings))
-  # vs already exists and is now a function input so don't need to load file. 
-  ceMap = ce # rename whatever the encounter input is
   
   # clean up sightings locations and add spNames
   key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
-  ceMap$lon <- ifelse(ceMap$Lon > 0, ceMap$Lon-360, ceMap$Lon)
-  ceMap <- sf::st_as_sf(ceMap,coords=c("lon","Lat"), crs = 4326)%>%
-    dplyr::left_join(key, by = "SpCode")
+  ce$lon <- ifelse(ce$Lon > 0, ce$Lon-360, ce$Lon)
+  ceMap = dplyr::left_join(ce, key, by = 'SpCode')
+  ceMap <- ceMap[ceMap$lon<(-150),]
+  ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) 
   ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
-  #sort ceMap by species name 
+  #sort ce by species name 
   ceMap = ceMap[rev(order(ceMap$SpName)),]
-  # ceMap$SpNameFactor = factor(ceMap$SpName, levels = unique(ceMap$SpName[order(ceMap$Level)]), ordered = TRUE)
   
   
+  #######################################
+  ## Now for THE MAP ####################
   
-  
-  ######################
-  ##Now for THE MAP ####
-  
-  colors_lines <- c("deeppink","deeppink4", "grey0")
-  
+  # set variables independent of number of ships
   colors_enc <- unique(ceMap$SpColor)
-  
   uci = match(unique(ceMap$SpColor), ceMap$SpColor)
   shapes_enc <- ceMap$SpSymbol[uci]
-  
-  labels_lines <- c( "Survey effort (recent)", 
-                     "Survey effort (to date)", 
-                     "Pre-determined transect lines")
-  
   labels_enc<-unique(ceMap$SpName)
   
   if (dataType == 'visual'){
@@ -117,6 +99,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   ta = 0.2 # track alpha
   
   
+  # start map
   base_map <- ggplot() + 
     theme_bw() +
     theme(axis.title.x = element_blank(),
@@ -125,7 +108,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
           axis.text.x = element_blank(),
           panel.grid = element_blank(),
           panel.border = element_blank(), 
-          plot.margin = unit(c(0,0,0,0), "cm"))+
+          plot.margin = unit(c(0,0,0,0), "cm"),
+          legend.text = element_markdown())+
     
     scale_fill_distiller(guide= "none")+
     
@@ -133,19 +117,78 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     ggnewscale::new_scale_color() +
     ggspatial::layer_spatial(bathy)+ 
     geom_sf(data=p_x1, fill = "white", alpha=0.1, color=NA)+
-    geom_sf(data=pmnm_shifted, fill="white", alpha = 0.1, color=NA)+
-    geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
-                              color=colors_lines[3]), alpha=0.5, linewidth=0.5)+
-    ggspatial::layer_spatial(eez, fill=NA, color = "white")+
-    geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
-    geom_sf(data=nwhi, fill= "white", color = "white")+
-    ggspatial::layer_spatial(effort, alpha=ta, size=tw, aes(color=colors_lines[2]))+
-    ggspatial::layer_spatial(tmp, alpha=ta, size=tw, aes(color=colors_lines[1]))+
-    scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
-                       labels = labels_lines)+
-    guides(colour = guide_legend(order = 1)) +
+    geom_sf(data=pmnm_shifted, fill="white", alpha = 0.1, color=NA)
+  
+  
+  ### ONE SHIP ##########################
+  if(length(shipCode) == 1){
+    
+    colors_lines <- c("deeppink","deeppink4", "grey0")
+    
+    labels_lines <- c( "Survey effort (recent)", 
+                       "Survey effort (to date)", 
+                       "Pre-determined transect lines")
+    
+    base_map = base_map +
+      geom_line(data=lines, aes(x=Longitude, y=Latitude, group=Line, 
+                                color=colors_lines[3]), alpha=0.5, linewidth=0.5) +
+      ggspatial::layer_spatial(eez, fill=NA, color = "white")+
+      geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
+      geom_sf(data=nwhi, fill= "white", color = "white")+
+      
+      ggspatial::layer_spatial(ep, alpha=ta, size=tw, 
+                               aes(color=colors_lines[2]))+
+      ggspatial::layer_spatial(tmp, alpha=ta, size=tw, 
+                               aes(color=colors_lines[1]))+
+      scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
+                         labels = labels_lines)+
+      guides(colour = guide_legend(order = 1))
     
     
+    ### TWO SHIPS #######################
+  } else if (length(shipCode) == 2){
+    
+    # colors will be treated as though in alphabetical order
+    colors_lines <- c("deeppink", "deeppink4", "gold", "darkorange2", "grey0")
+    # even though a call to colors_lines[3] at this point would give you gold, 
+    # when plotting it would give deeppink4
+    
+    # specify labels in actual order they should appear in legend
+    labels_lines <- c('Survey effort (recent, *Sette*)', 
+                      "Survey effort (to date, *Sette*)", 
+                      "Survey effort (recent, *Lasker*)", 
+                      "Survey effort (to date, *Lasker*)", 
+                      "Pre-determined transect lines")
+    
+    
+    base_map = base_map +
+      geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
+                                color = colors_lines[5]),
+                alpha=0.5, linewidth=0.5)+
+      ggspatial::layer_spatial(eez, fill=NA, color = "white")+
+      geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
+      geom_sf(data=nwhi, fill= "white", color = "white")+
+      
+      
+      ggspatial::layer_spatial(ep[ep$shipCode == 'OES',], alpha=ta, size=tw,
+                               aes(color=colors_lines[3]))+
+      ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
+                               aes(color=colors_lines[1]))+
+      
+      ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
+                               size=tw, aes(color=colors_lines[2]))+
+      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
+                               size=tw, aes(color=colors_lines[4]))+
+      
+      scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
+                         labels = labels_lines)+
+      guides(colour = guide_legend(override.aes = list(size = 1, linewidth = 1, alpha = 1), 
+                                   nrow = 3, byrow = TRUE, order = 1))
+  }
+  
+  
+  ### CETACEANS #####################
+  base_map = base_map +
     ggnewscale::new_scale_color() +
     geom_sf(data=ceMap, aes(color=SpName, shape = SpName), size = shapesSize, 
             stroke = 0.8)+
@@ -181,16 +224,20 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
                    y.min = min(lines$Latitude),
                    y.max = max(lines$Latitude)) +
     ggtitle(plotTitle) +
-    theme(plot.title = element_text(hjust = 0.5)) #+ 
-      # guides(colour = guide_legend(nrow = 13), ##, byrow = TRUE))
-      #        )
-      # 
+    theme(plot.title = element_text(hjust = 0.5)) 
   
-  numCols = ceiling(length(unique(ceMap$SpName))/13)
+  
+  base_map # display map during testing
+  
+  ### Output ############################
+  numColsCet = ceiling(length(unique(ceMap$SpName))/13)
+  numColsShp = ceiling(length(labels_lines)/3)
+  numCols = max(c(numColsCet, numColsShp))
+  
   # need two outputs to make a list
   # need updated ceMap that has SpName col
   mapOut = list(base_map = base_map, ceMap = ceMap, numCols = numCols)
   return(mapOut)
+  
 }
-
 

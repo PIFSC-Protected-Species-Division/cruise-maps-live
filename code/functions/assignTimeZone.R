@@ -40,9 +40,16 @@ assignTimeZone = function(df_proc, shipCode, tzKeyFile){
   # find the correct entry
   tzStr = tzKeyS$TimeZone[which(dateCheck >= tzKeyS$StartDate & 
                                   dateCheck <= tzKeyS$EndDate)]
-  # update df_proc
-  df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, tzStr)
+  
+  if (length(tzStr) > 0){
+    # update df_proc according to key
+    df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, tzStr)
+    
+  } else if (length(tzStr) == 0){
+    # update to HST/default
+    df_proc$DateTime = lubridate::force_tz(df_proc$DateTime, 'US/Hawaii')
+    warning('Missing timezone for this ship on this date. Defaulting to HST.')
+  }
   
   return(df_proc)
-  
-  }
+}

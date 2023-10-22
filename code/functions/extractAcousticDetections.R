@@ -67,7 +67,7 @@ extractAcousticDetections <- function(pamFile){
         
         # SELECT ACOUSTIC VS VISUAL ID 
         # if there is a visual ID...
-        if (dtTmp$vis_id[s] != 999){
+        if (dtTmp$vis_id[s] != '999'){
           # pull out visual and acoustic IDs
           idOpts = c(dtTmp$class1[s], dtTmp$class2[s])
           spOpts = c(dtTmp$cl1_sp1[s], dtTmp$cl2_sp1[s])
@@ -88,14 +88,14 @@ extractAcousticDetections <- function(pamFile){
         }
         
         # if no visual ID... use acoustic ID but simplify to allowable (JLKM) 
-        if (dtTmp$vis_id[s] == 999 && dtTmp$class1[s] == 'AT'){ 
+        if (dtTmp$vis_id[s] == '999' && dtTmp$class1[s] == 'AT'){ 
           
           # if acoustic ID is a beaked whale species, use acoustic ID as is
           if (dtTmp$cl1_sp1[s] %in% bwList){
             spTmp = dtTmp$cl1_sp1[s]
             
             # if acoustic ID is sperm whale, use acoustic ID as is
-          } else if (dtTmp$cl1_sp1[s] == 46){
+          } else if (dtTmp$cl1_sp1[s] == '46'){
             spTmp = dtTmp$cl1_sp1[s]
             
             # if acoustic ID is unid dolphin, use acoustic ID as is
@@ -105,15 +105,16 @@ extractAcousticDetections <- function(pamFile){
             
             # anything else (e.g., pilot whales, fkw, etc) call unid dolphin
           } else {
-            spTmp = 77
+            spTmp = '77'
           }
         }
         
         # Check for BWC noted in comments
         if (grepl("BWC", dtTmp$comment[s])){
-          spTmp = 949
+          spTmp = '949'
         }
         
+        # tryCatch({dtTmp$sp_map[s] = spTmp}, warning = function(w) print(s))
         dtTmp$sp_map[s] = spTmp
       } # loop through all detection rows
       
