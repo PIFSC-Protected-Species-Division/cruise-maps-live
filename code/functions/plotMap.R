@@ -41,23 +41,24 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   bathy <- readRDS(file=file.path(dir_wd, 'inputs', "Bathymetry_EEZ.rda")) %>%
     terra::rast()
   
-  # to crop the LSK tracks to the correct window
-  crop<-terra::ext(bathy) %>% 
-    terra::as.polygons(crs=crs(bathy)) %>% 
-    sf::st_as_sf(crs=4326)  
+  # # to crop the LSK tracks to the correct window
+  # crop<-terra::ext(bathy) %>% 
+  #   terra::as.polygons(crs=crs(bathy)) %>% 
+  #   sf::st_as_sf(crs=4326)  
   
   #######################################
   ## Load HICEAS points, cumulative #####
   
   # clean up effort locations
   ep$lon <- ifelse(ep$Lon > 0, ep$Lon-360, ep$Lon)    #correct dateline 
-  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326) %>% sf::st_crop(crop)
+  ep<-ep[ep$lon<(-150),] # filter to only points west of map extent
+  ep <- sf::st_as_sf(ep, coords=c("lon","Lat"), crs = 4326)
   
   ## Load HICEAS points, recent (epNew)
   # clean up newest effort locations
   epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
-  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326) %>% 
-    sf::st_crop(crop)
+  epNew<-epNew[epNew$lon<(-150),]
+  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326)
   
   
   #######################################
@@ -67,10 +68,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   key$SpCode<-as.integer(key$SpCode)   #COULD CAUSE PROBLEMS IF CHARACTERS PRESENT
   ce$lon <- ifelse(ce$Lon > 0, ce$Lon-360, ce$Lon)
   ceMap = dplyr::left_join(ce, key, by = 'SpCode')
-  ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) #%>% 
-    # dplyr::left_join(key, by = "SpCode")
-  # ceMap = sf::st_crop(ceMap, crop)
-  # sf::st_crop(crop) %>% 
+  ceMap <- ceMap[ceMap$lon<(-150),]
+  ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) 
   ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
   #sort ce by species name 
   ceMap = ceMap[rev(order(ceMap$SpName)),]

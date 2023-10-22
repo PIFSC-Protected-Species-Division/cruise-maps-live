@@ -93,7 +93,7 @@ cat(' dir_wd =', dir_wd, '\n')
 googledrive::local_drive_quiet()
 sink(logOpen, type = 'message')
 
-# --- LOOP through each cruise/vessel -------------------------------------
+# --- CRNUM LOOP through each cruise/vessel -------------------------------
 # loop through each cruise to download/process data streams
 cat('Processing data for', length(crNum), 'vessel(s).\n')
 
@@ -251,7 +251,7 @@ for (cr in 1:length(crNum)){
   # if there are new das OR acoustics to process/not test or blank run
   if (newDas == TRUE || newPam == TRUE){
     
-    # --------- Download, read, process new das files ---------------------
+    # --------- IDXNEW LOOP Download, read, process new das files ---------
     if (newDas == TRUE){
       cat(' Processing', length(idxNew), 'new das files:\n')
       # loop through all idxNew
@@ -267,7 +267,8 @@ for (cr in 1:length(crNum)){
                                     overwrite = TRUE, path = dasFile)
         
         # basic data checks
-        df_check = swfscDAS::das_check(dasFile, skip = 0, print.cruise.nums = FALSE)
+        df_check = swfscDAS::das_check(dasFile, skip = 0, 
+                                       print.cruise.nums = FALSE)
         # read and process
         df_read = swfscDAS::das_read(dasFile, skip = 0)
         df_proc = swfscDAS::das_process(dasFile)
@@ -277,7 +278,7 @@ for (cr in 1:length(crNum)){
         df_proc = assignTimeZone(df_proc, shipCode[cr], 
                                  file.path(dir_wd, 'inputs', 'TimeZones.csv'))
         # If looking at compiled data.frames (tracks, points, etc) all timezones 
-        # will be just a single one (HST), but they will have been adjusted for SST
+        # will be just single one (HST), but will have been adjusted for SST
         # View(df_proc)
         
         # correct cruise number (only need on first few days of Leg 1)
@@ -318,7 +319,7 @@ for (cr in 1:length(crNum)){
           load(file.path(dir_data, outName))
           # combine
           et = rbind(et, etNew)
-          et = unique(et)                 # remove duplicates (in case ran already)
+          et = unique(et)   # remove duplicates (in case ran already)
           et = et[order(et$DateTime1),]   # sort in case out of order
         } else {
           et = etNew
@@ -541,7 +542,7 @@ for (cr in 1:length(crNum)){
 } # end loop through multiple boats 
 
 
-# --- Combine vessels for plotting ----------------------------------------
+# --- COMBINE vessels for plotting ----------------------------------------
 
 if (multiVessel == TRUE){
   # combined lists generated within the loop need to be 'collapsed' into dfs 
