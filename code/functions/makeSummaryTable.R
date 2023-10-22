@@ -30,8 +30,8 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   if (nrow(st) == 0){
     shipList = c('Sette', 'Sette', 'Sette', 'Sette', 'Sette', 
                  'Lasker', 'Lasker', '')
-    legList = c('Leg 1', 'Leg 2', 'Leg 3', 'Leg 4', 'Leg 5', 
-                'Leg 1', 'Leg 2', 'Total')
+    legList = c(', Leg 1', ', Leg 2', ', Leg 3', ', Leg 4', ', Leg 5', 
+                ', Leg 1', ', Leg 2', 'Total')
     # legList = c('Sette Leg 1', 'Sette Leg 2', 'Sette Leg 3', 'Sette Leg 4', 
     #             'Sette Leg 5', 'Lasker Leg 1', 'Lasker Leg 2', 'Total')
     st = data.frame(ship = shipList, 
@@ -96,12 +96,13 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   # ft = flextable::flextable(st, col_keys = c('Ship Leg', 'Days at Sea', 
   #                                            'Distance [km]', 'Visual Sightings',
   #                                            'Acoustic Detections')) 
-  ft = flextable::flextable(st, col_keys = c('dummy', 'days', 'dist', 'spVis', 'spPam')) %>% 
+  ft = flextable::flextable(st, col_keys = c('dummy', 'days', 'dist', 'spVis', 
+                                             'spPam')) %>% 
     flextable::compose(j = 'dummy', value = flextable::as_paragraph(
-      flextable::as_i(st$ship), ' ', st$leg))
+      flextable::as_i(st$ship), st$leg))
   
   ft = flextable::theme_vanilla(ft)
-  ft = flextable::set_header_labels(ft, dummy = 'Ship Leg', days = 'Days at Sea',
+  ft = flextable::set_header_labels(ft, dummy = 'Ship, Leg', days = 'Days at Sea',
                                     segments = 'Segments', dist = 'Distance [km]', 
                                     spVis = 'Visual Sightings', 
                                     spPam = 'Acoustic Detections'
