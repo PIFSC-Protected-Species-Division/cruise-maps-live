@@ -25,12 +25,17 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   #' @examples
   #'
   #'#######################################################################
-  
+
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
-    legList = c('Sette Leg 1', 'Sette Leg 2', 'Sette Leg 3', 'Sette Leg 4', 
-                'Sette Leg 5', 'Lasker Leg 1', 'Lasker Leg 2', 'Total')
-    st = data.frame(ship_leg = legList, 
+    shipList = c('Sette', 'Sette', 'Sette', 'Sette', 'Sette', 
+                 'Lasker', 'Lasker', '')
+    legList = c('Leg 1', 'Leg 2', 'Leg 3', 'Leg 4', 'Leg 5', 
+                'Leg 1', 'Leg 2', 'Total')
+    # legList = c('Sette Leg 1', 'Sette Leg 2', 'Sette Leg 3', 'Sette Leg 4', 
+    #             'Sette Leg 5', 'Lasker Leg 1', 'Lasker Leg 2', 'Total')
+    st = data.frame(ship = shipList, 
+                    leg = legList, 
                     days = integer(length(legList)), 
                     #segments = integer(length(legList)), 
                     dist = integer(length(legList)), 
@@ -88,14 +93,21 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   
   
   # create nicely formated flextable
-  ft = flextable::flextable(st)
+  # ft = flextable::flextable(st, col_keys = c('Ship Leg', 'Days at Sea', 
+  #                                            'Distance [km]', 'Visual Sightings',
+  #                                            'Acoustic Detections')) 
+  ft = flextable::flextable(st, col_keys = c('dummy', 'days', 'dist', 'spVis', 'spPam')) %>% 
+    flextable::compose(j = 'dummy', value = flextable::as_paragraph(
+      flextable::as_i(st$ship), ' ', st$leg))
+  
   ft = flextable::theme_vanilla(ft)
-  ft = flextable::set_header_labels(ft, ship_leg = 'Ship Leg', days = 'Days at Sea',
+  ft = flextable::set_header_labels(ft, dummy = 'Ship Leg', days = 'Days at Sea',
                                     segments = 'Segments', dist = 'Distance [km]', 
                                     spVis = 'Visual Sightings', 
                                     spPam = 'Acoustic Detections'
   )
   # ft = add_header_row(x = ft, values = c('', 'Effort', 'Species'), colwidths = c(2, 2, 2))
+  
   
   # limit significant digits
   ft = flextable::colformat_double(ft, j = 3, digits = 1)
@@ -108,6 +120,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   ft = flextable::width(ft, c(4,5), width = 1.2)
   # ft = flextable::align(ft, j = c(2,3,4), align = 'center')
   ft = flextable::align(ft, j = c(2,3,4,5), align = 'center')
+  ft = flextable::align(ft, j = 1, align = 'right')
   ft = flextable::align(ft, align = 'center', part = 'header')
   
   # change borders and text color

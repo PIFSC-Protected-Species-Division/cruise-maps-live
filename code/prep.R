@@ -67,9 +67,10 @@ using("googledrive",
       "ggnewscale",
       "terra",
       "sf",
-       "sp",
+      "sp",
       "RColorBrewer",
-      "DBI"
+      "DBI",
+      'ggtext'
       # "raster", # retired
       # "cowplot", # not actually used? 
       # "rgdal", # being retired so removed
