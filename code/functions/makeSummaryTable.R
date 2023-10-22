@@ -28,8 +28,8 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
-    legList = c('OES Leg 1', 'OES Leg 2', 'OES Leg 3', 'OES Leg 4', 'OES Leg 5', 
-                'LSK Leg 1', 'LSK Leg 2', 'Total')
+    legList = c('Sette Leg 1', 'Sette Leg 2', 'Sette Leg 3', 'Sette Leg 4', 
+                'Sette Leg 5', 'Lasker Leg 1', 'Lasker Leg 2', 'Total')
     st = data.frame(ship_leg = legList, 
                     days = integer(length(legList)), 
                     #segments = integer(length(legList)), 
