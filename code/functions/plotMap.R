@@ -182,7 +182,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
-      guides(colour = guide_legend(nrow = 3, byrow = TRUE, order = 1))
+      guides(colour = guide_legend(override.aes = list(size = 1, linewidth = 1, alpha = 1), 
+                                   nrow = 3, byrow = TRUE, order = 1))
   }
   
   
