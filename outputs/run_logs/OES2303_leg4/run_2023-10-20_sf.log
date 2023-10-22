@@ -1,0 +1,34 @@
+
+...run started 2023-10-20 11:19:10 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 2 new das files:
+  DASALL.A18 
+   saved newEffortTracks_OES2303_leg4_DASALL.A18_ran2023-10-20.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A18.gpx 
+  NA 
+
+...run started 2023-10-20 11:23:29 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 2 new das files:
+[1] "C:/users/selene.fregosi/documents/github/cruise-maps-live/data/OES2303/gd_downloads/DASALL.A18"
+   saved newEffortTracks_OES2303_leg4_DASALL.A18_ran2023-10-20.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A18.gpx 
+[1] "C:/users/selene.fregosi/documents/github/cruise-maps-live/data/OES2303/gpx/compiledEffortTracks_OES2303.gpx"
+
+...run started 2023-10-20 12:04:49 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+ Processing 3 new das files:
+  DASALL.A12 
+   saved newEffortTracks_OES2303_leg4_DASALL.A12_ran2023-10-20.Rda 
+ Processing 3 new das files:
+  DASALL.A13 
+   saved newEffortTracks_OES2303_leg4_DASALL.A13_ran2023-10-20.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A13.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A13_ran2023-10-20.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A13_ran2023-10-20.Rda 
+[1] "DASALL.A13"

@@ -74,13 +74,16 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
     # st$segments[idx] = length(et$segnum)
     st$dist[idx] = sum(et$dist[which(et$leg == leg[s] & 
                                        et$shipCode == shipCode[s])])
+    # count by species sightings (mixed sp sightings counted twice)
     st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg[s] & 
                                              vs$shipCode == shipCode[s])])
+    # count by group sightings
+    st$spVis[idx] = length(unique(vs$SightNo[which(vs$leg == leg & 
+                                                   vs$shipCode == shipCode)]))
     if (!is.null(ad)){
       st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg[s] &
                                                ad$shipCode == shipCode[s])])
     }
-  }
   
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
