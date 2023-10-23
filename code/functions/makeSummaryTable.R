@@ -25,7 +25,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   #' @examples
   #'
   #'#######################################################################
-
+  
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
     shipList = c('Sette', 'Sette', 'Sette', 'Sette', 'Sette', 
@@ -78,12 +78,13 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
     st$spVis[idx] = length(vs$SpCode[which(vs$leg == leg[s] & 
                                              vs$shipCode == shipCode[s])])
     # count by group sightings
-    st$spVis[idx] = length(unique(vs$SightNo[which(vs$leg == leg & 
-                                                   vs$shipCode == shipCode)]))
+    st$spVis[idx] = length(unique(vs$SightNo[which(vs$leg == leg[s] & 
+                                                     vs$shipCode == shipCode[s])]))
     if (!is.null(ad)){
       st$spPam[idx] = length(ad$sp_map[which(ad$leg == leg[s] &
                                                ad$shipCode == shipCode[s])])
     }
+  }
   
   # sum the legs
   st$days[8] = sum(as.integer(st$days[1:7]), na.rm = TRUE)
@@ -99,7 +100,7 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
   # ft = flextable::flextable(st, col_keys = c('Ship Leg', 'Days at Sea', 
   #                                            'Distance [km]', 'Visual Sightings',
   #                                            'Acoustic Detections')) 
-  ft = flextable::flextable(st, col_keys = c('dummy', 'days', 'dist', 'spVis', 
+  ft = flextable::flextable(st, col_keys = c('dummy', 'days', 'dist', 'spVis',
                                              'spPam')) %>% 
     flextable::compose(j = 'dummy', value = flextable::as_paragraph(
       flextable::as_i(st$ship), st$leg))

@@ -18,16 +18,16 @@ library(tidyverse)
 # --- USER SPECIFIED INPUTS -----------------------------------------------
 # these inputs will change/need updating within a SURVEY (e.g., within HICEAS)
 
-# data_source = 'gd' # google drive
+data_source = 'gd' # google drive
 # data_source = 'blank' # for making blank table and map. Set leg to 0
 # data_source = 'test_local' # work with local test data set.
-data_source = 'test_gd' # work with gd  test data set.
+# data_source = 'test_gd' # work with gd  test data set.
 
 # SET CRUISE NUMBER, SHIP CODE, LEG
-crNum = c(2303, 2401)           #2303
-shipCode = c('OES', 'LSK')      # OES
-shipName = c('Sette', 'Lasker') # Sette
-leg = c('4', '1')               # '1' # as string
+crNum     = 2303 #c(2303, 2401)           #2303
+shipCode  = 'OES' #c('OES', 'LSK')      # OES
+shipName  = 'Sette' #c('Sette', 'Lasker') # Sette
+leg       = '4' #c('4', '1')               # '1' # as string
 
 # define a projID/legID strings to be used later
 projID = stringr::str_c(shipCode, crNum)
@@ -37,6 +37,7 @@ if (length(crNum) > 1){
   projIDC = stringr::str_c(projID, collapse = '_')
   legIDC = stringr::str_c(legID, collapse = '_')
 } else { # single vessel
+  multiVessel = FALSE
   projIDC = projID
   legIDC = legID
 }
@@ -123,6 +124,7 @@ for (cr in 1:length(crNum)){
   } else {
     source(file.path(dir_code, 'functions', 'mapGDDirs.R'))
     dir_gd = mapGDDirs(data_source, projID[cr])
+    save(dir_gd, file = dir_gdFile)
   }
   
   # ------ Set up local data folder structure -----------------------------

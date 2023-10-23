@@ -138,7 +138,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       
       ggspatial::layer_spatial(ep, alpha=ta, size=tw, 
                                aes(color=colors_lines[2]))+
-      ggspatial::layer_spatial(tmp, alpha=ta, size=tw, 
+      ggspatial::layer_spatial(epNew, alpha=ta, size=tw, 
                                aes(color=colors_lines[1]))+
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
