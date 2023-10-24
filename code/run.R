@@ -539,31 +539,37 @@ for (cr in 1:length(crNum)){
   } else {
     genPlots[cr] = FALSE
     cat(' No new das or acoustic files to process. Exiting.\n')
+    
   }
   
 } # end loop through multiple boats 
-
 
 # --- COMBINE vessels for plotting ----------------------------------------
 
 if (multiVessel == TRUE){
   # combined lists generated within the loop need to be 'collapsed' into dfs 
-  epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
-  epC = dplyr::bind_rows(epL, .id = 'projID')
-  etC = dplyr::bind_rows(etL, .id = 'projID')
-  vsC = dplyr::bind_rows(vsL, .id = 'projID')
-  adC = dplyr::bind_rows(adL, .id = 'projID')
+  if (newDas == TRUE){
+    epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
+    epC = dplyr::bind_rows(epL, .id = 'projID')
+    etC = dplyr::bind_rows(etL, .id = 'projID')
+    vsC = dplyr::bind_rows(vsL, .id = 'projID')
+    # save all these 
+    save(epC, file = file.path(dir_wd, 'data', 
+                               paste0('compiledEffortPoints_', projIDC, '.Rda')))
+    save(etC, file = file.path(dir_wd, 'data', 
+                               paste0('compiledEffortTracks_', projIDC, '.Rda')))
+    save(vsC, file = file.path(dir_wd, 'data', 
+                               paste0('compiledSightings_', projIDC, '.Rda')))
+    
+  }
   
-  # save all these 
-  save(epC, file = file.path(dir_wd, 'data', 
-                             paste0('compiledEffortPoints_', projIDC, '.Rda')))
-  save(etC, file = file.path(dir_wd, 'data', 
-                             paste0('compiledEffortTracks_', projIDC, '.Rda')))
-  save(vsC, file = file.path(dir_wd, 'data', 
-                             paste0('compiledSightings_', projIDC, '.Rda')))
-  save(adC, file = file.path(dir_wd, 'data', 
-                             paste0('compiledDetections_', projIDC, '.Rda')))
-  cat(' Saved combined compiled effort points, tracks, sightings, and detections\n')
+  if (newPam == TRUE){
+    adC = dplyr::bind_rows(adL, .id = 'projID')
+    save(adC, file = file.path(dir_wd, 'data', 
+                               paste0('compiledDetections_', projIDC, '.Rda')))
+    
+    cat(' Saved combined compiled effort points, tracks, sightings, and detections\n')
+  }
   
   # ### NEEDS UPDATING/DECISIONS ##############
   # will need to have some checks for if one vessel does have new data and other doesnt?
@@ -579,14 +585,17 @@ if (multiVessel == TRUE){
   googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx)
   cat('   saved', basename(outGPX), '\n')
   
-} else {
-  multiVessel = FALSE
+} else if (multiVessel == FALSE){
   # just rename things with C so same function calls can be used below
-  epNewC = epNew
-  epC = ep
-  etC = et
-  vsC = vs
-  adC = ad
+  if (newDas == TRUE){
+    epNewC = epNew
+    epC = ep
+    etC = et
+    vsC = vs
+  }
+  if (newPam == TRUE){
+    adC = ad
+  }
 }# multiple crNum steps
 
 # ------ Plot everything! -------------------------------------------------
@@ -708,7 +717,7 @@ if (all(genPlots) == TRUE){
            dpi = res,
            bg = 'white',
            device = 'png')
-
+    
     ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
            height = height,
            width = width,
@@ -774,7 +783,7 @@ if (all(genPlots) == TRUE){
            dpi = res,
            bg = 'white',
            device = 'png')
-
+    
     ggsave(filename = file.path(dir_msnaps, paste0(outStr, '.pdf')),
            height = height,
            width = width,
