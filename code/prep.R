@@ -68,10 +68,10 @@ using("googledrive",
       "terra",
       "sf",
       "sp",
+      "raster",
       "RColorBrewer",
       "DBI",
       'ggtext'
-      # "raster", # retired
       # "cowplot", # not actually used? 
       # "rgdal", # being retired so removed
       # "rgeos",  # being retired so removed
