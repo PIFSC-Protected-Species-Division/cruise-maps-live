@@ -1,0 +1,9 @@
+
+... run started 2023-10-26 08:02:09 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 1 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ No new das or acoustic files to process. Exiting.
+...run complete 2023-10-26 08:02:13 PDT ...
