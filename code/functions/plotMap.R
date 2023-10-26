@@ -71,7 +71,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   ceMap = dplyr::left_join(ce, key, by = 'SpCode')
   ceMap <- ceMap[ceMap$lon<(-150),]
   ceMap <- sf::st_as_sf(ceMap, coords=c("lon","Lat"), crs = 4326) 
-  ceMap = ceMap[!is.na(ceMap$SpName),] # remove any species names that didn't find a match
+  ceMap = ceMap[!is.na(ceMap$SpName),] # remove species names without a match
   #sort ce by species name 
   ceMap = ceMap[rev(order(ceMap$SpName)),]
   
@@ -121,12 +121,12 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   
   ### ONE SHIP ##########################
-  if(length(shipCode) == 1){
+  if ((length(shipCode) == 1) || length(unique(ep$shipCode == 1))){
     
     colors_lines <- c("deeppink","deeppink4", "grey0")
     
-    labels_lines <- c( "Survey effort (recent)", 
-                       "Survey effort (to date)", 
+    labels_lines <- c( "Survey effort (recent, *Sette*)", 
+                       "Survey effort (to date, *Sette*)", 
                        "Pre-determined transect lines")
     
     base_map = base_map +
@@ -146,10 +146,10 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     
     
     ### TWO SHIPS #######################
-  } else if (length(shipCode) == 2){
+  } else if ((length(shipCode) == 2) && (length(unique(ep$shipCode)) == 2)){
     
     # colors will be treated as though in alphabetical order
-    colors_lines <- c("deeppink", "deeppink4", "gold", "darkorange2", "grey0")
+    colors_lines <- c("grey0", "deeppink", "deeppink4", "gold", "darkorange2")
     # even though a call to colors_lines[3] at this point would give you gold, 
     # when plotting it would give deeppink4
     
@@ -182,7 +182,8 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
-      guides(colour = guide_legend(override.aes = list(size = 1, linewidth = 1, alpha = 1), 
+      guides(colour = guide_legend(override.aes = list(size = 1, linewidth = 1,
+                                                       alpha = 1), 
                                    nrow = 3, byrow = TRUE, order = 1))
   }
   

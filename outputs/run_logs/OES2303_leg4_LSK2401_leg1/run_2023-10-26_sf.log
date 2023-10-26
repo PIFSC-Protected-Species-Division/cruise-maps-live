@@ -59,3 +59,71 @@ Warning messages:
 5: In is.na(x) :
   is.na() applied to non-(list or vector) of type 'expression'
 ...run complete 2023-10-26 12:13:59 PDT ...
+
+... run started 2023-10-26 16:08:13 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ Processing 1 new das files:
+ -> DASALL.A25 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_OES2303_leg4_DASALL.A25_ran2023-10-26.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A25.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A25_ran2023-10-26.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A25_ran2023-10-26.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ No new acoustic file to process.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+No PAM file present!! Skipping any acoustic processing/plotting...
+ Processing 1 new das files:
+ -> DASALL.A25 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A25_ran2023-10-26.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A25.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A25_ran2023-10-26.Rda 
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A25_ran2023-10-26.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ No new acoustic file to process.
+   saved compiledEffortTracks_OES2303_LSK2401_combined.gpx 
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-10-26.png 
+ Generating latest map of visual sightings:
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+[1] "OES" "LSK"
+[1] TRUE
+[1] "deeppink"    "deeppink4"   "gold"        "darkorange2" "grey0"      
+[1] "Survey effort (recent, *Sette*)"   "Survey effort (to date, *Sette*)"  "Survey effort (recent, *Lasker*)" 
+[4] "Survey effort (to date, *Lasker*)" "Pre-determined transect lines"    
+[1] "OES"
+[1] "OES"
+[1] TRUE
+[1] TRUE
+[1] 1
+[1] TRUE
+[1] FALSE
+[1] FALSE
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
