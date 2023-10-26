@@ -24,10 +24,10 @@ data_source = 'gd' # google drive
 # data_source = 'test_gd' # work with gd  test data set.
 
 # SET CRUISE NUMBER, SHIP CODE, LEG
-crNum     = 2303 #c(2303, 2401)           #2303
-shipCode  = 'OES' #c('OES', 'LSK')      # OES
-shipName  = 'Sette' #c('Sette', 'Lasker') # Sette
-leg       = '4' #c('4', '1')               # '1' # as string
+crNum     = c(2303, 2401)           #2303
+shipCode  = c('OES', 'LSK')      # OES
+shipName  = c('Sette', 'Lasker') # Sette
+leg       = c('4', '1')               # '1' # as string
 
 # define a projID/legID strings to be used later
 projID = stringr::str_c(shipCode, crNum)
