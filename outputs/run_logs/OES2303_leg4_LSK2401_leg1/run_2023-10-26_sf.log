@@ -127,3 +127,19 @@ Warning message:
 In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
 Warning message:
 In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-10-26.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg4_LSK2401_leg1_ran2023-10-26 as .png and .pdf
+Warning messages:
+1: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+2: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+3: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+4: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+5: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
