@@ -108,7 +108,10 @@ if (multiVessel == TRUE){
   vsL = list()
 }
 
+newDas = c() # initiate vector for T/F about new DAS
+newPam = c() # initiate vector for T/F about new PAM file
 genPlots = c() # initiate vector for T/F about plotting
+
 
 for (cr in 1:length(crNum)){
   # crNumTmp = crNum[cr]
@@ -207,9 +210,9 @@ for (cr in 1:length(crNum)){
     # ### ### ### ### ###  
     
     if (length(idxNew) > 0){
-      newDas = TRUE
+      newDas[cr] = TRUE
     } else {
-      newDas = FALSE
+      newDas[cr] = FALSE
     }
     
     # ------------ Check for/download new acoustics file ------------------
@@ -223,12 +226,12 @@ for (cr in 1:length(crNum)){
     pamList = googledrive::drive_ls(path = dir_gd$raw_pam, pattern = pat)
     if (nrow(pamList) == 0){
       cat('No PAM file present!! Skipping any acoustic processing/plotting...\n')
-      newPam = FALSE
+      newPam[cr] = FALSE
       # stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
       
     } else if (nrow(pamList) > 1){
       cat('Should only be 1 PAM file!! Stopping process. Resolve and try again.')
-      newPam = FALSE
+      newPam[cr] = FALSE
       stop('Should only be 1 PAM file!! Resolve on Google Drive and try again.')
       
     } else if (nrow(pamList) == 1){
@@ -242,19 +245,19 @@ for (cr in 1:length(crNum)){
       if (is.na(lastTime) || (lastTime <= modTime)){
         googledrive::drive_download(file = googledrive::as_id(pamList$id[1]),
                                     overwrite = TRUE, path = pamFile)
-        newPam = TRUE
+        newPam[cr] = TRUE
       } else {
-        newPam = FALSE
+        newPam[cr] = FALSE
       }
     }
   } # end data source check
   
   # ------ Process everything! --------------------------------------------
   # if there are new das OR acoustics to process/not test or blank run
-  if (newDas == TRUE || newPam == TRUE){
+  if (newDas[cr] == TRUE || newPam[cr] == TRUE){
     
     # --------- IDXNEW LOOP Download, read, process new das files ---------
-    if (newDas == TRUE){
+    if (newDas[cr] == TRUE){
       cat(' Processing', length(idxNew), 'new das files:\n')
       # loop through all idxNew
       for (i in 1:length(idxNew)){
@@ -477,7 +480,7 @@ for (cr in 1:length(crNum)){
     }# end idx == 0 catch
     
     # --------- Extract acoustic detections -------------------------------
-    if (newPam == TRUE){
+    if (newPam[cr] == TRUE){
       cat(' Processing updated acoustic database.\n')
       # 'new' acoustic data will be for an entire leg (not per day) and loaded old 
       # ad file will contain all detections from previous legs
@@ -529,14 +532,14 @@ for (cr in 1:length(crNum)){
         # add newly processed data to the combined/multivessel lists
         adL[[projID[cr]]] = ad
       }
+      # turn on plotting bc we have new data (either visual, acoustic, or both)
+      genPlots[cr] = TRUE
       
     } else {
-      cat(' No new acoustic file to process.\n')
-    }# end newPam catch
+      cat(' No new acoustic file to process. \n')
+    } # end newPam catch
     
-    # turn on plotting bc we have new data (either visual, acoustic, or both)
-    genPlots[cr] = TRUE
-  } else {
+  } else { # no new DAS or PAM files
     genPlots[cr] = FALSE
     cat(' No new das or acoustic files to process. Exiting.\n')
     
@@ -546,9 +549,14 @@ for (cr in 1:length(crNum)){
 
 # --- COMBINE vessels for plotting ----------------------------------------
 
+
 if (multiVessel == TRUE){
+  
+  # ### POSSIBLY NEEDS UPDATING/DECISIONS ##############
+  # will need to have some checks for if one vessel does have new data and other doesnt?
+  
   # combined lists generated within the loop need to be 'collapsed' into dfs 
-  if (newDas == TRUE){
+  if (all(newDas == TRUE)){
     epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
     epC = dplyr::bind_rows(epL, .id = 'projID')
     etC = dplyr::bind_rows(etL, .id = 'projID')
@@ -560,19 +568,21 @@ if (multiVessel == TRUE){
                                paste0('compiledEffortTracks_', projIDC, '.Rda')))
     save(vsC, file = file.path(dir_wd, 'data', 
                                paste0('compiledSightings_', projIDC, '.Rda')))
-    
   }
   
-  if (newPam == TRUE){
+  if (any(newPam == TRUE)){
+    if (any(newPam == FALSE)){
+      fIdx = which(newPam == FALSE)
+      load(file.path(dir_wd, 'data', projID[fIdx], 
+                     paste0('compiledDetections_', projID[fIdx], '.Rda')))
+      
+      adL[[projID[fIdx]]] = ad
+    }
     adC = dplyr::bind_rows(adL, .id = 'projID')
     save(adC, file = file.path(dir_wd, 'data', 
                                paste0('compiledDetections_', projIDC, '.Rda')))
-    
     cat(' Saved combined compiled effort points, tracks, sightings, and detections\n')
   }
-  
-  # ### NEEDS UPDATING/DECISIONS ##############
-  # will need to have some checks for if one vessel does have new data and other doesnt?
   
   # ------ Create GPX from combined track data ----------------------------
   
@@ -587,13 +597,13 @@ if (multiVessel == TRUE){
   
 } else if (multiVessel == FALSE){
   # just rename things with C so same function calls can be used below
-  if (newDas == TRUE){
+  if (any(newDas == TRUE)){
     epNewC = epNew
     epC = ep
     etC = et
     vsC = vs
   }
-  if (newPam == TRUE){
+  if (any(newPam == TRUE)){
     adC = ad
   }
 }# multiple crNum steps
@@ -647,7 +657,7 @@ if (all(genPlots) == TRUE){
   }
   
   # --------- Plot visual sightings map -----------------------------------
-  if (newDas == TRUE){
+  if (any(newDas == TRUE)){
     cat(' Generating latest map of visual sightings:\n')
     
     source(file.path(dir_code, 'functions', 'plotMap.R'))
@@ -731,7 +741,7 @@ if (all(genPlots) == TRUE){
   }
   
   # --------- Plot acoustic detections map --------------------------------
-  if (newPam == TRUE){
+  if (any(newPam == TRUE)){
     cat(' Generating latest map of acoustic detections:\n')
     
     # add correctly formated SpCode col

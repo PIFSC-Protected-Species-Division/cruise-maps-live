@@ -45,6 +45,9 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg){
     st[st == 0] <- NA
   }
   
+  # to re-run from scratch
+  # shipCode = c('OES', 'OES', 'OES', 'OES', 'LSK')
+  # leg = c('1', '2', '3', '4', '1')
   
   for (s in 1:length(shipCode)){
     # define row indices for this leg and ship
