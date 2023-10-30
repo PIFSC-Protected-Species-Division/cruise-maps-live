@@ -1,0 +1,42 @@
+
+... run started 2023-10-30 08:02:09 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ Processing 1 new das files:
+ -> DASALL.A29 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_OES2303_leg4_DASALL.A29_ran2023-10-30.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A29.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A29_ran2023-10-30.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A29_ran2023-10-30.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ Processing updated acoustic database.
+   saved acousticDetections_OES2303_leg4_ran2023-10-30.Rda 
+   saved compiledDetections_OES2303.Rda and as .csv
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ Saved combined compiled effort points, tracks, sightings, and detections
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'x' in selecting a method for function 'subset': object 'etC' not found
+Calls: source ... eval -> trackToGPX -> subset -> .handleSimpleError -> h
+In addition: Warning messages:
+1: package 'raster' was built under R version 4.3.1 
+2: package 'sp' was built under R version 4.3.1 
+3: package 'tidyverse' was built under R version 4.3.1 
+4: package 'ggplot2' was built under R version 4.3.1 
+5: package 'purrr' was built under R version 4.3.1 
+6: package 'dplyr' was built under R version 4.3.1 
+7: package 'forcats' was built under R version 4.3.1 
+8: package 'lubridate' was built under R version 4.3.1 
+9: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+Execution halted
