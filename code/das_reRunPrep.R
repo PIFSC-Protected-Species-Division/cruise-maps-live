@@ -16,7 +16,7 @@ projID = 'LSK2401'
 # dasList filename to be modified
 dasListFile = paste0('~/GitHub/cruise-maps-live/outputs/dasList_', projID, '.Rda')
 # das file to be reprocessed
-dasFile = 'DASALL.A26'
+dasFile = 'DASALL.A29'
 # modDateStr = '2023-08-12'
 
 # compiled file names

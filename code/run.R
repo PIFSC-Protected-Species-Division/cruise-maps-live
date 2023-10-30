@@ -552,11 +552,28 @@ for (cr in 1:length(crNum)){
 
 if (multiVessel == TRUE){
   
+  cat(' --- Combining vessels:', projIDC, '---\n')
   # ### POSSIBLY NEEDS UPDATING/DECISIONS ##############
   # will need to have some checks for if one vessel does have new data and other doesnt?
+  # some of these have been implemented but not for new legs
   
   # combined lists generated within the loop need to be 'collapsed' into dfs 
-  if (all(newDas == TRUE)){
+  if (any(newDas == TRUE)){
+    # load old ones if one of the vessels did not have a new das
+    if (any(newDas == FALSE)){
+      fIdx = which(newDas == FALSE)
+      load(file.path(dir_wd, 'data', projID[fIdx], 
+                     paste0('compiledEffortPoints_', projID[fIdx], '.Rda')))
+      epL[[projID[fIdx]]] = ep
+      load(file.path(dir_wd, 'data', projID[fIdx], 
+                     paste0('compiledEffortTracks_', projID[fIdx], '.Rda')))
+      etL[[projID[fIdx]]] = et
+      load(file.path(dir_wd, 'data', projID[fIdx], 
+                     paste0('compiledSightings_', projID[fIdx], '.Rda')))
+      vsL[[projID[fIdx]]] = vs
+    }
+    
+    # then bind list into data.frame
     epNewC = dplyr::bind_rows(epNewL, .id = 'projID')
     epC = dplyr::bind_rows(epL, .id = 'projID')
     etC = dplyr::bind_rows(etL, .id = 'projID')
@@ -568,9 +585,11 @@ if (multiVessel == TRUE){
                                paste0('compiledEffortTracks_', projIDC, '.Rda')))
     save(vsC, file = file.path(dir_wd, 'data', 
                                paste0('compiledSightings_', projIDC, '.Rda')))
+    cat('   saved combined compiled effort points, tracks, and sightings\n')
   }
   
   if (any(newPam == TRUE)){
+    # load old detections df if one of the vessels did not have a new file
     if (any(newPam == FALSE)){
       fIdx = which(newPam == FALSE)
       load(file.path(dir_wd, 'data', projID[fIdx], 
@@ -578,10 +597,11 @@ if (multiVessel == TRUE){
       
       adL[[projID[fIdx]]] = ad
     }
+    # then bind list into data.frame
     adC = dplyr::bind_rows(adL, .id = 'projID')
     save(adC, file = file.path(dir_wd, 'data', 
                                paste0('compiledDetections_', projIDC, '.Rda')))
-    cat(' Saved combined compiled effort points, tracks, sightings, and detections\n')
+    cat('   saved combined compiled acoustic detections\n')
   }
   
   # ------ Create GPX from combined track data ----------------------------
@@ -609,7 +629,7 @@ if (multiVessel == TRUE){
 }# multiple crNum steps
 
 # ------ Plot everything! -------------------------------------------------
-if (all(genPlots) == TRUE){
+if (any(genPlots) == TRUE){
   
   # --------- Make summary table ------------------------------------------
   # check for acoustics - they might not be updated daily
