@@ -86,3 +86,309 @@ Error in `$<-.data.frame`(`*tmp*`, SpCode, value = c(77L, 61L, 77L, 177L,  :
 Calls: source ... withVisible -> eval -> eval -> $<- -> $<-.data.frame
 In addition: There were 18 warnings (use warnings() to see them)
 Execution halted
+
+... run started 2023-11-01 11:02:18 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ Processing 1 new das files:
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+There were 1 on effort events with NA Lat/Lon/DateTime values that will ignored during segment chopping
+   saved newEffortTracks_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A31.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ Processing updated acoustic database.
+   saved acousticDetections_OES2303_leg4_ran2023-11-01.Rda 
+   saved compiledDetections_OES2303.Rda and as .csv
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ Processing 1 new das files:
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A31.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ No new acoustic file to process. 
+Warning messages:
+1: In das_sight.das_df(as_das_df(x), ...) :
+  Not all S/K/M/G events have corresponding numeric (1:8) events. The Gs... values for these events will all be NA in the output
+2: In das_sight.das_df(as_das_df(x), ...) :
+  Not all S/K/M/G events have corresponding numeric (1:8) events. The Gs... values for these events will all be NA in the output
+3: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+4: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+
+... run started 2023-11-01 11:12:20 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ Processing 1 new das files:
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+There were 1 on effort events with NA Lat/Lon/DateTime values that will ignored during segment chopping
+   saved newEffortTracks_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A31.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+Warning messages:
+1: In das_sight.das_df(as_das_df(x), ...) :
+  Not all S/K/M/G events have corresponding numeric (1:8) events. The Gs... values for these events will all be NA in the output
+2: In das_sight.das_df(as_das_df(x), ...) :
+  Not all S/K/M/G events have corresponding numeric (1:8) events. The Gs... values for these events will all be NA in the output
+ Processing updated acoustic database.
+Warning messages:
+1: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+Warning messages:
+1: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+[1] 52
+[1] 64
+Warning messages:
+1: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+Warning messages:
+1: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+Warning messages:
+1: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+   saved acousticDetections_OES2303_leg4_ran2023-11-01.Rda 
+[1] "compiledDetections_OES2303.Rda"
+[1] TRUE
+[1] 96
+  [1] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT"
+ [13] "AT" "AT" "AT" "AT" "V"  "AT" "AT" "V"  "AT" "AT" "AT" "AT"
+ [25] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+ [37] "V"  "AT" "AT" "AT" "V"  "AT" "AT" "V"  "AT" "V"  "AT" "AT"
+ [49] "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "V"  "AT" "AT" "AT"
+ [61] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+ [73] "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT"
+ [85] "AT" "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+ [97] "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT" "V"  "AT"
+[109] "AT" "AT" "V"  "AT" "AT" "V"  "AT" "AT" "AT" "AT" "AT" "AT"
+[121] "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[133] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[145] "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[157] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT"
+[169] "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT" "AT" "AT"
+[181] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[193] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[205] "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[217] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "OT" "AT"
+[229] "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT" "AT"
+[241] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "V" 
+[253] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "V"  "AT" "AT"
+[265] "AT" "V"  "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[277] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT"
+[289] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "V"  "AT" "AT" "AT" "AT"
+[301] "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT" "AT"
+[313] "AT" "AT" "V"  "V"  "V"  "AT" "AT" "AT" "AT" "V" 
+[1] 227
+[1] 96
+[1] 95
+   saved compiledDetections_OES2303.Rda and as .csv
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ Processing 1 new das files:
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A31.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ No new acoustic file to process. 
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+   saved combined compiled acoustic detections
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-01.png 
+ Generating latest map of visual sightings:
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-01.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+Warning messages:
+1: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+2: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+3: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+   saved dailyMap_visuals_OES2303_leg4_LSK2401_leg1_ran2023-11-01 as .png and .pdf
+[1] "OES" "LSK"
+[1] 1
+[1] 2
+Error: unexpected ')' in "(length(unique(ep$shipCode)) == 1))"
+[1] FALSE
+[1] TRUE
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+ Generating latest map of visual sightings:
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-01.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+Warning messages:
+1: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+2: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+3: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+   saved dailyMap_visuals_OES2303_leg4_LSK2401_leg1_ran2023-11-01 as .png and .pdf
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+[1] "gold"
+[1] "deeppink"    "deeppink4"   "gold"        "darkorange2"
+[5] "grey0"      
+[1] "deeppink4"
+[1] "darkorange2"
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Error in level(colors_lines) : could not find function "level"
+Error: object 'base_map' not found
+Error: object 'base_map' not found
+Error: object 'base_map' not found
+Error: object 'base_map' not found
+Error: object 'base_map' not found
+Warning message:
+In rm(base_map) : object 'base_map' not found
+Error: object 'ase_map' not found
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+[1] "grey0"
+[1] "deeppink"
+[1] "gold"
+[1] "deeppink4"
+[1] "gold"
+Scale for colour is already present.
+Adding another scale for colour, which will replace the existing
+scale.
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+
+... run started 2023-11-01 13:29:29 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+Error: object 'file_das' not found
+ Updating summary table:
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+   saved dailyMap_visuals as .png and .pdf
+Error: object 'outName' not found
+In addition: Warning messages:
+1: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+2: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+3: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Error: object 'ad' not found
+Error in `dplyr::left_join()` at code/functions/plotMap.R:71:2:
+! Join columns in `x` must be present in the data.
+✖ Problem with `SpCode`.
+Run `rlang::last_trace()` to see where the error occurred.
+Error: object 'mapOutA' not found
+Error: object 'base_map_A' not found
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+   saved dailyMap_acoustics as .png and .pdf
+Warning messages:
+1: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+2: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'

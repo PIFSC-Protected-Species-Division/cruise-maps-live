@@ -586,6 +586,17 @@ if (multiVessel == TRUE){
     save(vsC, file = file.path(dir_wd, 'data', 
                                paste0('compiledSightings_', projIDC, '.Rda')))
     cat('   saved combined compiled effort points, tracks, and sightings\n')
+    
+    # ------ Create GPX from combined track data ----------------------------
+    
+    source(file.path(dir_code, 'functions', 'trackToGPX.R'))
+    
+    # two-vessel combined compiled tracks
+    outGPX = file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, 
+                                              '_combined.gpx'))
+    trackToGPX(etC, outGPX)
+    googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx)
+    cat('   saved', basename(outGPX), '\n')
   }
   
   if (any(newPam == TRUE)){
@@ -603,17 +614,6 @@ if (multiVessel == TRUE){
                                paste0('compiledDetections_', projIDC, '.Rda')))
     cat('   saved combined compiled acoustic detections\n')
   }
-  
-  # ------ Create GPX from combined track data ----------------------------
-  
-  source(file.path(dir_code, 'functions', 'trackToGPX.R'))
-  
-  # two-vessel combined compiled tracks
-  outGPX = file.path(dir_wd, 'data', paste0('compiledEffortTracks_', projIDC, 
-                                            '_combined.gpx'))
-  trackToGPX(etC, outGPX)
-  googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx)
-  cat('   saved', basename(outGPX), '\n')
   
 } else if (multiVessel == FALSE){
   # just rename things with C so same function calls can be used below
@@ -765,7 +765,7 @@ if (any(genPlots) == TRUE){
     cat(' Generating latest map of acoustic detections:\n')
     
     # add correctly formated SpCode col
-    adC$SpCode = as.integer(ad$sp_map)
+    adC$SpCode = as.integer(adC$sp_map)
     
     mapOutA = plotMap(dir_wd, epC, epNewC, adC, shipCode, dataType = 'acoustic')
     base_map_A = mapOutA$base_map

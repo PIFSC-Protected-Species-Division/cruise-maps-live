@@ -114,6 +114,7 @@ extractAcousticDetections <- function(pamFile){
           spTmp = '949'
         }
         
+        # occasionally get warning bc there are two visual ids. Just take first. 
         # tryCatch({dtTmp$sp_map[s] = spTmp}, warning = function(w) print(s))
         dtTmp$sp_map[s] = spTmp
       } # loop through all detection rows
