@@ -1,0 +1,88 @@
+
+... run started 2023-11-01 08:02:09 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ Processing 1 new das files:
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+There were 1 on effort events with NA Lat/Lon/DateTime values that will ignored during segment chopping
+   saved newEffortTracks_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_OES2303.Rda and as .csv
+   saved effortTracks_OES2303_leg4_DASALL.A31.gpx 
+   saved compiledEffortTracks_OES2303.gpx 
+   saved newEffortPoints_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_OES2303.Rda and as .csv
+   saved newSightings_OES2303_leg4_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_OES2303.Rda and as .csv
+ Processing updated acoustic database.
+   saved acousticDetections_OES2303_leg4_ran2023-11-01.Rda 
+   saved compiledDetections_OES2303.Rda and as .csv
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ Processing 3 new das files:
+ -> DASALL.A29 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A29_ran2023-11-01.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A29.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A29_ran2023-11-01.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A29_ran2023-11-01.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ -> DASALL.A30 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A30_ran2023-11-01.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A30.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A30_ran2023-11-01.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A30_ran2023-11-01.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ -> DASALL.A31 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg1_DASALL.A31.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg1_DASALL.A31_ran2023-11-01.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ No new acoustic file to process. 
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+   saved combined compiled acoustic detections
+   saved compiledEffortTracks_OES2303_LSK2401_combined.gpx 
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-01.png 
+ Generating latest map of visual sightings:
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-01.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg4_LSK2401_leg1_ran2023-11-01 as .png and .pdf
+ Generating latest map of acoustic detections:
+Error in `$<-.data.frame`(`*tmp*`, SpCode, value = c(77L, 61L, 77L, 177L,  : 
+  replacement has 35 rows, data has 357
+Calls: source ... withVisible -> eval -> eval -> $<- -> $<-.data.frame
+In addition: There were 18 warnings (use warnings() to see them)
+Execution halted
