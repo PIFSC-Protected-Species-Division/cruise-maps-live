@@ -87,7 +87,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   if (dataType == 'visual'){
     plotTitle = 'What cetaceans have we seen during HICEAS 2023?'
-    legendName = 'Sightings'
+    legendName = 'Visual Sightings'
     shapesSize = 3
   } else if (dataType == 'acoustic'){
     plotTitle = 'What cetaceans have we heard during HICEAS 2023?'
@@ -121,7 +121,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   
   ### ONE SHIP ##########################
-  if ((length(shipCode) == 1) || length(unique(ep$shipCode == 1))){
+  if ((length(shipCode) == 1) || (length(unique(ep$shipCode)) == 1)){
     
     colors_lines <- c("deeppink","deeppink4", "grey0")
     
@@ -148,10 +148,11 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     ### TWO SHIPS #######################
   } else if ((length(shipCode) == 2) && (length(unique(ep$shipCode)) == 2)){
     
-    # colors will be treated as though in alphabetical order
-    colors_lines <- c("grey0", "deeppink", "deeppink4", "gold", "darkorange2")
+    # colors must be defined in legend order, but called ?? order
+    colors_lines <- c("deeppink", "deeppink4", "gold", "darkorange2", "grey0")
     # even though a call to colors_lines[3] at this point would give you gold, 
-    # when plotting it would give deeppink4
+    # when plotting it would give darkorange2
+    # ?? mystery order ?? 1-deeppink4 2-gold 3-darkorange2 4-deeppink 5-grey0 
     
     # specify labels in actual order they should appear in legend
     labels_lines <- c('Survey effort (recent, *Sette*)', 
@@ -171,14 +172,14 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
       
       
       ggspatial::layer_spatial(ep[ep$shipCode == 'OES',], alpha=ta, size=tw,
-                               aes(color=colors_lines[3]))+
-      ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
                                aes(color=colors_lines[1]))+
+      ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
+                               aes(color=colors_lines[3]))+
       
       ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
-                               size=tw, aes(color=colors_lines[2]))+
-      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
                                size=tw, aes(color=colors_lines[4]))+
+      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
+                               size=tw, aes(color=colors_lines[2]))+
       
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
                          labels = labels_lines)+
