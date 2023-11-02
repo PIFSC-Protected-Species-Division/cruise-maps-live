@@ -649,7 +649,7 @@ if (any(genPlots) == TRUE){
       st = data.frame()
     }
     
-    lt = makeSummaryTable(st, etC, vsC, adC, shipCode, leg)
+    lt = makeSummaryTable(st, etC, vsC, adC, tzKeyFile, shipCode, leg)
     
     # break out pieces of returned list
     st = lt$st
