@@ -649,7 +649,8 @@ if (any(genPlots) == TRUE){
       st = data.frame()
     }
     
-    lt = makeSummaryTable(st, etC, vsC, adC, tzKeyFile, shipCode, leg)
+    lt = makeSummaryTable(st, etC, vsC, adC, shipCode, leg,
+                          file.path(dir_wd, 'inputs', 'TimeZones.csv'))
     
     # break out pieces of returned list
     st = lt$st
