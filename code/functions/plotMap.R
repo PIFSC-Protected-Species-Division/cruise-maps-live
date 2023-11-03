@@ -121,7 +121,7 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   
   ### ONE SHIP ##########################
-  if ((length(shipCode) == 1) || (length(unique(ep$shipCode)) == 1)){
+  if ((length(unique(ep$shipCode)) == 1) && (unique(ep$shipCode) == 'OES')){
     
     colors_lines <- c("deeppink","deeppink4", "grey0")
     
@@ -146,43 +146,53 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
     
     
     ### TWO SHIPS #######################
-  } else if ((length(shipCode) == 2) && (length(unique(ep$shipCode)) == 2)){
+  } else if (length(unique(ep$shipCode)) == 2){ ## (length(shipCode) == 2)
     
-    # colors must be defined in legend order, but called ?? order
+    # colors/labels must be defined in desired legend order
     colors_lines <- c("deeppink", "deeppink4", "gold", "darkorange2", "grey0")
-    # even though a call to colors_lines[3] at this point would give you gold, 
-    # when plotting it would give darkorange2
-    # ?? mystery order ?? 1-deeppink4 2-gold 3-darkorange2 4-deeppink 5-grey0 
     
     # specify labels in actual order they should appear in legend
     labels_lines <- c('Survey effort (recent, *Sette*)', 
-                      "Survey effort (to date, *Sette*)", 
-                      "Survey effort (recent, *Lasker*)", 
-                      "Survey effort (to date, *Lasker*)", 
-                      "Pre-determined transect lines")
+                      'Survey effort (to date, *Sette*)', 
+                      'Survey effort (recent, *Lasker*)', 
+                      'Survey effort (to date, *Lasker*)', 
+                      'Pre-determined transect lines')
+    # but colors will be assigned based on the alphabetical order of the 'color'
+    # aes set as each item is plotted - so those are arbitrarily set a-f to 
+    # match legend order
     
     
     base_map = base_map +
       geom_line(data=lines, aes(x = Longitude, y= Latitude, group=Line, 
-                                color = colors_lines[5]),
-                alpha=0.5, linewidth=0.5)+
-      ggspatial::layer_spatial(eez, fill=NA, color = "white")+
-      geom_sf(data=mhi, fill = "white", color="black", lwd=0.5)+
-      geom_sf(data=nwhi, fill= "white", color = "white")+
+                                color = 'f'),
+                alpha=0.5, linewidth=0.5) +
+      ggspatial::layer_spatial(eez, fill=NA, color = "white") +
+      geom_sf(data=mhi, fill = "white", color="black", lwd=0.5) +
+      geom_sf(data=nwhi, fill= "white", color = "white") +
       
       
       ggspatial::layer_spatial(ep[ep$shipCode == 'OES',], alpha=ta, size=tw,
-                               aes(color=colors_lines[1]))+
+                               aes(color = 'b')) +
+      # aes(color=colors_lines[1])) +
       ggspatial::layer_spatial(ep[ep$shipCode == 'LSK',], alpha=ta, size=tw,
-                               aes(color=colors_lines[3]))+
-      
-      ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
-                               size=tw, aes(color=colors_lines[4]))+
-      ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta, 
-                               size=tw, aes(color=colors_lines[2]))+
-      
+                               aes(color = 'd'))
+    # aes(color=colors_lines[3]))
+    
+    if (nrow(epNew[epNew$shipCode == 'OES',]) > 1){
+      base_map = base_map + 
+        ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
+                                 # size=tw, aes(color=colors_lines[4]))
+                                 size = tw, aes(color = 'a'))
+    }
+    if (nrow(epNew[epNew$shipCode == 'LSK',]) > 1){
+      base_map = base_map + 
+        ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta,
+                                 size=tw, aes(color = 'c'))
+    }
+    
+    base_map = base_map + 
       scale_color_manual(name = "Tracklines & Effort", values = colors_lines, 
-                         labels = labels_lines)+
+                         labels = labels_lines, limits = c('a', 'b', 'c', 'd', 'f')) +
       guides(colour = guide_legend(override.aes = list(size = 1, linewidth = 1,
                                                        alpha = 1), 
                                    nrow = 3, byrow = TRUE, order = 1))
