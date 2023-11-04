@@ -57,9 +57,15 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
   
   ## Load HICEAS points, recent (epNew)
   # clean up newest effort locations
-  epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
-  epNew<-epNew[epNew$lon<(-150),]
-  epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326)
+  if (nrow(epNew) !=0){ # now new das file
+    epNew$lon <- ifelse(epNew$Lon > 0, epNew$Lon-360, epNew$Lon)
+    epNew<-epNew[epNew$lon<(-150),]
+    epNew <- sf::st_as_sf(epNew, coords=c("lon","Lat"), crs = 4326)
+    plotRecent = TRUE
+  } else {
+    plotRecent = FALSE
+  }
+
   
   
   #######################################
@@ -178,13 +184,13 @@ plotMap <- function(dir_wd, ep, epNew, ce, shipCode, dataType){
                                aes(color = 'd'))
     # aes(color=colors_lines[3]))
     
-    if (nrow(epNew[epNew$shipCode == 'OES',]) > 1){
+    if ((plotRecent == TRUE) & (nrow(epNew[epNew$shipCode == 'OES',]) > 1)){
       base_map = base_map + 
         ggspatial::layer_spatial(epNew[epNew$shipCode == 'OES',], alpha=ta,
                                  # size=tw, aes(color=colors_lines[4]))
                                  size = tw, aes(color = 'a'))
     }
-    if (nrow(epNew[epNew$shipCode == 'LSK',]) > 1){
+    if ((plotRecent == TRUE) & (nrow(epNew[epNew$shipCode == 'LSK',]) > 1)){
       base_map = base_map + 
         ggspatial::layer_spatial(epNew[epNew$shipCode == 'LSK',], alpha=ta,
                                  size=tw, aes(color = 'c'))

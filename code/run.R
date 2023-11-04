@@ -522,10 +522,12 @@ for (cr in 1:length(crNum)){
       
       # save the primary compiled version
       save(ad, file = file.path(dir_data, outName))
-      googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
+      googledrive::drive_put(file.path(dir_data, outName), 
+                             path = dir_gd$proc_shp)
       outNameCSV = paste0('compiledDetections_', projID[cr], '.csv')
-      write.csv(vs, file = file.path(dir_data, outNameCSV))
-      googledrive::drive_put(file.path(dir_data, outNameCSV), path = dir_gd$proc_shp)
+      write.csv(ad, file = file.path(dir_data, outNameCSV))
+      googledrive::drive_put(file.path(dir_data, outNameCSV), 
+                             path = dir_gd$proc_shp)
       cat('   saved', outName, 'and as .csv\n')
       
       if (multiVessel == TRUE){
@@ -549,7 +551,6 @@ for (cr in 1:length(crNum)){
 
 # --- COMBINE vessels for plotting ----------------------------------------
 
-
 if (multiVessel == TRUE){
   
   cat(' --- Combining vessels:', projIDC, '---\n')
@@ -558,19 +559,21 @@ if (multiVessel == TRUE){
   # some of these have been implemented but not for new legs
   
   # combined lists generated within the loop need to be 'collapsed' into dfs 
-  if (any(newDas == TRUE)){
+  if (any(newDas == TRUE) || any(newPam == TRUE)){
     # load old ones if one of the vessels did not have a new das
     if (any(newDas == FALSE)){
       fIdx = which(newDas == FALSE)
-      load(file.path(dir_wd, 'data', projID[fIdx], 
-                     paste0('compiledEffortPoints_', projID[fIdx], '.Rda')))
-      epL[[projID[fIdx]]] = ep
-      load(file.path(dir_wd, 'data', projID[fIdx], 
-                     paste0('compiledEffortTracks_', projID[fIdx], '.Rda')))
-      etL[[projID[fIdx]]] = et
-      load(file.path(dir_wd, 'data', projID[fIdx], 
-                     paste0('compiledSightings_', projID[fIdx], '.Rda')))
-      vsL[[projID[fIdx]]] = vs
+      for (f in 1:length(fIdx)){
+      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                     paste0('compiledEffortPoints_', projID[fIdx[f]], '.Rda')))
+      epL[[projID[fIdx[f]]]] = ep
+      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                     paste0('compiledEffortTracks_', projID[fIdx[f]], '.Rda')))
+      etL[[projID[fIdx[f]]]] = et
+      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                     paste0('compiledSightings_', projID[fIdx[f]], '.Rda')))
+      vsL[[projID[fIdx[f]]]] = vs
+      }
     }
     
     # then bind list into data.frame
@@ -578,6 +581,7 @@ if (multiVessel == TRUE){
     epC = dplyr::bind_rows(epL, .id = 'projID')
     etC = dplyr::bind_rows(etL, .id = 'projID')
     vsC = dplyr::bind_rows(vsL, .id = 'projID')
+    
     # save all these 
     save(epC, file = file.path(dir_wd, 'data', 
                                paste0('compiledEffortPoints_', projIDC, '.Rda')))
@@ -586,9 +590,11 @@ if (multiVessel == TRUE){
     save(vsC, file = file.path(dir_wd, 'data', 
                                paste0('compiledSightings_', projIDC, '.Rda')))
     cat('   saved combined compiled effort points, tracks, and sightings\n')
-    
+  }
+  
+
     # ------ Create GPX from combined track data ----------------------------
-    
+  if (any(newDas == TRUE)){
     source(file.path(dir_code, 'functions', 'trackToGPX.R'))
     
     # two-vessel combined compiled tracks
@@ -603,10 +609,12 @@ if (multiVessel == TRUE){
     # load old detections df if one of the vessels did not have a new file
     if (any(newPam == FALSE)){
       fIdx = which(newPam == FALSE)
-      load(file.path(dir_wd, 'data', projID[fIdx], 
-                     paste0('compiledDetections_', projID[fIdx], '.Rda')))
+      for (f in 1:length(fIdx)){
+      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                     paste0('compiledDetections_', projID[fIdx[f]], '.Rda')))
       
-      adL[[projID[fIdx]]] = ad
+      adL[[projID[fIdx[f]]]] = ad
+      }
     }
     # then bind list into data.frame
     adC = dplyr::bind_rows(adL, .id = 'projID')
@@ -730,9 +738,8 @@ if (any(genPlots) == TRUE){
              # dpi = 1200,
              bg = 'white',
              device = 'pdf')
-      # googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
-      #                        path = dir_gd$proc_shp)
-      googledrive::drive_put(file.path(dir_wd, 'outputs', paste0(outStr, '.pdf')),
+      googledrive::drive_put(file.path(dir_wd, 'outputs',
+                                       paste0(outStr, '.pdf')),
                              path = dir_gd$gpx)
       cat('   saved', outName, 'and as .csv\n')
       cat('   saved', outStr, 'as .png and .pdf\n')
@@ -768,6 +775,7 @@ if (any(genPlots) == TRUE){
     # add correctly formated SpCode col
     adC$SpCode = as.integer(adC$sp_map)
     
+    source(file.path(dir_code, 'functions', 'plotMap.R'))
     mapOutA = plotMap(dir_wd, epC, epNewC, adC, shipCode, dataType = 'acoustic')
     base_map_A = mapOutA$base_map
     adMap = mapOutA$ceMap

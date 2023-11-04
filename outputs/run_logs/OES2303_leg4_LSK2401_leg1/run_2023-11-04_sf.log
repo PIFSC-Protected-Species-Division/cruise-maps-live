@@ -23,3 +23,139 @@ In addition: Warning messages:
 7: package 'forcats' was built under R version 4.3.1 
 8: package 'lubridate' was built under R version 4.3.1 
 Execution halted
+
+... run started 2023-11-04 08:36:48 PDT ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das files to process. Proceeding to acoustics...
+ Processing updated acoustic database.
+   saved acousticDetections_LSK2401_leg1_ran2023-11-04.Rda 
+Error in eval(expr, p) : object 'vs' not found
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- OES2303 Leg 4 ---
+ Setting up Google Drive paths...
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 1 ---
+ Setting up Google Drive paths...
+ No new das files to process. Proceeding to acoustics...
+ Processing updated acoustic database.
+   saved acousticDetections_LSK2401_leg1_ran2023-11-04.Rda 
+   saved compiledDetections_LSK2401.Rda and as .csv
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled acoustic detections
+   Missing some variable, skipping summary table...
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+Error in plotMap(dir_wd, epC, epNewC, adC, shipCode, dataType = "acoustic") : 
+  could not find function "plotMap"
+   Missing some variable, skipping summary table...
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+Error: object 'epC' not found
+Called from: ifelse(ep$Lon > 0, ep$Lon - 360, ep$Lon)
+[1] TRUE
+ --- Combining vessels: OES2303_LSK2401 ---
+Error in gzfile(file) : invalid 'description' argument
+   Missing some variable, skipping summary table...
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+Error: object 'TRIE' not found
+[1] TRUE
+ --- Combining vessels: OES2303_LSK2401 ---
+Error in gzfile(file) : invalid 'description' argument
+[1] FALSE
+[1] TRUE
+[1] TRUE
+[1] 2
+Error in gzfile(file) : invalid 'description' argument
+[1] "OES2303"
+[1] 1
+Error in gzfile(file) : invalid 'description' argument
+Error: object 'et' not found
+Error in gzfile(file) : invalid 'description' argument
+Error: object 'vs' not found
+[1] "C:/users/selene.fregosi/documents/github/cruise-maps-live/data/OES2303/compiledEffortTracks_OES2303.Rda"
+[2] "C:/users/selene.fregosi/documents/github/cruise-maps-live/data/LSK2401/compiledEffortTracks_OES2303.Rda"
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+   saved combined compiled acoustic detections
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-04.png 
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+Error: object 'TRIE' not found
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-04.png 
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+Error in `x[coords]`:
+! Can't subset columns that don't exist.
+✖ Column `Lat` doesn't exist.
+Run `rlang::last_trace()` to see where the error occurred.
+Warning message:
+Unknown or uninitialised column: `Lon`. 
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-04.png 
+[1] FALSE
+ No new das files, skipping visual sightings map...
+[1] TRUE
+ Generating latest map of acoustic detections:
+Error in `x[coords]`:
+! Can't subset columns that don't exist.
+✖ Column `Lat` doesn't exist.
+Run `rlang::last_trace()` to see where the error occurred.
+Warning message:
+Unknown or uninitialised column: `Lon`. 
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+Warning messages:
+1: Unknown or uninitialised column: `shipCode`. 
+2: Unknown or uninitialised column: `shipCode`. 
+Warning message:
+In is.na(x) : is.na() applied to non-(list or vector) of type 'expression'
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg4_LSK2401_leg1_ran2023-11-04.png 
+ No new das files, skipping visual sightings map...
+ Generating latest map of acoustic detections:
+   saved dailyMap_acoustics as .png and .pdf
+   saved dailyMap_acoustics_OES2303_leg4_LSK2401_leg1_ran2023-11-04 as .png and .pdf
+Warning messages:
+1: Unknown or uninitialised column: `shipCode`. 
+2: Unknown or uninitialised column: `shipCode`. 
+3: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+4: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+5: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+6: In is.na(x) :
+  is.na() applied to non-(list or vector) of type 'expression'
+...run complete 2023-11-04 09:03:46 PDT ...
