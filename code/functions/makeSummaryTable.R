@@ -28,6 +28,17 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, tzKeyFile){
   #'
   #'#######################################################################
   
+  # read in timezone/days-at-sea key and format
+  # tzKeyFile = ('inputs/TimeZones.csv')
+  tzKey = read.csv(tzKeyFile) # read in timezone key
+  # looking for two possible formats, that might need to be expanded later
+  tzKey$StartDate = as.Date(tzKey$StartDate, 
+                            if (grepl('^\\d+/\\d+/\\d+$', tzKey$StartDate[1])) 
+                              '%m/%d/%Y' else '%Y-%m-%d')
+  tzKey$EndDate = as.Date(tzKey$EndDate, 
+                          if (grepl('^\\d+/\\d+/\\d+$', tzKey$EndDate[1])) 
+                            '%m/%d/%Y' else '%Y-%m-%d')
+  
   # if summary table has not been created before, make an empty one
   if (nrow(st) == 0){
     shipList = c('Sette', 'Sette', 'Sette', 'Sette', 'Sette', 
@@ -78,22 +89,24 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, tzKeyFile){
     # et$monthdays = format(et$mDateTime, format = '%m%d')
     # st$days[idx] = length(unique(et$monthdays[
     #   which(et$leg == leg[s] & et$shipCode == shipCode[s])]))
-    
-    # days-at-sea
-    # tzKeyFile = ('/inputs/TimeZones.csv')
-    tzKey = read.csv(tzKeyFile) # read in timezone key
-    # looking for two possible formats, that might need to be expanded later
-    tzKey$StartDate = as.Date(tzKey$StartDate, 
-                              if (grepl('^\\d+/\\d+/\\d+$', tzKey$StartDate[1])) 
-                                '%m/%d/%Y' else '%Y-%m-%d')
-    tzKey$EndDate = as.Date(tzKey$EndDate, 
-                            if (grepl('^\\d+/\\d+/\\d+$', tzKey$EndDate[1])) 
-                              '%m/%d/%Y' else '%Y-%m-%d')
-    # narrow down the key to only this ship
+
+    # days-at-sea (including non-effort)
+    # narrow down the timezone key to only this ship
     tzKeyS = tzKey[which(tzKey$Ship == shipCode[s] &  tzKey$Leg == leg[s]),]
+    # clean up future dates (don't want to count them yet)
+    tdy = as.Date(lubridate::today(tzone = 'HST'))
+    for (r in 1:nrow(tzKeyS)){
+      if (tzKeyS$StartDate[r] > tdy & tzKeyS$EndDate[r] > tdy){
+        tzKeyS$StartDate[r] = NA
+        tzKeyS$EndDate[r] = NA
+      } else if (tzKeyS$StartDate[r] <= tdy & tzKeyS$EndDate[r] > tdy){
+        tzKeyS$EndDate[r] = tdy
+      } 
+    }
     # sum days for each line - add 1 to be inclusive of end date
-    st$days[idx] = sum(as.double(difftime(tzKeyS$EndDate, tzKeyS$StartDate)) + 1)
-    
+    st$days[idx] = sum(as.double(difftime(tzKeyS$EndDate, tzKeyS$StartDate)) + 1, 
+                       na.rm = TRUE)
+  
     # distances
     # st$segments[idx] = length(et$segnum)
     st$dist[idx] = sum(et$dist[which(et$leg == leg[s] & 
