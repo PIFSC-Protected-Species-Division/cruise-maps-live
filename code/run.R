@@ -453,7 +453,8 @@ for (cr in 1:length(crNum)){
         }
         
         save(vs, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), 
+                               path = dir_gd$proc_shp)
         outNameCSV = paste0('compiledSightings_', projID[cr], '.csv')
         write.csv(vs, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
