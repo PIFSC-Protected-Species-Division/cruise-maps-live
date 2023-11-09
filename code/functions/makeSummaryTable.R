@@ -94,13 +94,14 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, tzKeyFile){
     # narrow down the timezone key to only this ship
     tzKeyS = tzKey[which(tzKey$Ship == shipCode[s] &  tzKey$Leg == leg[s]),]
     # clean up future dates (don't want to count them yet)
-    tdy = as.Date(lubridate::today(tzone = 'HST'))
+    ydy = as.Date(lubridate::today(tzone = 'HST')-1)
+    # use yesterday (bc typically running the next day...this is imperfect...)
     for (r in 1:nrow(tzKeyS)){
-      if (tzKeyS$StartDate[r] > tdy & tzKeyS$EndDate[r] > tdy){
+      if (tzKeyS$StartDate[r] > ydy & tzKeyS$EndDate[r] > ydy){
         tzKeyS$StartDate[r] = NA
         tzKeyS$EndDate[r] = NA
-      } else if (tzKeyS$StartDate[r] <= tdy & tzKeyS$EndDate[r] > tdy){
-        tzKeyS$EndDate[r] = tdy
+      } else if (tzKeyS$StartDate[r] <= ydy & tzKeyS$EndDate[r] > ydy){
+        tzKeyS$EndDate[r] = ydy
       } 
     }
     # sum days for each line - add 1 to be inclusive of end date
