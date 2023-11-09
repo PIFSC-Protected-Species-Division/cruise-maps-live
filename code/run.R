@@ -27,7 +27,7 @@ data_source = 'gd' # google drive
 crNum     = c(2303, 2401)           #2303
 shipCode  = c('OES', 'LSK')      # OES
 shipName  = c('Sette', 'Lasker') # Sette
-leg       = c('4', '1')               # '1' # as string
+leg       = c('5', '2')               # '1' # as string
 
 # define a projID/legID strings to be used later
 projID = stringr::str_c(shipCode, crNum)
