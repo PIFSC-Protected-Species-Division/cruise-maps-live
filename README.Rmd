@@ -50,15 +50,18 @@ toc <- strsplit(x = readtext::readtext(file = "./README.Rmd",
 toc <- toc[[1]][substr(x = toc[[1]], start = 1, stop = 1) == "#"]
 toc <- toc[-c(1:3)]
 toc <- toc[-grep(pattern = "##### ", x = toc, fixed = TRUE)] 
-toc <- gsub('[^[:alnum:][:space:]/#-]', "", x = toc) 
+
 toc_list <- toc
 # toc_list <- toc_list[-grep(pattern = "##### ", x = toc_list, fixed = TRUE)]
+toc_list <- gsub(pattern = '*', replacement = '', x = toc_list, fixed = TRUE)
 toc_list <- gsub(pattern = "#### ", replacement = ">      - [*", 
                  x = toc_list, fixed = TRUE)
 toc_list <- gsub(pattern = "### ", replacement = ">    - [*", 
                  x = toc_list, fixed = TRUE)
 toc_list <- gsub(pattern = "## ", replacement = ">  - [*", 
                  x = toc_list, fixed = TRUE)
+
+toc <- gsub('[^[:alnum:][:space:]#-]', "", x = toc) 
 toc_link <- tolower(gsub(pattern = " ", replacement = "-", 
                           x = gsub(pattern = "#", replacement = "", 
                                    x = gsub(pattern = "# ", replacement = "", 
