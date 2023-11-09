@@ -4,7 +4,7 @@
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 04 Oct 2023*
+style="width:0.88em;height:1em" /> *Last Update: 08 Nov 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -37,10 +37,11 @@ repository.
 > - [*Purpose*](#purpose)
 > - [*Notes*](#notes)
 > - [*Plot Examples*](#plot-examples)
->   - [*Blank, pre-survey base map*](#blank,-pre-survey-base-map)
->   - [*Oscar Elton Sette - Leg 1*](#oscar-elton-sette---leg-1)
->   - [*Oscar Elton Sette - Leg 2*](#oscar-elton-sette---leg-2)
->   - [*Oscar Elton Sette - Leg 3*](#oscar-elton-sette---leg-3)
+>   - [*Blank pre-survey base map*](#blank-pre-survey-base-map)
+>   - [*Sette Leg 1*](#sette-leg-1)
+>   - [*Sette Leg 2*](#sette-leg-2)
+>   - [*Sette Leg 3*](#sette-leg-3)
+>   - [*Sette Leg 4/Lasker Leg 1*](#sette-leg-4/lasker-leg-1)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
 > - [*R Version Metadata*](#r-version-metadata)
 > - [*NOAA Disclaimer and License*](#noaa-disclaimer-and-license)
@@ -111,45 +112,45 @@ does not show any completed survey tracklines or cetacaen sightings but
 serves as the basemap that will be populated with this information as
 the survey gets underway.](./outputs/blank/dailyMap_blankCopy.png)
 
-### Oscar Elton Sette - Leg 1
+### *Sette* Leg 1
 
 ##### Visual sightings
 
 ![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey
 tracklines (pink) and cetacean sightings (colored symbols) that occured
-during HICEAS 2023 Leg 1 on the R/V Oscar Elton Sette from 23 to 28 July
-2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian
-archipelago (study area) is marked with a white boundary line and
-planned transect lines are in thin black lines. The Papahānaumokuākea
-Marine National Monument area and Main Hawaiian Islands are labeled in
-white text. The transect lines run lengthwise from northwest to
-southeast, covering the entire
+during HICEAS 2023 Leg 1 on the R/V *Oscar Elton Sette* from 23 to 28
+July 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the
+Hawaiian archipelago (study area) is marked with a white boundary line
+and planned transect lines are in thin black lines. The
+Papahānaumokuākea Marine National Monument area and Main Hawaiian
+Islands are labeled in white text. The transect lines run lengthwise
+from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg1/dailyMap_visuals_OES2303_leg1_ran2023-08-15.png)
 
 ##### Acoustic detections
 
 ![HICEAS 2023 Map - End of Leg 1. This map shows the completed survey
 tracklines (pink) and acoustic detections of cetaceans (colored symbols)
-that occured during HICEAS 2023 Leg 1 on the R/V Oscar Elton Sette from
-23 to 28 July 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding
-the Hawaiian archipelago (study area) is marked with a white boundary
-line and planned transect lines are in thin black lines. The
+that occured during HICEAS 2023 Leg 1 on the R/V *Oscar Elton Sette*
+from 23 to 28 July 2023. The U.S. Exclusive Economic Zone (EEZ)
+surrounding the Hawaiian archipelago (study area) is marked with a white
+boundary line and planned transect lines are in thin black lines. The
 Papahānaumokuākea Marine National Monument area and Main Hawaiian
 Islands are labeled in white text. The transect lines run lengthwise
 from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg1/dailyMap_acoustics_OES2303_leg1_ran2023-08-15.png)
 
-### Oscar Elton Sette - Leg 2
+### *Sette* Leg 2
 
 ##### Visual sightings
 
 ![HICEAS 2023 Map - End of Leg 2. This map shows the completed survey
 tracklines (pink) and cetacean sightings (colored symbols) that occured
-during HICEAS 2023 through the end of Leg 2 on the R/V Oscar Elton Sette
-from 23 July to 31 August 2023. The U.S. Exclusive Economic Zone (EEZ)
-surrounding the Hawaiian archipelago (study area) is marked with a white
-boundary line and planned transect lines are in thin black lines. The
-Papahānaumokuākea Marine National Monument area and Main Hawaiian
+during HICEAS 2023 through the end of Leg 2 on the R/V *Oscar Elton
+Sette* from 23 July to 31 August 2023. The U.S. Exclusive Economic Zone
+(EEZ) surrounding the Hawaiian archipelago (study area) is marked with a
+white boundary line and planned transect lines are in thin black lines.
+The Papahānaumokuākea Marine National Monument area and Main Hawaiian
 Islands are labeled in white text. The transect lines run lengthwise
 from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg2/dailyMap_visuals_OES2303_leg2_ran2023-09-06.png)
@@ -159,7 +160,7 @@ EEZ.](./outputs/map_archive/OES2303_leg2/dailyMap_visuals_OES2303_leg2_ran2023-0
 ![HICEAS 2023 Map - End of Leg 2. This map shows the completed survey
 tracklines (pink) and acoustic detections of cetaceans (colored symbols)
 that occured during HICEAS 2023 through the end of Leg 2 on the R/V
-Oscar Elton Sette from 23 July to 31 August 2023. The U.S. Exclusive
+*Oscar Elton Sette* from 23 July to 31 August 2023. The U.S. Exclusive
 Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is
 marked with a white boundary line and planned transect lines are in thin
 black lines. The Papahānaumokuākea Marine National Monument area and
@@ -167,17 +168,17 @@ Main Hawaiian Islands are labeled in white text. The transect lines run
 lengthwise from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg2/dailyMap_acoustics_OES2303_leg2_ran2023-09-06.png)
 
-### Oscar Elton Sette - Leg 3
+### *Sette* Leg 3
 
 ##### Visual sightings
 
 ![HICEAS 2023 Map - End of Leg 3. This map shows the completed survey
 tracklines (pink) and cetacean sightings (colored symbols) that occured
-during HICEAS 2023 through the end of Leg 3 on the R/V Oscar Elton Sette
-from 23 July to 3 October 2023. The U.S. Exclusive Economic Zone (EEZ)
-surrounding the Hawaiian archipelago (study area) is marked with a white
-boundary line and planned transect lines are in thin black lines. The
-Papahānaumokuākea Marine National Monument area and Main Hawaiian
+during HICEAS 2023 through the end of Leg 3 on the R/V *Oscar Elton
+Sette* from 23 July to 3 October 2023. The U.S. Exclusive Economic Zone
+(EEZ) surrounding the Hawaiian archipelago (study area) is marked with a
+white boundary line and planned transect lines are in thin black lines.
+The Papahānaumokuākea Marine National Monument area and Main Hawaiian
 Islands are labeled in white text. The transect lines run lengthwise
 from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg3/dailyMap_visuals_OES2303_leg3_ran2023-10-04.png)
@@ -187,13 +188,44 @@ EEZ.](./outputs/map_archive/OES2303_leg3/dailyMap_visuals_OES2303_leg3_ran2023-1
 ![HICEAS 2023 Map - End of Leg 3. This map shows the completed survey
 tracklines (pink) and acoustic detections of cetaceans (colored symbols)
 that occured during HICEAS 2023 through the end of Leg 3 on the R/V
-Oscar Elton Sette from 23 July to 3 October 2023. The U.S. Exclusive
+*Oscar Elton Sette* from 23 July to 3 October 2023. The U.S. Exclusive
 Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is
 marked with a white boundary line and planned transect lines are in thin
 black lines. The Papahānaumokuākea Marine National Monument area and
 Main Hawaiian Islands are labeled in white text. The transect lines run
 lengthwise from northwest to southeast, covering the entire
 EEZ.](./outputs/map_archive/OES2303_leg3/dailyMap_acoustics_OES2303_leg3_ran2023-10-04.png)
+
+### *Sette* Leg 4/*Lasker* Leg 1
+
+##### Visual sightings
+
+![HICEAS 2023 Map - End of OES Leg 4/LSK Leg 1. This map shows the
+completed survey tracklines (*Sette* in pink and *Lasker* in orange) and
+cetacean sightings (colored symbols) that occured during HICEAS 2023
+through the end of Leg 4 on the R/V *Oscar Elton Sette* and Leg 1 on the
+R/V *Reuben Lasker* from 23 July to 5 November 2023. The U.S. Exclusive
+Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is
+marked with a white boundary line and planned transect lines are in thin
+black lines. The Papahānaumokuākea Marine National Monument area and
+Main Hawaiian Islands are labeled in white text. The transect lines run
+lengthwise from northwest to southeast, covering the entire
+EEZ.](./outputs/map_archive/OES2303_leg4_LSK2401_leg1/dailyMap_visuals_OES2303_leg4_LSK2401_leg1_ran2023-11-05.png)
+
+##### Acoustic detections
+
+![HICEAS 2023 Map - End of OES Leg 4/LSK Leg 1. This map shows the
+completed survey tracklines (*Sette* in pink and *Lasker* in orange) and
+acoustic detections of cetaceans (colored symbols) that occured during
+HICEAS 2023 through the end of Leg 4 on the R/V *Oscar Elton Sette* and
+Leg 1 on the R/V *Reuben Lasker* from 23 July to 5 November 2023. The
+U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago
+(study area) is marked with a white boundary line and planned transect
+lines are in thin black lines. The Papahānaumokuākea Marine National
+Monument area and Main Hawaiian Islands are labeled in white text. The
+transect lines run lengthwise from northwest to southeast, covering the
+entire
+EEZ.](./outputs/map_archive/OES2303_leg4_LSK2401_leg1/dailyMap_acoustics_OES2303_leg4_LSK2401_leg1_ran2023-11-08.png)
 
 ## Suggestions and Comments
 
@@ -235,13 +267,13 @@ an authentication issue. We will see the issue and check it out!
     FALSE [1] fontawesome_0.5.2
     FALSE 
     FALSE loaded via a namespace (and not attached):
-    FALSE  [1] digest_0.6.33     utf8_1.2.3        R6_2.5.1          fastmap_1.1.1    
-    FALSE  [5] xfun_0.40         glue_1.6.2        rsvg_2.5.0        knitr_1.44       
+    FALSE  [1] digest_0.6.33     utf8_1.2.4        R6_2.5.1          fastmap_1.1.1    
+    FALSE  [5] xfun_0.40         glue_1.6.2        rsvg_2.5.0        knitr_1.45       
     FALSE  [9] htmltools_0.5.6   rmarkdown_2.25    lifecycle_1.0.3   cli_3.6.1        
-    FALSE [13] fansi_1.0.4       readtext_0.90     vctrs_0.6.3       data.table_1.14.8
-    FALSE [17] compiler_4.3.1    httr_1.4.7        rstudioapi_0.15.0 tools_4.3.1      
-    FALSE [21] pillar_1.9.0      evaluate_0.21     yaml_2.3.7        rlang_1.1.1      
-    FALSE [25] stringi_1.7.12
+    FALSE [13] fansi_1.0.5       readtext_0.90     vctrs_0.6.4       data.table_1.14.8
+    FALSE [17] compiler_4.3.1    highr_0.10        httr_1.4.7        rstudioapi_0.15.0
+    FALSE [21] tools_4.3.1       pillar_1.9.0      evaluate_0.23     yaml_2.3.7       
+    FALSE [25] rlang_1.1.1       stringi_1.7.12
 
 ## NOAA Disclaimer and License
 
