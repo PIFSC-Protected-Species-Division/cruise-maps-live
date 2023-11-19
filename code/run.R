@@ -303,25 +303,29 @@ for (cr in 1:length(crNum)){
         source(file.path(dir_code, 'functions', 'extractTrack.R'))
         etNew = extractTrack(df_proc)
         
-        # add on some ship info
-        etNew$shipCode = shipCode[cr]
-        etNew$shipName = shipName[cr]
-        etNew$projID = projID[cr]
-        etNew$leg = leg[cr]
+        if (!is.null(etNew)){
+          # add on some ship info
+          etNew$shipCode = shipCode[cr]
+          etNew$shipName = shipName[cr]
+          etNew$projID = projID[cr]
+          etNew$leg = leg[cr]
+          
+          # save a 'snapshot' of the data for this das file with date it was run
+          outName = paste0('newEffortTracks_', legID[cr], '_', d$name, '_ran', 
+                           Sys.Date(), '.Rda')
+          save(etNew, file = file.path(dir_data_snaps, outName))
+          googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                                 path = dir_gd$snaps)
+          cat('   saved', outName, '\n')
+        } else {
+          cat('   DAS contained no valid effort segments\n')
+        }
         
-        # save a 'snapshot' of the data for this das file with date it was run
-        outName = paste0('newEffortTracks_', legID[cr], '_', d$name, '_ran', 
-                         Sys.Date(), '.Rda')
-        save(etNew, file = file.path(dir_data_snaps, outName))
-        googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd$snaps)
-        cat('   saved', outName, '\n')
-        
-        # combine the old vs dataframe with the new one
+        # combine the old et dataframe with the new one
         outName = paste0('compiledEffortTracks_', projID[cr], '.Rda')
         if (file.exists(file.path(dir_data, outName))){
           # load old if it exists
-          load(file.path(dir_data, outName))
+          load(file.path(dir_data, outName)) 
           # combine
           et = rbind(et, etNew)
           et = unique(et)   # remove duplicates (in case ran already)
@@ -565,15 +569,15 @@ if (multiVessel == TRUE){
     if (any(newDas == FALSE)){
       fIdx = which(newDas == FALSE)
       for (f in 1:length(fIdx)){
-      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
-                     paste0('compiledEffortPoints_', projID[fIdx[f]], '.Rda')))
-      epL[[projID[fIdx[f]]]] = ep
-      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
-                     paste0('compiledEffortTracks_', projID[fIdx[f]], '.Rda')))
-      etL[[projID[fIdx[f]]]] = et
-      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
-                     paste0('compiledSightings_', projID[fIdx[f]], '.Rda')))
-      vsL[[projID[fIdx[f]]]] = vs
+        load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                       paste0('compiledEffortPoints_', projID[fIdx[f]], '.Rda')))
+        epL[[projID[fIdx[f]]]] = ep
+        load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                       paste0('compiledEffortTracks_', projID[fIdx[f]], '.Rda')))
+        etL[[projID[fIdx[f]]]] = et
+        load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                       paste0('compiledSightings_', projID[fIdx[f]], '.Rda')))
+        vsL[[projID[fIdx[f]]]] = vs
       }
     }
     
@@ -593,8 +597,8 @@ if (multiVessel == TRUE){
     cat('   saved combined compiled effort points, tracks, and sightings\n')
   }
   
-
-    # ------ Create GPX from combined track data ----------------------------
+  
+  # ------ Create GPX from combined track data ----------------------------
   if (any(newDas == TRUE)){
     source(file.path(dir_code, 'functions', 'trackToGPX.R'))
     
@@ -611,10 +615,10 @@ if (multiVessel == TRUE){
     if (any(newPam == FALSE)){
       fIdx = which(newPam == FALSE)
       for (f in 1:length(fIdx)){
-      load(file.path(dir_wd, 'data', projID[fIdx[f]], 
-                     paste0('compiledDetections_', projID[fIdx[f]], '.Rda')))
-      
-      adL[[projID[fIdx[f]]]] = ad
+        load(file.path(dir_wd, 'data', projID[fIdx[f]], 
+                       paste0('compiledDetections_', projID[fIdx[f]], '.Rda')))
+        
+        adL[[projID[fIdx[f]]]] = ad
       }
     }
     # then bind list into data.frame

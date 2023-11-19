@@ -10,13 +10,13 @@
 
 
 # ------ File to be re-run ------------------------------------------------
-projID = 'OES2303'
-# projID = 'LSK2401'
+# projID = 'OES2303'
+projID = 'LSK2401'
 
 # dasList filename to be modified
 dasListFile = paste0('~/GitHub/cruise-maps-live/outputs/dasList_', projID, '.Rda')
 # das file to be reprocessed
-dasFile = 'DASALL.B07'
+dasFile = 'DASALL.B14'
 # modDateStr = '2023-08-12'
 
 # compiled file names

@@ -23,6 +23,8 @@ extractTrack <- function(df_proc){
   
   # summarize effort segments. 'section' method pulls lat/lon for all 'R' (resume
   # effort) and all 'E' (end effort) entries, then calcs dist btwn
+  if (any(df_proc$Event == 'R')){ # check for any on effort segments
+
   et_all = swfscDAS::das_effort(df_proc, method = 'section', dist.method = 'greatcircle', 
                        num.cores = 1)
   # trim to just what we want
@@ -35,6 +37,12 @@ extractTrack <- function(df_proc){
   
   # effort types can be 'N' non-standard, 'S' standard', and 'F' fine-scale
   # could further trim by this. 
+  
+
+  
+  } else {
+    et = NULL
+  }
   
   return(et)
   
