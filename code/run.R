@@ -303,7 +303,7 @@ for (cr in 1:length(crNum)){
         source(file.path(dir_code, 'functions', 'extractTrack.R'))
         etNew = extractTrack(df_proc)
         
-        if (!is.null(etNew)){
+        if (!is.null(etNew)){ # save if there are actually on-effort segments
           # add on some ship info
           etNew$shipCode = shipCode[cr]
           etNew$shipName = shipName[cr]
@@ -335,7 +335,8 @@ for (cr in 1:length(crNum)){
         }
         
         save(et, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), path =
+                                 dir_gd$proc_shp)
         outNameCSV = paste0('compiledEffortTracks_', projID[cr], '.csv')
         write.csv(et, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
@@ -355,11 +356,13 @@ for (cr in 1:length(crNum)){
         source(file.path(dir_code, 'functions', 'trackToGPX.R'))
         
         # by day/das tracks
-        outGPX = file.path(dir_data_gpx, paste0('effortTracks_', legID[cr], '_',
-                                                d$name, '.gpx'))
-        trackToGPX(etNew, outGPX)
-        googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx_shp)
-        cat('   saved', basename(outGPX), '\n')
+        if (!is.null(etNew)){ # create if there are actually on-effort segments
+          outGPX = file.path(dir_data_gpx, paste0('effortTracks_', legID[cr],
+                                                  '_', d$name, '.gpx'))
+          trackToGPX(etNew, outGPX)
+          googledrive::drive_put(file.path(outGPX), path = dir_gd$gpx_shp)
+          cat('   saved', basename(outGPX), '\n')
+        }
         
         # compiled tracks
         outGPX = file.path(dir_data_gpx, paste0('compiledEffortTracks_', 
@@ -369,24 +372,28 @@ for (cr in 1:length(crNum)){
         cat('   saved', basename(outGPX), '\n')
         
         # ------------ Extract track data as points -----------------------
-        # alternatively, can parse individual lines to get the segments out as points
+        # alternatively, can parse individual lines to get segments as points
         
         source(file.path(dir_code, 'functions', 'extractTrack_asPoints.R'))
         epNew = extractTrack_asPoints(df_proc)
         
-        # add on some ship info
-        epNew$shipCode = shipCode[cr]
-        epNew$shipName = shipName[cr]
-        epNew$projID = projID[cr]
-        epNew$leg = leg[cr]
-        
-        # save a 'snapshot' of the data for this run
-        outName = paste0('newEffortPoints_', legID[cr], '_', d$name, '_ran', 
-                         Sys.Date(), '.Rda')
-        save(epNew, file = file.path(dir_data_snaps, outName))
-        googledrive::drive_put(file.path(dir_data_snaps, outName), 
-                               path = dir_gd$snaps)
-        cat('   saved', outName, '\n')
+        if (nrow(epNew) > 0){ # save if there are actually on-effort points
+          # add on some ship info
+          epNew$shipCode = shipCode[cr]
+          epNew$shipName = shipName[cr]
+          epNew$projID = projID[cr]
+          epNew$leg = leg[cr]
+          
+          # save a 'snapshot' of the data for this run
+          outName = paste0('newEffortPoints_', legID[cr], '_', d$name, '_ran', 
+                           Sys.Date(), '.Rda')
+          save(epNew, file = file.path(dir_data_snaps, outName))
+          googledrive::drive_put(file.path(dir_data_snaps, outName), 
+                                 path = dir_gd$snaps)
+          cat('   saved', outName, '\n')
+        } else {
+          cat('   DAS contained no valid effort points\n')
+        }
         
         # combine the old vs dataframe with the new one
         outName = paste0('compiledEffortPoints_', projID[cr], '.Rda')
@@ -402,7 +409,8 @@ for (cr in 1:length(crNum)){
         }
         
         save(ep, file = file.path(dir_data, outName))
-        googledrive::drive_put(file.path(dir_data, outName), path = dir_gd$proc_shp)
+        googledrive::drive_put(file.path(dir_data, outName), path =
+                                 dir_gd$proc_shp)
         outNameCSV = paste0('compiledEffortPoints_', projID[cr], '.csv')
         write.csv(ep, file = file.path(dir_data, outNameCSV))
         googledrive::drive_put(file.path(dir_data, outNameCSV), 
@@ -419,7 +427,7 @@ for (cr in 1:length(crNum)){
         
         # ------------ Extract visual sighting data -----------------------
         
-        # do some stuff here to extract visual sighting data for the day from das
+        # extract visual sighting data for the day from das
         source(file.path(dir_code, 'functions', 'extractVisualSightings.R'))
         vsNew = extractVisualSightings(df_proc)
         
