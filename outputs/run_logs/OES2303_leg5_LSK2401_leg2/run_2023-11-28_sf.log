@@ -1,0 +1,49 @@
+
+... run started 2023-11-28 08:02:12 PST ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 5 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 2 ---
+ Setting up Google Drive paths...
+ Processing 1 new das files:
+ -> DASALL.B27 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+There were 4 on effort events with NA Lat/Lon/DateTime values that will ignored during segment chopping
+   saved newEffortTracks_LSK2401_leg2_DASALL.B27_ran2023-11-28.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg2_DASALL.B27.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg2_DASALL.B27_ran2023-11-28.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg2_DASALL.B27_ran2023-11-28.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ Processing updated acoustic database.
+   saved acousticDetections_LSK2401_leg2_ran2023-11-28.Rda 
+   saved compiledDetections_LSK2401.Rda and as .csv
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+   saved compiledEffortTracks_OES2303_LSK2401_combined.gpx 
+   saved combined compiled acoustic detections
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg5_LSK2401_leg2_ran2023-11-28.png 
+ Generating latest map of visual sightings:
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg5_LSK2401_leg2_ran2023-11-28.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg5_LSK2401_leg2_ran2023-11-28 as .png and .pdf
+ Generating latest map of acoustic detections:
+   saved dailyMap_acoustics as .png and .pdf
+   saved dailyMap_acoustics_OES2303_leg5_LSK2401_leg2_ran2023-11-28 as .png and .pdf
+...run complete 2023-11-28 08:04:27 PST ...
