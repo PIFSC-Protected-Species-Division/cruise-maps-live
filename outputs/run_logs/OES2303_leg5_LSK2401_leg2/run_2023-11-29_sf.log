@@ -1,0 +1,43 @@
+
+... run started 2023-11-29 08:02:11 PST ...
+ dir_wd = C:/users/selene.fregosi/documents/github/cruise-maps-live 
+Processing data for 2 vessel(s).
+ --- OES2303 Leg 5 ---
+ Setting up Google Drive paths...
+Auto-refreshing stale OAuth token.
+ No new das or acoustic files to process. Exiting.
+ --- LSK2401 Leg 2 ---
+ Setting up Google Drive paths...
+ Processing 1 new das files:
+ -> DASALL.B28 
+Reading DAS file
+Processing DAS file
+Checking DAS file
+   saved newEffortTracks_LSK2401_leg2_DASALL.B28_ran2023-11-29.Rda 
+   saved compiledEffortTracks_LSK2401.Rda and as .csv
+   saved effortTracks_LSK2401_leg2_DASALL.B28.gpx 
+   saved compiledEffortTracks_LSK2401.gpx 
+   saved newEffortPoints_LSK2401_leg2_DASALL.B28_ran2023-11-29.Rda 
+   saved compiledEffortPoints_LSK2401.Rda and as .csv
+   saved newSightings_LSK2401_leg2_DASALL.B28_ran2023-11-29.Rda 
+   saved compiledSightings_LSK2401.Rda and as .csv
+ No new acoustic file to process. 
+ --- Combining vessels: OES2303_LSK2401 ---
+   saved combined compiled effort points, tracks, and sightings
+   saved compiledEffortTracks_OES2303_LSK2401_combined.gpx 
+ Updating summary table:
+   saved summaryTable.Rda 
+   saved summaryTable.png 
+   saved summaryTable_OES2303_leg5_LSK2401_leg2_ran2023-11-29.png 
+ Generating latest map of visual sightings:
+Please note that 'maptools' will be retired during October 2023,
+plan transition at your earliest convenience (see
+https://r-spatial.org/r/2023/05/15/evolution4.html and earlier blogs
+for guidance);some functionality will be moved to 'sp'.
+ Checking rgeos availability: FALSE
+   saved dailyMap_visuals as .png and .pdf
+   saved summaryTable_OES2303_leg5_LSK2401_leg2_ran2023-11-29.png and as .csv
+   saved dailyMap_visuals_CL as .png and .pdf
+   saved dailyMap_visuals_OES2303_leg5_LSK2401_leg2_ran2023-11-29 as .png and .pdf
+ No new acoustic file, skipping acoustic detections map...
+...run complete 2023-11-29 08:03:39 PST ...
