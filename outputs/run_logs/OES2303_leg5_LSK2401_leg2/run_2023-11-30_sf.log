@@ -41,3 +41,21 @@ for guidance);some functionality will be moved to 'sp'.
    saved dailyMap_visuals_OES2303_leg5_LSK2401_leg2_ran2023-11-30 as .png and .pdf
  No new acoustic file, skipping acoustic detections map...
 ...run complete 2023-11-30 08:03:39 PST ...
+Auto-refreshing stale OAuth token.
+Reading DAS file
+Processing DAS file
+Checking DAS file
+Error in `as_parent()`:
+! Parent specified via `path` is invalid:
+✖ Does not exist.
+Run `rlang::last_trace()` to see where the error occurred.
+Warning messages:
+1: In assignTimeZone(df_proc, shipCode[cr], file.path(dir_wd, "inputs",  :
+  Missing timezone for this ship on this date. Defaulting to HST.
+2: In dtTmp$sp_map[s] <- spTmp :
+  number of items to replace is not a multiple of replacement length
+The googledrive package is requesting access to your Google account.
+Enter '1' to start a new auth process or select a pre-authorized
+account.
+1: Send me to the browser for a new auth process.
+2: selene.fregosi@noaa.gov

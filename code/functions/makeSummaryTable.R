@@ -105,8 +105,8 @@ makeSummaryTable <- function(st, et, vs, ad, shipCode, leg, tzKeyFile){
       } 
     }
     # sum days for each line - add 1 to be inclusive of end date
-    st$days[idx] = sum(as.double(difftime(tzKeyS$EndDate, tzKeyS$StartDate)) + 1, 
-                       na.rm = TRUE)
+    st$days[idx] = sum(as.double(difftime(tzKeyS$EndDate, tzKeyS$StartDate, 
+                                          units = 'days')) + 1, na.rm = TRUE)
   
     # distances
     # st$segments[idx] = length(et$segnum)
