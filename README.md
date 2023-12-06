@@ -4,7 +4,7 @@
 
 <img
 src="README_files/figure-gfm/fa-icon-bcbd573b0c4bf742a1242819bebaac28.svg"
-style="width:0.88em;height:1em" /> *Last Update: 08 Nov 2023*
+style="width:0.88em;height:1em" /> *Last Update: 06 Dec 2023*
 
 <img
 src="README_files/figure-gfm/fa-icon-d8ea6ac07fd86570bd4146f5874f7163.svg"
@@ -36,12 +36,13 @@ repository.
 
 > - [*Purpose*](#purpose)
 > - [*Notes*](#notes)
-> - [*Plot Examples*](#plot-examples)
+> - [*Plot Examples - HICEAS 2023*](#plot-examples---hiceas-2023)
 >   - [*Blank, pre-survey base map*](#blank-pre-survey-base-map)
 >   - [*Sette Leg 1*](#sette-leg-1)
 >   - [*Sette Leg 2*](#sette-leg-2)
 >   - [*Sette Leg 3*](#sette-leg-3)
 >   - [*Sette Leg 4/Lasker Leg 1*](#sette-leg-4lasker-leg-1)
+>   - [*Sette Leg 5/Lasker Leg 2*](#sette-leg-5lasker-leg-2)
 > - [*Suggestions and Comments*](#suggestions-and-comments)
 > - [*R Version Metadata*](#r-version-metadata)
 > - [*NOAA Disclaimer and License*](#noaa-disclaimer-and-license)
@@ -56,16 +57,24 @@ and tables of our survey progress and cetacean sightings. These scripts
 compile the various data streams, collected and uploaded to Google Drive
 by the researchers at sea, and then create daily maps and an up-to-date
 summary table. The generated map and table are shared to the cruise
-website.
+website: [HICEAS 2023 is
+Underway!](https://storymaps.arcgis.com/stories/b3bbf0e90d0141f7bf47edc5339ccb7a)
 
-- [HICEAS 2023 is
-  Underway!](https://storymaps.arcgis.com/stories/b3bbf0e90d0141f7bf47edc5339ccb7a)
+HICEAS 2023 completed in early December 2023. This repository will be
+used again for future Cetacean Research Program surveys, so stay tuned
+in the coming years!
 
-##### Latest map
+##### Final HICEAS 2023 maps
 
 (click to enlarge)
 
 <img src="./outputs/dailyMap_visuals.png" alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and cetacean sightings (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." width="45%" /><img src="./outputs/dailyMap_acoustics.png" alt="HICEAS 2023 Map - Latest Map. This map shows the most up-to-date completed survey tracklines (pink) and acoustic detections of cetaceans (colored symbols). The map creation date is above the scale bar. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ." width="45%" />
+
+##### Final HICEAS 2023 Summary Table
+
+(click to enlarge)
+
+<img src="./outputs/summaryTable.png" alt="HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected." width="60%" />
 
 ## Notes
 
@@ -94,10 +103,9 @@ To re-run all days, delete the `dasList*.Rda` file from the ‘outputs’
 folder and all the `compiled*.Rda` files from the ‘data’ folder (e.g.,
 `compiledDetections_OES2303.Rda`).
 
-## Plot Examples
+## Plot Examples - HICEAS 2023
 
-As each survey leg completes we will share some example plots and gifs
-here!
+As each survey leg completes we will share some example plots here!
 
 ### Blank, pre-survey base map
 
@@ -227,6 +235,37 @@ transect lines run lengthwise from northwest to southeast, covering the
 entire
 EEZ.](./outputs/map_archive/OES2303_leg4_LSK2401_leg1/dailyMap_acoustics_OES2303_leg4_LSK2401_leg1_ran2023-11-08.png)
 
+### *Sette* Leg 5/*Lasker* Leg 2
+
+##### Visual sightings
+
+![HICEAS 2023 Map - End of OES Leg 5/LSK Leg 2. This map shows the
+completed survey tracklines (*Sette* in pink and *Lasker* in orange) and
+cetacean sightings (colored symbols) that occured during HICEAS 2023
+through the end of Leg 5 on the R/V *Oscar Elton Sette* and Leg 2 on the
+R/V *Reuben Lasker* from 23 July to 4 December 2023. The U.S. Exclusive
+Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is
+marked with a white boundary line and planned transect lines are in thin
+black lines. The Papahānaumokuākea Marine National Monument area and
+Main Hawaiian Islands are labeled in white text. The transect lines run
+lengthwise from northwest to southeast, covering the entire
+EEZ.](./outputs/map_archive/OES2303_leg5_LSK2401_leg2/dailyMap_visuals_OES2303_leg5_LSK2401_leg2_ran2023-12-06.png)
+
+##### Acoustic detections
+
+![HICEAS 2023 Map - End of OES Leg 5/LSK Leg 2. This map shows the
+completed survey tracklines (*Sette* in pink and *Lasker* in orange) and
+acoustic detections of cetaceans (colored symbols) that occured during
+HICEAS 2023 through the end of Leg 5 on the R/V *Oscar Elton Sette* and
+Leg 2 on the R/V *Reuben Lasker* from 23 July to 4 December 2023. The
+U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago
+(study area) is marked with a white boundary line and planned transect
+lines are in thin black lines. The Papahānaumokuākea Marine National
+Monument area and Main Hawaiian Islands are labeled in white text. The
+transect lines run lengthwise from northwest to southeast, covering the
+entire
+EEZ.](./outputs/map_archive/OES2303_leg5_LSK2401_leg2/dailyMap_acoustics_OES2303_leg5_LSK2401_leg2_ran2023-12-03.png)
+
 ## Suggestions and Comments
 
 If you see that the data, product, or metadata can be improved, you are
@@ -269,7 +308,7 @@ an authentication issue. We will see the issue and check it out!
     FALSE loaded via a namespace (and not attached):
     FALSE  [1] digest_0.6.33     utf8_1.2.4        R6_2.5.1          fastmap_1.1.1    
     FALSE  [5] xfun_0.40         glue_1.6.2        rsvg_2.5.0        knitr_1.45       
-    FALSE  [9] htmltools_0.5.6   rmarkdown_2.25    lifecycle_1.0.3   cli_3.6.1        
+    FALSE  [9] htmltools_0.5.6   rmarkdown_2.25    lifecycle_1.0.4   cli_3.6.1        
     FALSE [13] fansi_1.0.5       readtext_0.90     vctrs_0.6.4       data.table_1.14.8
     FALSE [17] compiler_4.3.1    highr_0.10        httr_1.4.7        rstudioapi_0.15.0
     FALSE [21] tools_4.3.1       pillar_1.9.0      evaluate_0.23     yaml_2.3.7       
