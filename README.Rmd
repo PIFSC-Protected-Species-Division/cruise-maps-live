@@ -73,11 +73,11 @@ toc <- paste0(toc_list, "*](#", toc_link, ")", collapse = "\n")
 
 ## Purpose
 
-The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolphin, and seabird populations across the Hawaiian Islands. The survey is conducted by NOAA Fisheries' Pacific Islands Fisheries Science Center. The code in this repository allows us to generate summary maps and tables of our survey progress and cetacean sightings. These scripts compile the various data streams, collected and uploaded to Google Drive by the researchers at sea, and then create daily maps and an up-to-date summary table. The generated map and table are shared to the cruise website.
+The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolphin, and seabird populations across the Hawaiian Islands. The survey is conducted by NOAA Fisheries' Pacific Islands Fisheries Science Center. The code in this repository allows us to generate summary maps and tables of our survey progress and cetacean sightings. These scripts compile the various data streams, collected and uploaded to Google Drive by the researchers at sea, and then create daily maps and an up-to-date summary table. The generated map and table are shared to the cruise website: [HICEAS 2023 is Underway!](https://storymaps.arcgis.com/stories/b3bbf0e90d0141f7bf47edc5339ccb7a)
 
-- [HICEAS 2023 is Underway!](https://storymaps.arcgis.com/stories/b3bbf0e90d0141f7bf47edc5339ccb7a)
+HICEAS 2023 completed in early December 2023. This repository will be used again for future Cetacean Research Program surveys, so stay tuned in the coming years!
 
-##### Latest map
+##### Final HICEAS 2023 maps
 
 (click to enlarge)
 
@@ -85,6 +85,16 @@ The Hawaiian Islands Cetacean and Ecosystem Survey (HICEAS) assesses whale, dolp
 
 knitr::include_graphics('./outputs/dailyMap_visuals.png')
 knitr::include_graphics('./outputs/dailyMap_acoustics.png')
+
+```
+
+##### Final HICEAS 2023 Summary Table
+
+(click to enlarge)
+
+```{r latest-table, fig.alt = 'HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected.', out.width = "60%"}
+
+knitr::include_graphics('./outputs/summaryTable.png')
 
 ```
 
@@ -100,9 +110,9 @@ To re-run a day (perhaps the DAS was updated/corrected), use the `das_reRunPrep.
 
 To re-run all days, delete the `dasList*.Rda` file from the 'outputs' folder and all the `compiled*.Rda` files from the 'data' folder (e.g., `compiledDetections_OES2303.Rda`). 
 
-## Plot Examples
+## Plot Examples - HICEAS 2023
 
-As each survey leg completes we will share some example plots and gifs here! 
+As each survey leg completes we will share some example plots here! 
 
 ### Blank, pre-survey base map
 
@@ -139,6 +149,14 @@ As each survey leg completes we will share some example plots and gifs here!
 
 ##### Acoustic detections
 ![HICEAS 2023 Map - End of OES Leg 4/LSK Leg 1. This map shows the completed survey tracklines (*Sette* in pink and *Lasker* in orange) and acoustic detections of cetaceans (colored symbols) that occured during HICEAS 2023 through the end of Leg 4 on the R/V *Oscar Elton Sette* and Leg 1 on the R/V *Reuben Lasker* from 23 July to 5 November 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg4_LSK2401_leg1/dailyMap_acoustics_OES2303_leg4_LSK2401_leg1_ran2023-11-08.png)
+
+### *Sette* Leg 5/*Lasker* Leg 2
+
+##### Visual sightings
+![HICEAS 2023 Map - End of OES Leg 5/LSK Leg 2. This map shows the completed survey tracklines (*Sette* in pink and *Lasker* in orange) and cetacean sightings (colored symbols) that occured during HICEAS 2023 through the end of Leg 5 on the R/V *Oscar Elton Sette* and Leg 2 on the R/V *Reuben Lasker* from 23 July to 4 December 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg5_LSK2401_leg2/dailyMap_visuals_OES2303_leg5_LSK2401_leg2_ran2023-12-06.png)
+
+##### Acoustic detections
+![HICEAS 2023 Map - End of OES Leg 5/LSK Leg 2. This map shows the completed survey tracklines (*Sette* in pink and *Lasker* in orange) and acoustic detections of cetaceans (colored symbols) that occured during HICEAS 2023 through the end of Leg 5 on the R/V *Oscar Elton Sette* and Leg 2 on the R/V *Reuben Lasker* from 23 July to 4 December 2023. The U.S. Exclusive Economic Zone (EEZ) surrounding the Hawaiian archipelago (study area) is marked with a white boundary line and planned transect lines are in thin black lines. The Papahānaumokuākea Marine National Monument area and Main Hawaiian Islands are labeled in white text. The transect lines run lengthwise from northwest to southeast, covering the entire EEZ. ](./outputs/map_archive/OES2303_leg5_LSK2401_leg2/dailyMap_acoustics_OES2303_leg5_LSK2401_leg2_ran2023-12-03.png)
 
 ## Suggestions and Comments
 
