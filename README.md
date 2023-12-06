@@ -74,7 +74,7 @@ in the coming years!
 
 (click to enlarge)
 
-<img src="./outputs/summaryTable.png" alt="HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected." width="60%" />
+<img src="./outputs/summaryTable.png" alt="HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected." width="60%" style="display: block; margin: auto;" />
 
 ## Notes
 

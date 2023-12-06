@@ -92,7 +92,7 @@ knitr::include_graphics('./outputs/dailyMap_acoustics.png')
 
 (click to enlarge)
 
-```{r latest-table, fig.alt = 'HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected.', out.width = "60%"}
+```{r latest-table, fig.alt = 'HICEAS 2023 Summary Table. This table shows the final effort summary for HICEAS 2023 including total number of days at sea for each ship and leg, total kilometers of survey effort track completed, the number of cetaceang roups visually sighted, and the number of cetacean groups acoustically detected.', out.width = "60%", fig.align = 'center'}
 
 knitr::include_graphics('./outputs/summaryTable.png')
 
